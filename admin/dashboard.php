@@ -82,8 +82,8 @@
                         <tbody>
                             <tr>
                                 <td>#APT001</td>
-                                <td>John Doe</td>
-                                <td>Dr. Sarah Johnson</td>
+                                <td>clevin</td>
+                                <td>Dr. Dabe</td>
                                 <td>Feb 18, 2026 - 10:30 AM</td>
                                 <td>Cardiology</td>
                                 <td><span class="badge badge-confirmed">Confirmed</span></td>
@@ -96,8 +96,8 @@
                             </tr>
                             <tr>
                                 <td>#APT002</td>
-                                <td>Jane Smith</td>
-                                <td>Dr. Michael Brown</td>
+                                <td>thiloka</td>
+                                <td>Dr. Ann</td>
                                 <td>Feb 18, 2026 - 2:00 PM</td>
                                 <td>Orthopedic</td>
                                 <td><span class="badge badge-pending">Pending</span></td>
@@ -110,8 +110,8 @@
                             </tr>
                             <tr>
                                 <td>#APT003</td>
-                                <td>Robert Wilson</td>
-                                <td>Dr. Emily Davis</td>
+                                <td>kevin</td>
+                                <td>Dr. Fernando</td>
                                 <td>Feb 19, 2026 - 11:00 AM</td>
                                 <td>Neurology</td>
                                 <td><span class="badge badge-confirmed">Confirmed</span></td>
@@ -146,19 +146,19 @@
                             <tbody>
                                 <tr>
                                     <td>#PAT001</td>
-                                    <td>Alice Cooper</td>
+                                    <td>clevin</td>
                                     <td>555-0101</td>
                                     <td><span class="badge badge-success">Active</span></td>
                                 </tr>
                                 <tr>
                                     <td>#PAT002</td>
-                                    <td>Bob Johnson</td>
+                                    <td>thiloka</td>
                                     <td>555-0102</td>
                                     <td><span class="badge badge-success">Active</span></td>
                                 </tr>
                                 <tr>
                                     <td>#PAT003</td>
-                                    <td>Carol White</td>
+                                    <td>Kevin</td>
                                     <td>555-0103</td>
                                     <td><span class="badge badge-success">Active</span></td>
                                 </tr>
@@ -185,19 +185,19 @@
                             <tbody>
                                 <tr>
                                     <td>#DOC001</td>
-                                    <td>Dr. Sarah Johnson</td>
+                                    <td>Dr. Dabe</td>
                                     <td>Cardiology</td>
                                     <td><span class="badge badge-success">Available</span></td>
                                 </tr>
                                 <tr>
                                     <td>#DOC002</td>
-                                    <td>Dr. Michael Brown</td>
+                                    <td>Dr. Ann</td>
                                     <td>Orthopedic</td>
                                     <td><span class="badge badge-success">Available</span></td>
                                 </tr>
                                 <tr>
                                     <td>#DOC003</td>
-                                    <td>Dr. Emily Davis</td>
+                                    <td>Dr. Fernando</td>
                                     <td>Neurology</td>
                                     <td><span class="badge badge-pending">In Session</span></td>
                                 </tr>
