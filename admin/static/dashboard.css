@@ -290,6 +290,93 @@ table tbody tr:hover {
     gap: 30px;
 }
 
+/* Icon Styling */
+i {
+    transition: all 0.3s ease;
+}
+
+/* Icons in Sidebar */
+.sidebar ul li a i {
+    margin-right: 12px;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    color: inherit;
+}
+
+.sidebar ul li a:hover i {
+    transform: scale(1.15);
+    color: #ffffff;
+}
+
+.sidebar ul li a.active i {
+    color: #ffffff;
+}
+
+/* Icons in Section Titles */
+.section-title i {
+    margin-right: 10px;
+    font-size: 24px;
+    color: #667eea;
+    vertical-align: middle;
+}
+
+/* Icons in Buttons */
+.btn i {
+    margin-right: 8px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.btn-primary i {
+    color: white;
+}
+
+.btn-secondary i {
+    color: #2c3e50;
+}
+
+.btn-danger i {
+    color: white;
+}
+
+.btn-success i {
+    color: white;
+}
+
+.btn:hover i {
+    transform: translateX(2px);
+}
+
+/* Page title icon */
+.page-title i {
+    margin-right: 12px;
+    color: #667eea;
+}
+
+/* Stat card icons (if added) */
+.stat-card i {
+    font-size: 32px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
+
+.stat-card.blue i {
+    color: #667eea;
+}
+
+.stat-card.green i {
+    color: #48bb78;
+}
+
+.stat-card.orange i {
+    color: #f6ad55;
+}
+
+.stat-card.red i {
+    color: #f56565;
+}
+
 @media (max-width: 1024px) {
     .grid-2 {
         grid-template-columns: 1fr;

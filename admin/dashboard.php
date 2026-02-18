@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthcare Appointment System - Admin Dashboard</title>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <link rel="stylesheet" href="static/dashboard.css">
 </head>
 <body>
     <div class="header">
         <div class="header-content">
-            <div class="logo">HealthCare Admin</div>
+            <div class="logo"><i class="fa-solid fa-hospital"></i> HealthCare Admin</div>
             <div class="user-info">
                 <span>Admin User</span>
                 <button onclick="logout()">Logout</button>
@@ -20,13 +21,13 @@
     <div class="container">
         <div class="sidebar">
             <ul>
-                <li><a href="#dashboard" class="active">📊 Dashboard</a></li>
-                <li><a href="#appointments">📅 Appointments</a></li>
-                <li><a href="#patients">👥 Patients</a></li>
-                <li><a href="#doctors">👨‍⚕️ Doctors</a></li>
-                <li><a href="#departments">🏢 Departments</a></li>
-                <li><a href="#reports">📈 Reports</a></li>
-                <li><a href="#settings">⚙️ Settings</a></li>
+                <li><a href="#dashboard" class="active"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
+                <li><a href="#appointments"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
+                <li><a href="#patients"><i class="fa-solid fa-users"></i> Patients</a></li>
+                <li><a href="#doctors"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
+                <li><a href="#departments"><i class="fa-solid fa-building"></i> Departments</a></li>
+                <li><a href="#reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
+                <li><a href="#settings"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
         </div>
 
@@ -64,7 +65,7 @@
             </div>
 
             <div class="section">
-                <h2 class="section-title">📅 Upcoming Appointments</h2>
+                <h2 class="section-title"><i class="fa-solid fa-calendar-days"></i> Upcoming Appointments</h2>
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -131,7 +132,7 @@
 
             <div class="grid-2">
                 <div class="section">
-                    <h2 class="section-title">👥 Recent Patients</h2>
+                    <h2 class="section-title"><i class="fa-solid fa-users"></i> Recent Patients</h2>
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -170,7 +171,7 @@
                 </div>
 
                 <div class="section">
-                    <h2 class="section-title">👨‍⚕️ Doctor Status</h2>
+                    <h2 class="section-title"><i class="fa-solid fa-user-doctor"></i> Doctor Status</h2>
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -210,19 +211,19 @@
             </div>
 
             <div class="section">
-                <h2 class="section-title">⚡ Quick Actions</h2>
+                <h2 class="section-title"><i class="fa-solid fa-bolt"></i> Quick Actions</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
-                    <button class="btn btn-primary" style="width: 100%; padding: 15px;">➕ New Appointment</button>
-                    <button class="btn btn-primary" style="width: 100%; padding: 15px;">➕ New Patient</button>
-                    <button class="btn btn-primary" style="width: 100%; padding: 15px;">➕ New Doctor</button>
-                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;">📊 Generate Report</button>
-                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;">📧 Send Notifications</button>
-                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;">📋 View Logs</button>
+                    <button class="btn btn-primary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-plus"></i> New Appointment</button>
+                    <button class="btn btn-primary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-plus"></i> New Patient</button>
+                    <button class="btn btn-primary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-plus"></i> New Doctor</button>
+                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-chart-bar"></i> Generate Report</button>
+                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-envelope"></i> Send Notifications</button>
+                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-clipboard"></i> View Logs</button>
                 </div>
             </div>
 
             <div class="footer">
-                <p>&copy; 2026 Healthcare Appointment System. All rights reserved. | Admin Panel</p>
+                <p>&copy; 2026 BCI Healthcare Appointment System. All rights reserved.</p>
             </div>
         </div>
     </div>
