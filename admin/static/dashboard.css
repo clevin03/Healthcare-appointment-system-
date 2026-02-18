@@ -290,12 +290,11 @@ table tbody tr:hover {
     gap: 30px;
 }
 
-/* Icon Styling */
+
 i {
     transition: all 0.3s ease;
 }
 
-/* Icons in Sidebar */
 .sidebar ul li a i {
     margin-right: 12px;
     font-size: 16px;
@@ -313,7 +312,6 @@ i {
     color: #ffffff;
 }
 
-/* Icons in Section Titles */
 .section-title i {
     margin-right: 10px;
     font-size: 24px;
@@ -321,7 +319,6 @@ i {
     vertical-align: middle;
 }
 
-/* Icons in Buttons */
 .btn i {
     margin-right: 8px;
     font-size: 14px;
@@ -348,13 +345,11 @@ i {
     transform: translateX(2px);
 }
 
-/* Page title icon */
 .page-title i {
     margin-right: 12px;
     color: #667eea;
 }
 
-/* Stat card icons (if added) */
 .stat-card i {
     font-size: 32px;
     margin-bottom: 15px;

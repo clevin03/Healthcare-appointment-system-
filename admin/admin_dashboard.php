@@ -24,7 +24,7 @@
                 <li><a href="#dashboard" class="active"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
                 <li><a href="#appointments"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
                 <li><a href="#patients"><i class="fa-solid fa-users"></i> Patients</a></li>
-                <li><a href="#doctors"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
+                <li><a href="#doctor"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
                 <li><a href="#departments"><i class="fa-solid fa-building"></i> Departments</a></li>
                 <li><a href="#reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
                 <li><a href="#settings"><i class="fa-solid fa-gear"></i> Settings</a></li>
@@ -227,20 +227,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = '../login.php';
-            }
-        }
-
-        document.querySelectorAll('.sidebar ul li a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.querySelectorAll('.sidebar ul li a').forEach(a => a.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-    </script>
+    <script src="static/dashboard.js"></script>
 </body>
 </html>
