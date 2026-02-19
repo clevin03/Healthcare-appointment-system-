@@ -30,7 +30,6 @@
                 <li><a href="#patients"><i class="fa-solid fa-users"></i> My Patients</a></li>
                 <li><a href="#settings"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
-            <button class="logout-btn"><i class="fa-solid fa-sign-out-alt"></i> Log out</button>
         </div>
 
         <div class="main-content">
