@@ -22,7 +22,7 @@
         <div class="sidebar">
             <ul>
                 <li><a href="#dashboard" class="active"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
-                <li><a href="#appointments"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
+                <li><a href="appointment.php"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
                 <li><a href="#patients"><i class="fa-solid fa-users"></i> Patients</a></li>
                 <li><a href="#doctor"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
                 <li><a href="#departments"><i class="fa-solid fa-building"></i> Departments</a></li>
@@ -81,7 +81,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>#APT001</td>
+                                <td>APT001</td>
                                 <td>clevin</td>
                                 <td>Dr. Dabe</td>
                                 <td>Feb 18, 2026 - 10:30 AM</td>
@@ -95,7 +95,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>#APT002</td>
+                                <td>APT002</td>
                                 <td>thiloka</td>
                                 <td>Dr. Ann</td>
                                 <td>Feb 18, 2026 - 2:00 PM</td>
@@ -109,7 +109,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>#APT003</td>
+                                <td>APT003</td>
                                 <td>kevin</td>
                                 <td>Dr. Fernando</td>
                                 <td>Feb 19, 2026 - 11:00 AM</td>
@@ -145,19 +145,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>#PAT001</td>
+                                    <td>PAT001</td>
                                     <td>clevin</td>
                                     <td>555-0101</td>
                                     <td><span class="badge badge-success">Active</span></td>
                                 </tr>
                                 <tr>
-                                    <td>#PAT002</td>
+                                    <td>PAT002</td>
                                     <td>thiloka</td>
                                     <td>555-0102</td>
                                     <td><span class="badge badge-success">Active</span></td>
                                 </tr>
                                 <tr>
-                                    <td>#PAT003</td>
+                                    <td>PAT003</td>
                                     <td>Kevin</td>
                                     <td>555-0103</td>
                                     <td><span class="badge badge-success">Active</span></td>
@@ -184,19 +184,19 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>#DOC001</td>
+                                    <td>DOC001</td>
                                     <td>Dr. Dabe</td>
                                     <td>Cardiology</td>
                                     <td><span class="badge badge-success">Available</span></td>
                                 </tr>
                                 <tr>
-                                    <td>#DOC002</td>
+                                    <td>DOC002</td>
                                     <td>Dr. Ann</td>
                                     <td>Orthopedic</td>
                                     <td><span class="badge badge-success">Available</span></td>
                                 </tr>
                                 <tr>
-                                    <td>#DOC003</td>
+                                    <td>DOC003</td>
                                     <td>Dr. Fernando</td>
                                     <td>Neurology</td>
                                     <td><span class="badge badge-pending">In Session</span></td>
