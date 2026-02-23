@@ -81,7 +81,7 @@
             <ul>
                 <li><a href="#dashboard" class="active"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
                 <li><a href="appointment.php"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
-                <li><a href="#patients"><i class="fa-solid fa-users"></i> Patients</a></li>
+                <li><a href="patient.php"><i class="fa-solid fa-users"></i> Patients</a></li>
                 <li><a href="#doctor"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
                 <li><a href="#departments"><i class="fa-solid fa-building"></i> Departments</a></li>
                 <li><a href="#reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
@@ -212,7 +212,7 @@
                         </table>
                     </div>
                     <div style="margin-top: 15px;">
-                        <button class="btn btn-primary">View All Patients</button>
+                        <a href="patient.php" class="btn btn-primary">View All Patients</a>
                     </div>
                 </div>
 
@@ -253,7 +253,7 @@
                         </table>
                     </div>
                     <div style="margin-top: 15px;">
-                        <button class="btn btn-primary">View All Doctors</button>
+                        <a href="doctors.php" class="btn btn-primary">View All Doctors</a>
                     </div>
                 </div>
             </div>

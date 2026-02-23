@@ -30,6 +30,7 @@ function addAppointment($conn) {
     $patient_name = $_POST['patient_name'];
     $doctor_name = $_POST['doctor_name'];
     $phone_number = $_POST['phone_number'];
+    $department = $_POST['department'];
     $date = $_POST['date'];
     $time = $_POST['time'];
     $status = $_POST['status'];
@@ -37,8 +38,8 @@ function addAppointment($conn) {
     $patient_id = getOrCreatePatient($conn, $patient_name, $phone_number);
     $doctor_id = getOrCreateDoctor($conn, $doctor_name);
     
-    $sql = "INSERT INTO appointments (appointment_number, patient_id, doctor_id, appointment_date, appointment_time, status) 
-            VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO appointments (appointment_number, patient_id, doctor_id, department, appointment_date, appointment_time, status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
@@ -46,7 +47,7 @@ function addAppointment($conn) {
         return;
     }
     
-    $stmt->bind_param("siisss", $appointment_number, $patient_id, $doctor_id, $date, $time, $status);
+    $stmt->bind_param("siisss", $appointment_number, $patient_id, $doctor_id, $department, $date, $time, $status);
     
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Appointment added successfully']);
@@ -63,6 +64,7 @@ function editAppointment($conn) {
     $patient_name = $_POST['patient_name'];
     $doctor_name = $_POST['doctor_name'];
     $phone_number = $_POST['phone_number'];
+    $department = $_POST['department'];
     $date = $_POST['date'];
     $time = $_POST['time'];
     $status = $_POST['status'];
@@ -71,7 +73,7 @@ function editAppointment($conn) {
     $doctor_id = getOrCreateDoctor($conn, $doctor_name);
     
     $sql = "UPDATE appointments 
-            SET appointment_number = ?, patient_id = ?, doctor_id = ?, 
+            SET appointment_number = ?, patient_id = ?, doctor_id = ?, department = ?,
                 appointment_date = ?, appointment_time = ?, status = ?
             WHERE appointment_id = ?";
     
@@ -81,7 +83,7 @@ function editAppointment($conn) {
         return;
     }
     
-    $stmt->bind_param("siisssi", $appointment_number, $patient_id, $doctor_id, $date, $time, $status, $id);
+    $stmt->bind_param("siisssi", $appointment_number, $patient_id, $doctor_id, $department, $date, $time, $status, $id);
     
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Appointment updated successfully']);
@@ -116,10 +118,11 @@ function deleteAppointment($conn) {
 function getAppointment($conn) {
     $id = $_GET['id'];
     
-    $sql = "SELECT a.*, p.patient_name, p.phone, d.doctor_name 
+    $sql = "SELECT a.*, p.patient_name, p.phone, d.doctor_name, dept.department_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
+            LEFT JOIN departments dept ON a.department = dept.department_name
             WHERE a.appointment_id = ?";
     
     $stmt = $conn->prepare($sql);
@@ -142,10 +145,11 @@ function getAppointment($conn) {
 }
 
 function getAllAppointments($conn) {
-    $sql = "SELECT a.*, p.patient_name, p.phone, d.doctor_name 
+    $sql = "SELECT a.*, p.patient_name, p.phone, d.doctor_name, dept.department_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
+            LEFT JOIN departments dept ON a.department = dept.department_name
             ORDER BY a.appointment_date DESC, a.appointment_time DESC";
     
     $result = $conn->query($sql);

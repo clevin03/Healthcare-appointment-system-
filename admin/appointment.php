@@ -13,10 +13,12 @@
     
     $sql = "SELECT a.appointment_id, a.appointment_number, a.appointment_date, a.appointment_time, a.status,
                    p.patient_name, p.phone,
-                   d.doctor_name
+                   d.doctor_name,
+                   dept.department_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
+            LEFT JOIN departments dept ON a.department_id = dept.department_id
             ORDER BY a.appointment_date DESC, a.appointment_time DESC";
     
     $result = $conn->query($sql);
@@ -25,6 +27,16 @@
     if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $appointments[] = $row;
+        }
+    }
+    
+    // Fetch departments for dropdown
+    $dept_sql = "SELECT department_id, department_name FROM departments ORDER BY department_name";
+    $dept_result = $conn->query($dept_sql);
+    $departments = [];
+    if ($dept_result && $dept_result->num_rows > 0) {
+        while ($row = $dept_result->fetch_assoc()) {
+            $departments[] = $row;
         }
     }
     ?>
@@ -74,6 +86,14 @@
                             <div class="info-content">
                                 <label>Phone Number</label>
                                 <span><?php echo htmlspecialchars($appointment['phone']); ?></span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-row">
+                            <i class="fas fa-building"></i>
+                            <div class="info-content">
+                                <label>Department</label>
+                                <span><?php echo htmlspecialchars($appointment['department_name']); ?></span>
                             </div>
                         </div>
                         
@@ -146,6 +166,16 @@
                 <div class="form-group">
                     <label for="phoneNumber"><i class="fas fa-phone"></i> Phone Number</label>
                     <input type="tel" id="phoneNumber" name="phone_number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="department"><i class="fas fa-building"></i> Department</label>
+                    <select id="department" name="department" required>
+                        <option value="">Select Department</option>
+                        <?php foreach ($departments as $dept) { ?>
+                            <option value="<?php echo $dept['department_id']; ?>"><?php echo htmlspecialchars($dept['department_name']); ?></option>
+                        <?php } ?>
+                    </select>
                 </div>
                 
                 <div class="form-row">

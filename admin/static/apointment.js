@@ -22,6 +22,7 @@ function editAppointment(id) {
                 document.getElementById('patientName').value = data.patient_name;
                 document.getElementById('doctorName').value = data.doctor_name;
                 document.getElementById('phoneNumber').value = data.phone;
+                document.getElementById('department').value = data.department_name;
                 document.getElementById('appointmentDate').value = data.appointment_date;
                 document.getElementById('appointmentTime').value = data.appointment_time;
                 document.getElementById('status').value = data.status;
@@ -60,9 +61,10 @@ function viewDetails(id) {
                         <strong><i class="fas fa-phone"></i> Phone Number:</strong>
                         <span>${data.phone}</span>
                     </div>
+
                     <div class="detail-item">
-                        <strong><i class="fas fa-calendar"></i> Date:</strong>
-                        <span>${formatDate(data.appointment_date)}</span>
+                        <strong><i class="fas fa-building"></i> Department:</strong>
+                        <span>${data.department_name}</span>
                     </div>
                     <div class="detail-item">
                         <strong><i class="fas fa-clock"></i> Time:</strong>
