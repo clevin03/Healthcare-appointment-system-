@@ -173,7 +173,7 @@
                     <select id="department" name="department" required>
                         <option value="">Select Department</option>
                         <?php foreach ($departments as $dept) { ?>
-                            <option value="<?php echo $dept['department_id']; ?>"><?php echo htmlspecialchars($dept['department_name']); ?></option>
+                            <option value="<?php echo htmlspecialchars($dept['department_name']); ?>"><?php echo htmlspecialchars($dept['department_name']); ?></option>
                         <?php } ?>
                     </select>
                 </div>

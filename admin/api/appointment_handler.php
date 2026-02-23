@@ -1,8 +1,15 @@
 <?php
 header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
 require_once '../../config/db_connection.php';
 
 $action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
+
+if (!$action) {
+    echo json_encode(['success' => false, 'message' => 'No action specified', 'debug' => $_POST]);
+    exit;
+}
 
 switch ($action) {
     case 'add':
@@ -21,11 +28,24 @@ switch ($action) {
         getAllAppointments($conn);
         break;
     default:
-        echo json_encode(['success' => false, 'message' => 'Invalid action']);
+        echo json_encode(['success' => false, 'message' => 'Invalid action: ' . $action]);
         break;
 }
 
 function addAppointment($conn) {
+    $required = ['appointment_number', 'patient_name', 'doctor_name', 'phone_number', 'department', 'date', 'time', 'status'];
+    $missing = [];
+    foreach ($required as $field) {
+        if (!isset($_POST[$field]) || empty(trim($_POST[$field]))) {
+            $missing[] = $field;
+        }
+    }
+    
+    if (!empty($missing)) {
+        echo json_encode(['success' => false, 'message' => 'Missing required fields: ' . implode(', ', $missing), 'received' => array_keys($_POST)]);
+        return;
+    }
+    
     $appointment_number = $_POST['appointment_number'];
     $patient_name = $_POST['patient_name'];
     $doctor_name = $_POST['doctor_name'];
@@ -36,9 +56,24 @@ function addAppointment($conn) {
     $status = $_POST['status'];
 
     $patient_id = getOrCreatePatient($conn, $patient_name, $phone_number);
-    $doctor_id = getOrCreateDoctor($conn, $doctor_name);
+    if (!$patient_id) {
+        echo json_encode(['success' => false, 'message' => 'Failed to create or find patient record']);
+        return;
+    }
     
-    $sql = "INSERT INTO appointments (appointment_number, patient_id, doctor_id, department, appointment_date, appointment_time, status) 
+    $doctor_id = getOrCreateDoctor($conn, $doctor_name);
+    if (!$doctor_id) {
+        echo json_encode(['success' => false, 'message' => 'Failed to create or find doctor record']);
+        return;
+    }
+    
+    $department_id = getDepartmentId($conn, $department);
+    if (!$department_id) {
+        echo json_encode(['success' => false, 'message' => 'Invalid department selected']);
+        return;
+    }
+    
+    $sql = "INSERT INTO appointments (appointment_number, patient_id, doctor_id, department_id, appointment_date, appointment_time, status) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
@@ -47,7 +82,7 @@ function addAppointment($conn) {
         return;
     }
     
-    $stmt->bind_param("siisss", $appointment_number, $patient_id, $doctor_id, $department, $date, $time, $status);
+    $stmt->bind_param("siiisss", $appointment_number, $patient_id, $doctor_id, $department_id, $date, $time, $status);
     
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Appointment added successfully']);
@@ -70,10 +105,25 @@ function editAppointment($conn) {
     $status = $_POST['status'];
     
     $patient_id = getOrCreatePatient($conn, $patient_name, $phone_number);
+    if (!$patient_id) {
+        echo json_encode(['success' => false, 'message' => 'Failed to create or find patient record']);
+        return;
+    }
+    
     $doctor_id = getOrCreateDoctor($conn, $doctor_name);
+    if (!$doctor_id) {
+        echo json_encode(['success' => false, 'message' => 'Failed to create or find doctor record']);
+        return;
+    }
+    
+    $department_id = getDepartmentId($conn, $department);
+    if (!$department_id) {
+        echo json_encode(['success' => false, 'message' => 'Invalid department selected']);
+        return;
+    }
     
     $sql = "UPDATE appointments 
-            SET appointment_number = ?, patient_id = ?, doctor_id = ?, department = ?,
+            SET appointment_number = ?, patient_id = ?, doctor_id = ?, department_id = ?,
                 appointment_date = ?, appointment_time = ?, status = ?
             WHERE appointment_id = ?";
     
@@ -83,7 +133,7 @@ function editAppointment($conn) {
         return;
     }
     
-    $stmt->bind_param("siisssi", $appointment_number, $patient_id, $doctor_id, $department, $date, $time, $status, $id);
+    $stmt->bind_param("siiisssi", $appointment_number, $patient_id, $doctor_id, $department_id, $date, $time, $status, $id);
     
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Appointment updated successfully']);
@@ -122,7 +172,7 @@ function getAppointment($conn) {
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
-            LEFT JOIN departments dept ON a.department = dept.department_name
+            LEFT JOIN departments dept ON a.department_id = dept.department_id
             WHERE a.appointment_id = ?";
     
     $stmt = $conn->prepare($sql);
@@ -149,7 +199,7 @@ function getAllAppointments($conn) {
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
-            LEFT JOIN departments dept ON a.department = dept.department_name
+            LEFT JOIN departments dept ON a.department_id = dept.department_id
             ORDER BY a.appointment_date DESC, a.appointment_time DESC";
     
     $result = $conn->query($sql);
@@ -227,5 +277,25 @@ function getOrCreateDoctor($conn, $doctor_name) {
     $stmt->close();
     
     return $doctor_id;
+}
+
+function getDepartmentId($conn, $department_name) {
+    $sql = "SELECT department_id FROM departments WHERE department_name = ? LIMIT 1";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        return null;
+    }
+    
+    $stmt->bind_param("s", $department_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        $stmt->close();
+        return $row['department_id'];
+    }
+    $stmt->close();
+    
+    return null;
 }
 ?>

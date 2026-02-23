@@ -168,19 +168,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    alert(result.message);
-                    closeModal();
-                    location.reload();
-                } else {
-                    alert('Error: ' + result.message);
+            .then(response => {
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                return response.text(); // Get as text first
+            })
+            .then(text => {
+                console.log('Response:', text); // Debug log
+                try {
+                    const result = JSON.parse(text);
+                    if (result.success) {
+                        alert(result.message);
+                        closeModal();
+                        location.reload();
+                    } else {
+                        alert('Error: ' + result.message + (result.debug ? '\nDebug: ' + JSON.stringify(result.debug) : ''));
+                    }
+                } catch (e) {
+                    console.error('JSON Parse Error:', e);
+                    alert('Server response error: ' + text.substring(0, 200));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to save appointment');
+                alert('Failed to save appointment: ' + error.message);
             });
         });
     }
