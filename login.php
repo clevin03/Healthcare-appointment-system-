@@ -17,10 +17,10 @@ if (isset($_SESSION['user_id'])) {
             header("Location: admin/admin_dashboard.php");
             break;
         case 'doctor':
-            header("Location: doctor/doctor_dashborad.php");
+            header("Location: doctor/doctor_dashboard.php");
             break;
         case 'patient':
-            header("Location: patent/patent_dashboard.php");
+            header("Location: patient/patient_dashboard.php");
             break;
     }
     exit;

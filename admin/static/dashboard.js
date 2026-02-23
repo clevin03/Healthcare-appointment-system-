@@ -11,16 +11,13 @@ document.querySelectorAll('.sidebar ul li a').forEach(link => {
     });
 });
 
+let currentAppointmentId = null;
+
 function openAddModal() {
-    const modal = document.getElementById('appointmentModal');
-    if (modal) {
-        modal.style.display = 'block';
-        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Appointment';
-        document.getElementById('appointmentForm').reset();
-        document.getElementById('appointmentId').value = '';
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('appointmentDate').value = today;
-    }
+    document.getElementById('appointmentModal').style.display = 'block';
+    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Appointment';
+    document.getElementById('appointmentForm').reset();
+    document.getElementById('appointmentId').value = '';
 }
 
 function closeModal() {
@@ -40,32 +37,38 @@ window.onclick = function(event) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const appointmentForm = document.getElementById('appointmentForm');
+    
     if (appointmentForm) {
-        appointmentForm.addEventListener('submit', async function(e) {
+        appointmentForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            
             const formData = new FormData(this);
             const appointmentId = document.getElementById('appointmentId').value;
-            
-            formData.append('action', appointmentId ? 'edit' : 'add');
-            
-            try {
-                const response = await fetch('api/appointment_handler.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
+
+            if (appointmentId) {
+                formData.append('action', 'edit');
+            } else {
+                formData.append('action', 'add');
+            }
+
+            fetch('api/appointment_handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
                 if (result.success) {
-                    alert(appointmentId ? 'Appointment updated successfully!' : 'Appointment created successfully!');
+                    alert(result.message);
                     closeModal();
                     location.reload();
                 } else {
                     alert('Error: ' + result.message);
                 }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to save appointment');
+            });
         });
     }
 });
