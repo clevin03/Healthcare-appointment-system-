@@ -582,25 +582,38 @@ form {
     box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
 }
 
-@media (max-width: 600px) {
-    .modal-content {
-        width: 95%;
-        margin: 20% auto;
-    }
+.form-group {
+    margin-bottom: 20px;
+}
 
-    .form-row {
-        grid-template-columns: 1fr;
-    }
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-    .modal-header h2 {
-        font-size: 20px;
-    }
+.form-group label i {
+    color: #667eea;
+}
 
-    .close {
-        font-size: 28px;
-    }
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+    font-family: inherit;
+}
 
-    .modal form {
-        padding: 20px;
-    }
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
 }
