@@ -119,7 +119,6 @@
         </div>
     </div>
 
-    <!-- Add/Edit Appointment Modal -->
     <div id="appointmentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -180,7 +179,7 @@
         </div>
     </div>
 
-    <!-- View Details Modal -->
+
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -195,7 +194,6 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal">
         <div class="modal-content modal-small">
             <div class="modal-header">
