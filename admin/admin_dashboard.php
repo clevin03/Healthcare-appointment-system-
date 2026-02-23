@@ -261,7 +261,7 @@
             <div class="section">
                 <h2 class="section-title"><i class="fa-solid fa-bolt"></i> Quick Actions</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
-                    <button class="btn btn-primary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-plus"></i> New Appointment</button>
+                    <button class="btn btn-primary" style="width: 100%; padding: 15px;" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> New Appointment</button>
                     <button class="btn btn-primary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-plus"></i> New Patient</button>
                     <button class="btn btn-primary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-plus"></i> New Doctor</button>
                     <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-chart-bar"></i> Generate Report</button>
@@ -270,11 +270,72 @@
                 </div>
             </div>
 
+            <div id="appointmentModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modalTitle"><i class="fas fa-plus-circle"></i> Add New Appointment</h2>
+                        <span class="close" onclick="closeModal()">&times;</span>
+                    </div>
+                    <form id="appointmentForm" method="POST">
+                        <input type="hidden" id="appointmentId" name="id">
+                        
+                        <div class="form-group">
+                            <label for="appointmentNumber"><i class="fas fa-hashtag"></i> Appointment Number</label>
+                            <input type="text" id="appointmentNumber" name="appointment_number" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="patientName"><i class="fas fa-user-injured"></i> Patient Name</label>
+                            <input type="text" id="patientName" name="patient_name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="doctorName"><i class="fas fa-user-doctor"></i> Doctor Name</label>
+                            <input type="text" id="doctorName" name="doctor_name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phoneNumber"><i class="fas fa-phone"></i> Phone Number</label>
+                            <input type="tel" id="phoneNumber" name="phone_number" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appointmentDate"><i class="fas fa-calendar"></i> Date</label>
+                                <input type="date" id="appointmentDate" name="date" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="appointmentTime"><i class="fas fa-clock"></i> Time</label>
+                                <input type="time" id="appointmentTime" name="time" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="status"><i class="fas fa-info-circle"></i> Status</label>
+                            <select id="status" name="status" required>
+                                <option value="PENDING">Pending</option>
+                                <option value="CONFIRMED">Confirmed</option>
+                                <option value="CANCELLED">Cancelled</option>
+                            </select>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Save Appointment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <div class="footer">
                 <p>&copy; 2026 BCI Healthcare Appointment System. All rights reserved.</p>
             </div>
         </div>
     </div>
+
     <script src="static/dashboard.js"></script>
 </body>
 </html>
