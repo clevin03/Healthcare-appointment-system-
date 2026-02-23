@@ -8,6 +8,65 @@
     <link rel="stylesheet" href="static/dashboard.css">
 </head>
 <body>
+    <?php
+    require_once '../config/db_connection.php';
+
+    $sql = "SELECT COUNT(*) AS total_patients FROM patients";
+    $sql_result = $conn->query($sql);
+    $total_patients = $sql_result->fetch_assoc()['total_patients'];
+    
+    $sql = "SELECT COUNT(*) AS today_appointments FROM appointments WHERE DATE(appointment_date) = CURDATE()";
+    $sql_result = $conn->query($sql);
+    $today_appointments = $sql_result->fetch_assoc()['today_appointments'];
+
+    $sql = "SELECT COUNT(*) AS active_doctors FROM doctors WHERE status = 'ACTIVE'";
+    $sql_result = $conn->query($sql);
+    $active_doctors = $sql_result->fetch_assoc()['active_doctors'];
+
+    $sql = "SELECT COUNT(*) AS pending_appointments FROM appointments WHERE status = 'PENDING'";
+    $sql_result = $conn->query($sql);
+    $pending_appointments = $sql_result->fetch_assoc()['pending_appointments'];
+
+    $sql = "SELECT a.appointment_id, a.appointment_number, a.appointment_date, a.appointment_time, a.status,
+                   p.patient_name, d.doctor_name, dep.department_name
+            FROM appointments a
+            LEFT JOIN patients p ON a.patient_id = p.patient_id
+            LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
+            LEFT JOIN departments dep ON a.department_id = dep.department_id
+            WHERE a.appointment_date >= CURDATE()
+            ORDER BY a.appointment_date ASC, a.appointment_time ASC
+            LIMIT 5";
+    $upcoming_appointments = [];
+    $result = $conn->query($sql);
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $upcoming_appointments[] = $row;
+        }
+    }
+
+    $sql = "SELECT patient_id, patient_name, phone FROM patients ORDER BY created_at DESC LIMIT 5";
+    $recent_patients = [];
+    $result = $conn->query($sql);
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $recent_patients[] = $row;
+        }
+    }
+
+    $sql = "SELECT d.doctor_id, d.doctor_name, dep.department_name, d.status
+            FROM doctors d
+            LEFT JOIN departments dep ON d.department_id = dep.department_id
+            WHERE d.status = 'ACTIVE'
+            LIMIT 5";
+    $active_doctors_list = [];
+    $result = $conn->query($sql);
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $active_doctors_list[] = $row;
+        }
+    }
+    ?>
+
     <div class="header">
         <div class="header-content">
             <div class="logo"><i class="fa-solid fa-hospital"></i> HealthCare Admin</div>
@@ -17,7 +76,6 @@
             </div>
         </div>
     </div>
-
     <div class="container">
         <div class="sidebar">
             <ul>
@@ -80,53 +138,39 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>APT001</td>
-                                <td>clevin</td>
-                                <td>Dr. Dabe</td>
-                                <td>Feb 18, 2026 - 10:30 AM</td>
-                                <td>Cardiology</td>
-                                <td><span class="badge badge-confirmed">Confirmed</span></td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-secondary">Edit</button>
-                                        <button class="btn btn-danger">Cancel</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>APT002</td>
-                                <td>thiloka</td>
-                                <td>Dr. Ann</td>
-                                <td>Feb 18, 2026 - 2:00 PM</td>
-                                <td>Orthopedic</td>
-                                <td><span class="badge badge-pending">Pending</span></td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-success">Confirm</button>
-                                        <button class="btn btn-secondary">Edit</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>APT003</td>
-                                <td>kevin</td>
-                                <td>Dr. Fernando</td>
-                                <td>Feb 19, 2026 - 11:00 AM</td>
-                                <td>Neurology</td>
-                                <td><span class="badge badge-confirmed">Confirmed</span></td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-secondary">Edit</button>
-                                        <button class="btn btn-danger">Cancel</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <?php
+                            if (!empty($upcoming_appointments)) {
+                                foreach ($upcoming_appointments as $apt) {
+                            ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($apt['appointment_number']); ?></td>
+                                    <td><?php echo htmlspecialchars($apt['patient_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($apt['doctor_name']); ?></td>
+                                    <td><?php echo date('M d, Y - h:i A', strtotime($apt['appointment_date'] . ' ' . $apt['appointment_time'])); ?></td>
+                                    <td><?php echo htmlspecialchars($apt['department_name']); ?></td>
+                                    <td><span class="badge badge-<?php echo strtolower($apt['status']); ?>"><?php echo htmlspecialchars($apt['status']); ?></span></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-secondary" onclick="window.location.href='appointment.php'">View</button>
+                                            <button class="btn btn-danger">Cancel</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php
+                                }
+                            } else {
+                            ?>
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 20px; color: #999;">No upcoming appointments</td>
+                                </tr>
+                            <?php
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
                 <div style="margin-top: 15px;">
-                    <button class="btn btn-primary">View All Appointments</button>
+                    <a href="appointment.php" class="btn btn-primary" style="text-decoration: none;">View All Appointments</a>
                 </div>
             </div>
 
@@ -144,24 +188,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>PAT001</td>
-                                    <td>clevin</td>
-                                    <td>555-0101</td>
-                                    <td><span class="badge badge-success">Active</span></td>
-                                </tr>
-                                <tr>
-                                    <td>PAT002</td>
-                                    <td>thiloka</td>
-                                    <td>555-0102</td>
-                                    <td><span class="badge badge-success">Active</span></td>
-                                </tr>
-                                <tr>
-                                    <td>PAT003</td>
-                                    <td>Kevin</td>
-                                    <td>555-0103</td>
-                                    <td><span class="badge badge-success">Active</span></td>
-                                </tr>
+                                <?php
+                                if (!empty($recent_patients)) {
+                                    foreach ($recent_patients as $patient) {
+                                ?>
+                                    <tr>
+                                        <td>PAT<?php echo str_pad($patient['patient_id'], 3, '0', STR_PAD_LEFT); ?></td>
+                                        <td><?php echo htmlspecialchars($patient['patient_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($patient['phone'] ?: 'N/A'); ?></td>
+                                        <td><span class="badge badge-success">Active</span></td>
+                                    </tr>
+                                <?php
+                                    }
+                                } else {
+                                ?>
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 20px; color: #999;">No patients found</td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -183,24 +229,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>DOC001</td>
-                                    <td>Dr. Dabe</td>
-                                    <td>Cardiology</td>
-                                    <td><span class="badge badge-success">Available</span></td>
-                                </tr>
-                                <tr>
-                                    <td>DOC002</td>
-                                    <td>Dr. Ann</td>
-                                    <td>Orthopedic</td>
-                                    <td><span class="badge badge-success">Available</span></td>
-                                </tr>
-                                <tr>
-                                    <td>DOC003</td>
-                                    <td>Dr. Fernando</td>
-                                    <td>Neurology</td>
-                                    <td><span class="badge badge-pending">In Session</span></td>
-                                </tr>
+                                <?php
+                                if (!empty($active_doctors_list)) {
+                                    foreach ($active_doctors_list as $doctor) {
+                                ?>
+                                    <tr>
+                                        <td>DOC<?php echo str_pad($doctor['doctor_id'], 3, '0', STR_PAD_LEFT); ?></td>
+                                        <td><?php echo htmlspecialchars($doctor['doctor_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($doctor['department_name'] ?: 'N/A'); ?></td>
+                                        <td><span class="badge badge-success">Available</span></td>
+                                    </tr>
+                                <?php
+                                    }
+                                } else {
+                                ?>
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 20px; color: #999;">No doctors found</td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
