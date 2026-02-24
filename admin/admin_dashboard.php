@@ -262,7 +262,7 @@
                 <h2 class="section-title"><i class="fa-solid fa-bolt"></i> Quick Actions</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
                     <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-chart-bar"></i> Generate Report</button>
-                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-envelope"></i> Send Notifications</button>
+                    <a href="message.php" class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-envelope"></i> Send Message</a>
                     <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-clipboard"></i> View Logs</button>
                 </div>
             </div>
