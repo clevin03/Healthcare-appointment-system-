@@ -43,7 +43,77 @@ function populatePatientTable(patients) {
 }
 
 function viewPatient(patientId) {
-    alert('View patient ' + patientId);
+    fetch(`api/patient_handler.php?action=get&id=${patientId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayPatientDetails(data.data);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching patient details:', error);
+            alert('Failed to load patient details');
+        });
+}
+
+function displayPatientDetails(patient) {
+    const modal = document.getElementById('patientDetailsModal');
+    const detailsBody = document.getElementById('patientDetailsBody');
+    
+    detailsBody.innerHTML = `
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-id-card"></i> Patient ID</strong>
+            <span>${patient.patient_id || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-user"></i> Full Name</strong>
+            <span>${patient.patient_name || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-phone"></i> Phone Number</strong>
+            <span>${patient.phone || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-envelope"></i> Email Address</strong>
+            <span>${patient.email || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-calendar"></i> Date of Birth</strong>
+            <span>${patient.date_of_birth || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-venus-mars"></i> Gender</strong>
+            <span>${patient.gender || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-location-dot"></i> Address</strong>
+            <span>${patient.address || 'N/A'}</span>
+        </div>
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-notes-medical"></i> Medical History</strong>
+            <span>${patient.medical_history || 'No medical history recorded'}</span>
+        </div>
+        <div class="detail-item">
+            <strong><i class="fa-solid fa-clock"></i> Registration Date</strong>
+            <span>${patient.created_at || 'N/A'}</span>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+function closePatientModal() {
+    const modal = document.getElementById('patientDetailsModal');
+    modal.style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('patientDetailsModal');
+    if (event.target === modal) {
+        closePatientModal();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {

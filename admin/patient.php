@@ -1,3 +1,7 @@
+<?php
+    session_start();
+    require_once '../config/db_connection.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +32,22 @@
         </div>
     </section>
 
-    <script src="static/patient.js"></script>
+    <div id="patientDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-user-circle"></i> Patient Details</h2>
+                <span class="close" onclick="closePatientModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="patientDetailsBody">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closePatientModal()">
+                    <i class="fa-solid fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/patient.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
