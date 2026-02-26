@@ -83,7 +83,7 @@
                 <li><a href="appointment.php"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
                 <li><a href="patient.php"><i class="fa-solid fa-users"></i> Patients</a></li>
                 <li><a href="doctor.php"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
-                <li><a href="#departments"><i class="fa-solid fa-building"></i> Departments</a></li>
+                <li><a href="department.php"><i class="fa-solid fa-building"></i> Departments</a></li>
                 <li><a href="#reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
                 <li><a href="#settings"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>

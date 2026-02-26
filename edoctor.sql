@@ -49,6 +49,7 @@ CREATE TABLE `departments` (
   `department_id` int(11) NOT NULL,
   `department_name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -56,10 +57,10 @@ CREATE TABLE `departments` (
 -- Dumping data for table `departments`
 --
 
-INSERT INTO `departments` (`department_id`, `department_name`, `description`, `created_at`) VALUES
-(1, 'Cardiology', NULL, '2026-02-23 03:42:51'),
-(2, 'Orthopedic', NULL, '2026-02-23 03:42:51'),
-(3, 'Neurology', NULL, '2026-02-23 03:42:51');
+INSERT INTO `departments` (`department_id`, `department_name`, `description`, `is_active`, `created_at`) VALUES
+(1, 'Cardiology', 'Heart and cardiovascular care', 1, '2026-02-23 03:42:51'),
+(2, 'Orthopedic', 'Bone and joint care', 1, '2026-02-23 03:42:51'),
+(3, 'Neurology', 'Brain and nervous system care', 1, '2026-02-23 03:42:51');
 
 -- --------------------------------------------------------
 
