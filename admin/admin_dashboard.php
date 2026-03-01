@@ -253,7 +253,7 @@
                         </table>
                     </div>
                     <div style="margin-top: 15px;">
-                        <a href="doctors.php" class="btn btn-primary">View All Doctors</a>
+                        <a href="doctor.php" class="btn btn-primary">View All Doctors</a>
                     </div>
                 </div>
             </div>
