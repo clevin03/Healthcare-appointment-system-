@@ -83,8 +83,8 @@
                 <li><a href="appointment.php"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
                 <li><a href="patient.php"><i class="fa-solid fa-users"></i> Patients</a></li>
                 <li><a href="doctor.php"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
-                <li><a href="department.php"><i class="fa-solid fa-building"></i> Departments</a></li>
-                <li><a href="#reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
+                <li><a href="department.php"><i class="fa-solid fa-building"></i> Departments</a></li> <!-- New Departments link -->
+                <li><a href="#reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li> <!-- New Reports link -->
                 <li><a href="#settings"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
         </div>
@@ -94,28 +94,28 @@
 
             <div class="stats-container">
                 <div class="stat-card blue">
-                    <div class="stat-label">Total Patients</div>
+                    <div class="stat-label">Total Patients</div> <!-- Updated to show total patients -->
                     <div class="stat-number">
                         <?php echo isset($total_patients) ? $total_patients : '324'; ?>
                     </div>
                 </div>
 
                 <div class="stat-card green">
-                    <div class="stat-label">Today's Appointments</div>
+                    <div class="stat-label">Today's Appointments</div> <!-- Updated to show today's appointments -->
                     <div class="stat-number">
                         <?php echo isset($today_appointments) ? $today_appointments : '12'; ?>
                     </div>
                 </div>
 
                 <div class="stat-card orange">
-                    <div class="stat-label">Active Doctors</div>
+                    <div class="stat-label">Active Doctors</div> <!-- Updated to show active doctors -->
                     <div class="stat-number">
                         <?php echo isset($active_doctors) ? $active_doctors : '18'; ?>
                     </div>
                 </div>
 
                 <div class="stat-card red">
-                    <div class="stat-label">Pending Appointments</div>
+                    <div class="stat-label">Pending Appointments</div> <!-- Updated to show pending appointments -->
                     <div class="stat-number">
                         <?php echo isset($pending_appointments) ? $pending_appointments : '5'; ?>
                     </div>
@@ -176,7 +176,7 @@
 
             <div class="grid-2">
                 <div class="section">
-                    <h2 class="section-title"><i class="fa-solid fa-users"></i> Recent Patients</h2>
+                    <h2 class="section-title"><i class="fa-solid fa-users"></i> Recent Patients</h2> <!-- Updated section title to Recent Patients -->
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -217,7 +217,7 @@
                 </div>
 
                 <div class="section">
-                    <h2 class="section-title"><i class="fa-solid fa-user-doctor"></i> Doctor Status</h2>
+                    <h2 class="section-title"><i class="fa-solid fa-user-doctor"></i> Doctor Status</h2> <!-- Updated section title to Doctor Status -->
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -261,9 +261,9 @@
             <div class="section">
                 <h2 class="section-title"><i class="fa-solid fa-bolt"></i> Quick Actions</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
-                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-chart-bar"></i> Generate Report</button>
-                    <a href="message.php" class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-envelope"></i> Send Message</a>
-                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-clipboard"></i> View Logs</button>
+                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-chart-bar"></i> Generate Report</button> <!-- New Generate Report button -->
+                    <a href="message.php" class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-envelope"></i> Send Message</a> <!--  Add New Send Message button -->
+                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-clipboard"></i> View Logs</button> <!-- New View Logs button -->
                 </div>
             </div>
 
