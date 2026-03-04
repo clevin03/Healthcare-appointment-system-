@@ -96,7 +96,7 @@
             </div>
 
             <div class="footer">
-                <p>&copy; 2026 BCI Healthcare Appointment System. All rights reserved.</p>
+                <p>&copy; 2026 BCI Healthcare Center. All rights reserved.</p>
             </div>
         </div>
     </div>

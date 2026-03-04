@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
 
             const formData = new FormData(form);
+            formData.append('send', '1');
             
             fetch(form.action, {
                 method: 'POST',

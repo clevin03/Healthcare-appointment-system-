@@ -19,21 +19,21 @@
                     <label for="email">
                         <i class="fa-solid fa-at"></i> Recipient Email
                     </label>
-                    <input type="email" id="email" name="email" placeholder="Enter recipient's email address" required>
+                    <input type="email" id="email" name="email" placeholder="Enter recipient's email address" autocomplete="email" required>
                 </div>
 
                 <div class="form-group">
                     <label for="subject">
                         <i class="fa-solid fa-heading"></i> Subject
                     </label>
-                    <input type="text" id="subject" name="subject" placeholder="Enter email subject" required>
+                    <input type="text" id="subject" name="subject" placeholder="Enter email subject" autocomplete="off" required>
                 </div>
 
                 <div class="form-group">
                     <label for="message">
                         <i class="fa-solid fa-message"></i> Message
                     </label>
-                    <textarea id="message" name="message" placeholder="Type your message here..." required></textarea>
+                    <textarea id="message" name="message" placeholder="Type your message here..." autocomplete="off" required></textarea>
                 </div>
 
                 <div class="form-actions">

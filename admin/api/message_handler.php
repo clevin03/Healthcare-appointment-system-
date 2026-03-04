@@ -29,7 +29,7 @@ function writeMailLog($status, $toEmail, $subject, $detail = '') {
     file_put_contents($logDir . '/mail.log', $line, FILE_APPEND);
 }
 
-if (isset($_POST['send'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $toEmail = trim($_POST['email'] ?? '');
         $subject = trim($_POST['subject'] ?? '');
@@ -56,11 +56,11 @@ if (isset($_POST['send'])) {
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'kevinhiroshdabarera@gmail.com';
-        $mail->Password = 'jpjhciiusgtyzypq';
+        $mail->Password = 'niqpehsbtkckdxsj';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
-        $mail->Timeout = 10;
-        $mail->ConnectTimeout = 10;
+        $mail->Timeout = 30;
+        $mail->ConnectTimeout = 30;
 
         $mail->setFrom('kevinhiroshdabarera@gmail.com', 'Healthcare System');
         $mail->addReplyTo('kevinhiroshdabarera@gmail.com', 'Healthcare System');
@@ -88,8 +88,10 @@ if (isset($_POST['send'])) {
         $response['message'] = 'Server error: ' . $e->getMessage();
         writeMailLog('THROWABLE', $toEmail ?? '', $subject ?? '', $e->getMessage());
     }
+} else {
+    $response['message'] = 'Invalid request method.';
 }
 
 ob_clean();
 echo json_encode($response);
-?>
+exit;
