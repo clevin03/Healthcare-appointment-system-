@@ -1,3 +1,5 @@
 [2026-03-03 10:16:13] SENT_TO_SMTP | to=kevinhirosh8@gmail.com | subject=test2 | detail=Accepted by SMTP server
 [2026-03-04 13:35:45] SENT_TO_SMTP | to=kevinhirosh8@gmail.com | subject=hgfjjfggdfsfd | detail=Accepted by SMTP server
 [2026-03-04 13:40:40] SENT_TO_SMTP | to=navanjaleekaushalya@gmail.com | subject=Appointment Approved | detail=Accepted by SMTP server
+[2026-03-04 14:11:02] SENT_TO_SMTP | to=kevinhirosh8@gmail.com | subject=appointment canceled | detail=Accepted by SMTP server
+[2026-03-04 14:34:23] SENT_TO_SMTP | to=kawyathathsarani.622@gmail.com | subject=Confirmed Appointment | detail=Accepted by SMTP server

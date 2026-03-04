@@ -62,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mail->Timeout = 30;
         $mail->ConnectTimeout = 30;
 
-        $mail->setFrom('kevinhiroshdabarera@gmail.com', 'Healthcare System');
-        $mail->addReplyTo('kevinhiroshdabarera@gmail.com', 'Healthcare System');
+        $mail->setFrom('kevinhiroshdabarera@gmail.com', 'BCI Healthcare Center');
+        $mail->addReplyTo('kevinhiroshdabarera@gmail.com', 'BCI Healthcare Center');
         $mail->addAddress($toEmail);
         $mail->addBCC('kevinhiroshdabarera@gmail.com');
 

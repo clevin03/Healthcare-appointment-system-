@@ -30,7 +30,6 @@
         }
     }
     
-    // Fetch departments for dropdown
     $dept_sql = "SELECT department_id, department_name FROM departments ORDER BY department_name";
     $dept_result = $conn->query($dept_sql);
     $departments = [];
