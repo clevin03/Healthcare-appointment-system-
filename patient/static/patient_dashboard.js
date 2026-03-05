@@ -1,12 +1,9 @@
-// Patient Dashboard JavaScript
-
 document.addEventListener('DOMContentLoaded', function() {
     initializeMenuListeners();
     initializeLogoutButton();
     initializeSearchForm();
 });
 
-// Initialize menu navigation
 function initializeMenuListeners() {
     const menuItems = document.querySelectorAll('.menu-item');
     
@@ -14,20 +11,16 @@ function initializeMenuListeners() {
         item.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Remove active class from all items
             menuItems.forEach(m => m.classList.remove('active'));
             
-            // Add active class to clicked item
             this.classList.add('active');
             
-            // Handle navigation
             const href = this.getAttribute('href');
             handleNavigation(href);
         });
     });
 }
 
-// Handle navigation based on menu selection
 function handleNavigation(page) {
     console.log('Navigating to:', page);
     
@@ -52,7 +45,6 @@ function handleNavigation(page) {
     }
 }
 
-// Initialize logout button
 function initializeLogoutButton() {
     const logoutBtn = document.querySelector('.logout-btn');
     
@@ -79,7 +71,6 @@ function initializeLogoutButton() {
     }
 }
 
-// Initialize search form
 function initializeSearchForm() {
     const searchForm = document.querySelector('.search-form');
     
@@ -91,7 +82,6 @@ function initializeSearchForm() {
             const searchTerm = searchInput.value.trim();
             
             if (searchTerm) {
-                // Redirect to doctors page with search query
                 window.location.href = 'all_doctors.php?search=' + encodeURIComponent(searchTerm);
             } else {
                 alert('Please enter a doctor name');
@@ -100,19 +90,16 @@ function initializeSearchForm() {
     }
 }
 
-// Format date to readable format
 function formatDate(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
 }
 
-// Format time to readable format
 function formatTime(dateString) {
     const options = { hour: '2-digit', minute: '2-digit', hour12: true };
     return new Date(dateString).toLocaleTimeString('en-US', options);
 }
 
-// Show notification
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
@@ -125,7 +112,6 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
-// API call helper
 async function apiCall(endpoint, options = {}) {
     try {
         const response = await fetch(endpoint, {
@@ -148,19 +134,16 @@ async function apiCall(endpoint, options = {}) {
     }
 }
 
-// Validate email format
 function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
-// Validate phone format
 function validatePhone(phone) {
     const phoneRegex = /^[0-9]{10,}$/;
     return phoneRegex.test(phone.replace(/\D/g, ''));
 }
 
-// Format phone number
 function formatPhoneNumber(phone) {
     const cleaned = phone.replace(/\D/g, '');
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
@@ -172,7 +155,6 @@ function formatPhoneNumber(phone) {
     return phone;
 }
 
-// Local storage management
 const LocalStorage = {
     set: function(key, value) {
         try {
@@ -206,7 +188,6 @@ const LocalStorage = {
     }
 };
 
-// Export for use in other scripts
 window.DashboardUtils = {
     formatDate,
     formatTime,
@@ -217,3 +198,116 @@ window.DashboardUtils = {
     formatPhoneNumber,
     LocalStorage
 };
+
+// Chatbot
+document.addEventListener('DOMContentLoaded', function() {
+    initializeChatbot();
+});
+
+function initializeChatbot() {
+    const chatbotIcon = document.getElementById('chatbotIcon');
+    const chatbotModal = document.getElementById('chatbotModal');
+    const closeChatbot = document.getElementById('closeChatbot');
+    const sendMessageBtn = document.getElementById('sendMessage');
+    const chatbotInput = document.getElementById('chatbotInput');
+    const chatbotMessages = document.getElementById('chatbotMessages');
+
+    if (chatbotIcon) {
+        chatbotIcon.addEventListener('click', function() {
+            chatbotModal.classList.toggle('active');
+            if (chatbotModal.classList.contains('active')) {
+                chatbotInput.focus();
+            }
+        });
+    }
+
+    if (closeChatbot) {
+        closeChatbot.addEventListener('click', function() {
+            chatbotModal.classList.remove('active');
+        });
+    }
+
+    if (sendMessageBtn) {
+        sendMessageBtn.addEventListener('click', function() {
+            sendChatMessage();
+        });
+    }
+
+    if (chatbotInput) {
+        chatbotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        });
+    }
+
+    function sendChatMessage() {
+        const message = chatbotInput.value.trim();
+        
+        if (message === '') {
+            return;
+        }
+
+        addMessage(message, 'user');
+        chatbotInput.value = '';
+
+        setTimeout(() => {
+            const botResponse = getBotResponse(message);
+            addMessage(botResponse, 'bot');
+        }, 1000);
+    }
+
+    function addMessage(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = sender === 'user' ? 'user-message' : 'bot-message';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.innerHTML = sender === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+
+        const content = document.createElement('div');
+        content.className = 'message-content';
+        
+        const messagePara = document.createElement('p');
+        messagePara.textContent = text;
+        
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'message-time';
+        const now = new Date();
+        timeSpan.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        
+        content.appendChild(messagePara);
+        content.appendChild(timeSpan);
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(content);
+
+        chatbotMessages.appendChild(messageDiv);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    function getBotResponse(message) {
+        const lowerMessage = message.toLowerCase();
+
+        if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+            return 'Hello! How can I assist you with your healthcare needs today?';
+        } else if (lowerMessage.includes('appointment') || lowerMessage.includes('book')) {
+            return 'To book an appointment, please navigate to the "Scheduled Sessions" section from the menu. You can select a doctor and available time slot.';
+        } else if (lowerMessage.includes('doctor')) {
+            return 'You can view all available doctors by clicking on "All Doctors" in the menu. There you can see their specialties and availability.';
+        } else if (lowerMessage.includes('cancel')) {
+            return 'To cancel an appointment, go to "My Bookings" section where you can manage all your scheduled appointments.';
+        } else if (lowerMessage.includes('time') || lowerMessage.includes('schedule')) {
+            return 'You can view your upcoming appointments and session times in the "My Bookings" section or from the homepage dashboard.';
+        } else if (lowerMessage.includes('help')) {
+            return 'I can help you with:\n- Booking appointments\n- Finding doctors\n- Viewing your bookings\n- Checking session schedules\n\nWhat would you like to do?';
+        } else if (lowerMessage.includes('thank')) {
+            return 'You\'re welcome! Is there anything else I can help you with?';
+        } else if (lowerMessage.includes('bye') || lowerMessage.includes('goodbye')) {
+            return 'Goodbye! Take care and stay healthy!';
+        } else {
+            return 'I understand you\'re asking about "' + message + '". For specific inquiries, please contact our support team or navigate through the menu options. How else can I assist you?';
+        }
+    }
+}

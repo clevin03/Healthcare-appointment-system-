@@ -62,6 +62,12 @@ $current_date = date('Y-m-d');
                         </a>
                     </li>
                     <li>
+                        <a href="chatbot.php" class="menu-item">
+                            <span class="menu-icon"><i class="fas fa-robot"></i></span>
+                            <span class="menu-text">Health Assistant</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="#doctors" class="menu-item">
                             <span class="menu-icon"><i class="fas fa-user-md"></i></span>
                             <span class="menu-text">All Doctors</span>
@@ -180,6 +186,39 @@ $current_date = date('Y-m-d');
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot-icon" id="chatbotIcon">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <div class="chatbot-modal" id="chatbotModal">
+        <div class="chatbot-container">
+            <div class="chatbot-header">
+                <h3><i class="fas fa-robot"></i> Healthcare Assistant</h3>
+                <button class="close-chatbot" id="closeChatbot">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="bot-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello! I'm your healthcare assistant. How can I help you today?</p>
+                        <span class="message-time"><?php echo date('H:i'); ?></span>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your message here...">
+                <button id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
             </div>
         </div>
     </div>
