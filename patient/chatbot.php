@@ -90,8 +90,8 @@ $patient_id = $_SESSION['user_id'];
     </div>
 
     <script>
-        const patientId = <?php echo $patient_id; ?>;
-        const patientName = "<?php echo htmlspecialchars($patient_name); ?>";
+        const patientId = <?php echo json_encode((int)$patient_id); ?>;
+        const patientName = <?php echo json_encode((string)$patient_name); ?>;
     </script>
     <script src="static/chatbot.js"></script>
 </body>
