@@ -32,6 +32,8 @@ $patientId = $_SESSION['user_id'];
 $conversationHistory = $input['history'] ?? [];
 $response = '';
 $actions = [];
+$source = 'fallback';
+$debug = null;
 $useOpenAI = USE_OPENAI && (new OpenAIHandler(OPENAI_API_KEY))->isConfigured();
 
 $dbContext = buildDatabaseContext($conn, $patientId);
@@ -48,12 +50,18 @@ if ($useOpenAI) {
     
     if ($aiResponse['success']) {
         $response = $aiResponse['message'];
+        $source = 'openai';
 
         $actions = getContextualActions($message, $patientId, $conn);
         if (SAVE_CONVERSATION_HISTORY) {
             saveConversation($conn, $patientId, $message, $response);
         }
     } else {
+        $apiError = $aiResponse['error'] ?? 'Unknown OpenAI error';
+        error_log('[Chatbot OpenAI] ' . $apiError);
+        if (defined('OPENAI_DEBUG') && OPENAI_DEBUG) {
+            $debug = $apiError;
+        }
         $response = handlePatternMatching($message, $patientId, $conn, $actions);
     }
 } else {
@@ -64,7 +72,9 @@ if ($useOpenAI) {
 echo json_encode([
     'success' => true,
     'response' => $response,
-    'actions' => $actions
+    'actions' => $actions,
+    'source' => $source,
+    'debug' => $debug
 ]);
 
 function buildDatabaseContext($conn, $patientId) {

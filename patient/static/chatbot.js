@@ -42,6 +42,12 @@ async function sendMessage(message) {
         removeTypingIndicator();
         
         if (data.success) {
+            if (data.source && data.source !== 'openai') {
+                console.warn('Chatbot fallback response used instead of OpenAI.');
+            }
+            if (data.debug) {
+                console.warn('OpenAI debug:', data.debug);
+            }
             addMessage(data.response, 'bot', data.actions);
 
             conversationHistory.push({

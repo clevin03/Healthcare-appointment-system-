@@ -62,7 +62,7 @@ $current_date = date('Y-m-d');
                         </a>
                     </li>
                     <li>
-                        <a href="chatbot.php" class="menu-item">
+                        <a href="#chatbot" class="menu-item">
                             <span class="menu-icon"><i class="fas fa-robot"></i></span>
                             <span class="menu-text">Health Assistant</span>
                         </a>

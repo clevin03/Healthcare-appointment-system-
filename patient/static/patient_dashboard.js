@@ -28,6 +28,9 @@ function handleNavigation(page) {
         case '#home':
             console.log('Home page');
             break;
+        case '#chatbot':
+            window.location.href = 'chatbot.php';
+            break;
         case '#doctors':
             window.location.href = '../doctor/all_doctors.php';
             break;
@@ -42,6 +45,19 @@ function handleNavigation(page) {
             break;
         default:
             console.log('Unknown page');
+    }
+}
+
+function openChatbotModal() {
+    const chatbotModal = document.getElementById('chatbotModal');
+    const chatbotInput = document.getElementById('chatbotInput');
+
+    if (chatbotModal) {
+        chatbotModal.classList.add('active');
+
+        if (chatbotInput) {
+            chatbotInput.focus();
+        }
     }
 }
 
@@ -214,9 +230,10 @@ function initializeChatbot() {
 
     if (chatbotIcon) {
         chatbotIcon.addEventListener('click', function() {
-            chatbotModal.classList.toggle('active');
             if (chatbotModal.classList.contains('active')) {
-                chatbotInput.focus();
+                chatbotModal.classList.remove('active');
+            } else {
+                openChatbotModal();
             }
         });
     }
