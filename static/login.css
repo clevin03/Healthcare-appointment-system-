@@ -196,7 +196,7 @@ select:focus {
 select {
     cursor: pointer;
     appearance: none;
-    background-image: url('<i class="fa-solid fa-angle-down"></i>');
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='5,7 10,12 15,7'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 20px;

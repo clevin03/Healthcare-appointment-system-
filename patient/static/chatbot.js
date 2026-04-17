@@ -4,6 +4,8 @@ const chatForm = document.getElementById('chatForm');
 
 let conversationHistory = [];
 const MAX_HISTORY = 10;
+let currentRiskLevel = 'none';
+let consentModalTimer = null;
 
 function handleFormSubmit(event) {
     event.preventDefault();
@@ -22,7 +24,7 @@ async function sendMessage(message) {
     showTypingIndicator();
     
     try {
-        const response = await fetch('api/chatbot_handler.php', {
+        const response = await fetch('MentalAI/chatbot_handler.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,12 +50,21 @@ async function sendMessage(message) {
             if (data.debug) {
                 console.warn('OpenAI debug:', data.debug);
             }
-            addMessage(data.response, 'bot', data.actions);
+            
+            // Handle risk level and crisis mode
+            if (data.risk) {
+                currentRiskLevel = data.risk.level;
+                handleRiskLevel(data.risk.level);
+            }
+            
+            addMessage(data.response, 'bot', data.actions, data.risk);
+            handleMentalHealthActions(data.actions);
 
             conversationHistory.push({
                 user: message,
                 bot: data.response,
-                timestamp: new Date()
+                timestamp: new Date(),
+                riskLevel: data.risk ? data.risk.level : 'none'
             });
         } else {
             console.error('API Error:', data);
@@ -70,13 +81,27 @@ function limitHistory(history) {
     return history.slice(-MAX_HISTORY);
 }
 
-function addMessage(text, sender, actions = null) {
+function addMessage(text, sender, actions = null, risk = null) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}-message`;
+    
+    // Add risk level class for styling
+    if (risk) {
+        messageDiv.classList.add(`risk-${risk.level}`);
+    }
     
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar';
     avatar.innerHTML = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+    
+    // Add risk badge to bot messages with mental health content
+    if (sender === 'bot' && risk && risk.level !== 'none') {
+        const riskBadge = document.createElement('div');
+        riskBadge.className = `risk-badge risk-${risk.level}`;
+        const badgeIcons = { 'high': '🔴', 'moderate': '🟡', 'low': '🟢' };
+        riskBadge.textContent = badgeIcons[risk.level] || '';
+        avatar.appendChild(riskBadge);
+    }
     
     const content = document.createElement('div');
     content.className = 'message-content';
@@ -99,10 +124,13 @@ function addMessage(text, sender, actions = null) {
         actions.forEach(action => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
+            if (action.action.includes('Emergency') || action.action.includes('emergency') || action.action.includes('urgent')) {
+                btn.classList.add('emergency-btn');
+            }
             btn.textContent = action.label;
             btn.onclick = (e) => {
                 e.preventDefault();
-                sendMessage(action.action);
+                handleActionClick(action.action);
             };
             optionsDiv.appendChild(btn);
         });
@@ -128,9 +156,14 @@ function showTypingIndicator() {
     avatar.innerHTML = '<i class="fas fa-robot"></i>';
     
     const content = document.createElement('div');
-    content.className = 'message-content typing-indicator';
-    content.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    content.className = 'typing-indicator';
     
+    for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'typing-dot';
+        content.appendChild(dot);
+    }
+
     messageDiv.appendChild(avatar);
     messageDiv.appendChild(content);
     
@@ -145,7 +178,132 @@ function removeTypingIndicator() {
     }
 }
 
+function handleRiskLevel(level) {
+    const container = document.querySelector('.chatbot-container');
+
+    if (!container) {
+        return;
+    }
+
+    container.classList.remove('risk-moderate');
+    currentRiskLevel = level;
+
+    if (level === 'high') {
+        showCrisisModal();
+    } else if (level === 'moderate') {
+        container.classList.add('risk-moderate');
+    }
+}
+
+function handleMentalHealthActions(actions) {
+    if (!actions || actions.length === 0) {
+        return;
+    }
+
+    if (currentRiskLevel === 'high') {
+        return;
+    }
+
+    if (consentModalTimer) {
+        clearTimeout(consentModalTimer);
+        consentModalTimer = null;
+    }
+
+    const hasMentalHealthAction = actions.some(action => 
+        action.label.includes('Psychiatrist') || 
+        action.label.includes('Counseling') || 
+        action.label.includes('Mental') ||
+        action.label.includes('Self-Care')
+    );
+
+    if (hasMentalHealthAction && !sessionStorage.getItem('consent_asked')) {
+        consentModalTimer = setTimeout(() => {
+            showMemoryConsentModal();
+            consentModalTimer = null;
+        }, 2000);
+        sessionStorage.setItem('consent_asked', 'true');
+    }
+}
+
+function handleActionClick(action) {
+    if (action === 'Show emergency contacts') {
+        showCrisisModal();
+    } else if (action === 'I want to call a trusted person') {
+        alert('Please reach out to a trusted family member or friend right now.\n\nYou can also call:\n- 911 (Emergency)\n- 988 (Suicide & Crisis Lifeline)\n- 741741 (Text to Crisis Text Line)');
+    } else {
+        sendMessage(action);
+    }
+}
+
+function showCrisisModal() {
+    const modal = document.getElementById('crisisModal');
+    const consentModal = document.getElementById('memoryConsentModal');
+    if (!modal) {
+        return;
+    }
+
+    if (consentModal) {
+        consentModal.classList.add('hidden');
+    }
+
+    if (consentModalTimer) {
+        clearTimeout(consentModalTimer);
+        consentModalTimer = null;
+    }
+
+    modal.classList.remove('hidden');
+    currentRiskLevel = 'high';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCrisisModal() {
+    const modal = document.getElementById('crisisModal');
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.add('hidden');
+    currentRiskLevel = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function showMemoryConsentModal() {
+    const modal = document.getElementById('memoryConsentModal');
+    if (!modal) {
+        return;
+    }
+
+    if (currentRiskLevel === 'high' || !document.getElementById('crisisModal').classList.contains('hidden')) {
+        return;
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function setMemoryConsent(consent) {
+    const modal = document.getElementById('memoryConsentModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+
+    if (consentModalTimer) {
+        clearTimeout(consentModalTimer);
+        consentModalTimer = null;
+    }
+
+    localStorage.setItem('memoryConsent', consent ? 'yes' : 'no');
+    if (consent) {
+        addMessage('✓ Great! I\'ll track your progress to provide better support.', 'bot');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     userInput.focus();
-    console.log('Healthcare Assistant Chatbot loaded');
+    console.log('Mental Health Driven Healthcare Assistant loaded');
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeCrisisModal();
+        }
+    });
 });

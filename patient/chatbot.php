@@ -55,9 +55,9 @@ $patient_id = $_SESSION['user_id'];
                             <i class="fas fa-calendar"></i>
                             <span>Book Appointment</span>
                         </div>
-                        <div class="suggestion-item" onclick="sendMessage('Health information')">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Health Info</span>
+                        <div class="suggestion-item mental-health-item" onclick="sendMessage('I need mental health support')">
+                            <i class="fas fa-heart"></i>
+                            <span>Mental Health</span>
                         </div>
                         <div class="suggestion-item" onclick="sendMessage('View my appointments')">
                             <i class="fas fa-list"></i>
@@ -89,9 +89,52 @@ $patient_id = $_SESSION['user_id'];
         </div>
     </div>
 
+    <div id="crisisModal" class="crisis-modal hidden">
+        <div class="crisis-modal-content">
+            <div class="crisis-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>We Care About Your Safety</h2>
+            </div>
+            <div class="crisis-body">
+                <p>If you are experiencing a mental health crisis, please take these steps immediately:</p>
+                <div class="crisis-actions">
+                    <div class="crisis-action">
+                        <strong>Emergency Services:</strong>
+                        <p>Call 911 (USA) or your local emergency number</p>
+                    </div>
+                    <div class="crisis-action">
+                        <strong>Crisis Hotline:</strong>
+                        <p>Call or text 988 (Suicide & Crisis Lifeline, USA)</p>
+                    </div>
+                    <div class="crisis-action">
+                        <strong>Text Support:</strong>
+                        <p>Text HOME to 741741 (Crisis Text Line)</p>
+                    </div>
+                    <div class="crisis-action">
+                        <strong>Trusted Person:</strong>
+                        <p>Reach out to a family member, friend, or counselor now</p>
+                    </div>
+                </div>
+            </div>
+            <button class="crisis-close-btn" onclick="closeCrisisModal()">I'm Safe, Close This</button>
+        </div>
+    </div>
+
+    <div id="memoryConsentModal" class="consent-modal hidden">
+        <div class="consent-modal-content">
+            <h3>Save Mental Health Progress?</h3>
+            <p>We can save your conversation patterns and mood trends to help provide better support over time.</p>
+            <div class="consent-options">
+                <button class="consent-yes" onclick="setMemoryConsent(true)">Yes, Help Me Track Progress</button>
+                <button class="consent-no" onclick="setMemoryConsent(false)">Not Now</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const patientId = <?php echo json_encode((int)$patient_id); ?>;
         const patientName = <?php echo json_encode((string)$patient_name); ?>;
+        let currentRiskLevel = 'none';
     </script>
     <script src="static/chatbot.js"></script>
 </body>

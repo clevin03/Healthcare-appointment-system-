@@ -51,7 +51,7 @@ $current_date = date('Y-m-d');
                 </div>
             </div>
 
-            <a href="#logout" class="logout-btn">Log out</a>
+            <a href="../logout.php" class="logout-btn">Log out</a>
 
             <nav class="sidebar-menu">
                 <ul>

@@ -439,3 +439,396 @@ body {
 .error-message .message-content {
     color: #991b1b;
 }
+
+/* === Mental Health Features CSS === */
+
+/* Mental Health Quick Suggestion Button */
+.suggestion-item.mental-health-item {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e72 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+.suggestion-item.mental-health-item:hover {
+    background: linear-gradient(135deg, #ff5252 0%, #ff7a62 100%);
+    border-color: transparent;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(255, 107, 107, 0.3);
+}
+
+.suggestion-item.mental-health-item i {
+    font-size: 24px;
+}
+
+/* Risk Level Indicators on Messages */
+.risk-high {
+    border-left: 4px solid #dc2626 !important;
+    background: rgba(220, 38, 38, 0.05) !important;
+}
+
+.risk-moderate {
+    border-left: 4px solid #ea580c !important;
+    background: rgba(234, 88, 12, 0.05) !important;
+}
+
+.risk-low {
+    border-left: 4px solid #16a34a !important;
+    background: rgba(22, 163, 74, 0.05) !important;
+}
+
+/* Risk Badge with Emoji */
+.risk-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 8px;
+    animation: badgePulse 2s infinite;
+}
+
+.risk-badge.high {
+    background: rgba(220, 38, 38, 0.2);
+    border: 2px solid #dc2626;
+}
+
+.risk-badge.moderate {
+    background: rgba(234, 88, 12, 0.2);
+    border: 2px solid #ea580c;
+}
+
+.risk-badge.low {
+    background: rgba(22, 163, 74, 0.2);
+    border: 2px solid #16a34a;
+}
+
+/* Emergency Action Buttons */
+.option-btn.emergency-btn {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+.option-btn.emergency-btn:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+    transform: translateX(6px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+.option-btn.emergency-btn i {
+    margin-right: 6px;
+    color: white;
+}
+
+/* Crisis Modal */
+.crisis-modal {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.crisis-modal.hidden {
+    display: none;
+}
+
+.crisis-modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    margin: auto;
+    overflow: hidden;
+    animation: slideInCenter 0.4s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.crisis-modal-header,
+.crisis-header {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    padding: 24px;
+    color: white;
+    text-align: center;
+}
+
+.crisis-modal-header i,
+.crisis-header i {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.crisis-modal-header h2,
+.crisis-header h2 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.crisis-modal-header p,
+.crisis-header p {
+    margin-top: 8px;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.crisis-modal-body,
+.crisis-body {
+    padding: 24px;
+}
+
+.crisis-action-list,
+.crisis-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.crisis-action-item,
+.crisis-action {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.crisis-action-item:hover,
+.crisis-action:hover {
+    background: #f3f4f6;
+    border-color: #dc2626;
+    transform: translateX(4px);
+}
+
+.crisis-action-item i,
+.crisis-action i {
+    color: #dc2626;
+    margin-right: 12px;
+    font-size: 18px;
+    min-width: 24px;
+}
+
+.crisis-action-item .action-number,
+.crisis-action .action-number {
+    background: #dc2626;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+}
+
+.crisis-action-text {
+    flex: 1;
+}
+
+.crisis-action-text strong,
+.crisis-action strong {
+    display: block;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.crisis-action-text small,
+.crisis-action small {
+    color: #6b7280;
+    display: block;
+}
+
+.crisis-footer {
+    padding: 16px 24px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.crisis-close-btn {
+    background: white;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.crisis-close-btn:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+/* Memory Consent Modal */
+.consent-modal {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.consent-modal.hidden {
+    display: none;
+}
+
+.consent-modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 450px;
+    width: 90%;
+    margin: auto;
+    padding: 32px 24px;
+    animation: slideInCenter 0.4s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+    .crisis-modal,
+    .consent-modal {
+        padding: 16px;
+    }
+
+    .crisis-modal-content,
+    .consent-modal-content {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+.consent-modal-content i {
+    font-size: 48px;
+    color: #667eea;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.consent-modal-content h3 {
+    font-size: 20px;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.consent-modal-content p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.consent-modal-actions,
+.consent-options {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.consent-btn,
+.consent-yes,
+.consent-no {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.consent-btn.yes,
+.consent-yes {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.consent-btn.yes:hover,
+.consent-yes:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.consent-btn.no,
+.consent-no {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+}
+
+.consent-btn.no:hover,
+.consent-no:hover {
+    background: #e5e7eb;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInCenter {
+    from {
+        transform: scale(0.9) translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Container state when moderate risk detected */
+.chatbot-container.risk-moderate {
+    border: 2px solid #ea580c;
+    box-shadow: 0 0 16px rgba(234, 88, 12, 0.2);
+}
