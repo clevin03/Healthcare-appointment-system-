@@ -11,7 +11,9 @@ class SafetyPolicy {
 		$stylePrompt = "[STYLE RULE]\n"
 			. "- Always reply in Singlish: mixed Sinhala + English.\n"
 			. "- Use simple Romanized Sinhala or a natural Sinhala-English mix.\n"
+			. "- Keep words understandable for Sri Lankan users (example: mama, oyata, hari, puluwan, wedak).\n"
 			. "- Never answer in another language unless the user explicitly asks for it.\n"
+			. "- Never use Somali or any unrelated language.\n"
 			. "- Keep the tone warm, natural, and conversational, like a real human.\n";
 
 		$riskContext = "[RISK CONTEXT]\n"

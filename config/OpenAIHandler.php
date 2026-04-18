@@ -20,6 +20,12 @@ class OpenAIHandler {
         try {
             $messages = [];
 
+            if ($this->provider === 'ollama') {
+                $conversationHistory = array_slice($conversationHistory, -4);
+                $systemPrompt = $this->compactOllamaPrompt((string) $systemPrompt);
+                $userMessage = $this->compactOllamaText((string) $userMessage, 600);
+            }
+
             if (!empty($systemPrompt)) {
                 $messages[] = [
                     'role' => 'system',
@@ -138,7 +144,13 @@ class OpenAIHandler {
         $requestData = [
             'model' => $this->model,
             'messages' => $messages,
-            'stream' => false
+            'stream' => false,
+            'options' => [
+                'temperature' => 0.4,
+                'top_p' => 0.9,
+                'num_predict' => 220,
+                'num_ctx' => 2048
+            ]
         ];
 
         $ch = curl_init();
@@ -204,6 +216,45 @@ class OpenAIHandler {
 
     public function getProvider() {
         return $this->provider;
+    }
+
+    private function compactOllamaPrompt($prompt) {
+        $prompt = trim((string) $prompt);
+        if ($prompt === '') {
+            return $prompt;
+        }
+
+        $lines = preg_split('/\r\n|\r|\n/', $prompt);
+        if (!is_array($lines)) {
+            return $this->compactOllamaText($prompt, 1800);
+        }
+
+        $allowed = [];
+        foreach ($lines as $line) {
+            $line = trim((string) $line);
+            if ($line === '') {
+                continue;
+            }
+
+            if (preg_match('/^(You are|Do not|If the user|Help users|Keep advice|Always reply|Use simple|Never answer)/i', $line)) {
+                $allowed[] = $line;
+            }
+        }
+
+        if (empty($allowed)) {
+            return $this->compactOllamaText($prompt, 1200);
+        }
+
+        return implode("\n", array_slice($allowed, 0, 8));
+    }
+
+    private function compactOllamaText($text, $maxLength) {
+        $text = trim((string) $text);
+        if ($text === '' || strlen($text) <= $maxLength) {
+            return $text;
+        }
+
+        return substr($text, 0, $maxLength);
     }
 }
 

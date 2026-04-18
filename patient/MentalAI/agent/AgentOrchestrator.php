@@ -4,7 +4,6 @@ class AgentOrchestrator {
 	public static function handle($message, $conversationHistory, $patientId, $conn, $aiHandler) {
 		$message = trim((string) $message);
 		$message = function_exists('mb_substr') ? mb_substr($message, 0, 2000) : substr($message, 0, 2000);
-		$styleHint = 'singlish';
 
 		$riskAssessment = RiskEngine::assess($message);
 		$actions = [];
@@ -12,32 +11,23 @@ class AgentOrchestrator {
 		$source = 'fallback';
 		$debug = null;
 
-		if ($riskAssessment['level'] === 'high') {
-			$response = SafetyPolicy::buildHighRiskResponse();
-			$actions = SafetyPolicy::getHighRiskActions();
-			$source = 'safety_protocol';
-			ConversationLogger::logMentalHealthEvent($conn, $patientId, $message, $riskAssessment, true);
-
-			if (MENTAL_AI_SAVE_HISTORY) {
-				ConversationLogger::saveConversation($conn, $patientId, $message, $response);
-			}
-
-			return self::buildResult($response, $actions, $source, $riskAssessment, $debug);
-		}
-
 		$dbContext = DoctorDirectory::buildDatabaseContext($conn, $patientId);
 
 		if (MENTAL_AI_USE_OPENAI && $aiHandler->isConfigured()) {
 			$basePrompt = defined('MENTAL_AI_SYSTEM_PROMPT') ? MENTAL_AI_SYSTEM_PROMPT : SYSTEM_PROMPT;
-			$enhancedSystemPrompt = SafetyPolicy::buildSafetyAwarePrompt($basePrompt, $dbContext, $riskAssessment, $styleHint);
+			$enhancedSystemPrompt = SafetyPolicy::buildSafetyAwarePrompt($basePrompt, $dbContext, $riskAssessment);
 			$aiResponse = $aiHandler->chat($message, $conversationHistory, $enhancedSystemPrompt);
 
 			if ($aiResponse['success']) {
-				$response = $aiResponse['message'];
+				$response = (string) $aiResponse['message'];
 				$source = $aiResponse['provider'] ?? 'openai';
 				$actions = ResponseEngine::getContextualActions($message, $patientId, $conn);
 
-				if ($riskAssessment['level'] === 'moderate') {
+				if ($riskAssessment['level'] === 'high') {
+					$actions = SafetyPolicy::getHighRiskActions();
+					$response = SafetyPolicy::buildHighRiskResponse();
+					$source = 'safety_protocol';
+				} elseif ($riskAssessment['level'] === 'moderate') {
 					$actions = ResponseEngine::mergeActions($actions, SafetyPolicy::getModerateRiskActions());
 				}
 
@@ -52,23 +42,23 @@ class AgentOrchestrator {
 					$debug = $apiError;
 				}
 
-				$response = ResponseEngine::handlePatternMatching($message, $patientId, $conn, $actions, $conversationHistory, $styleHint);
-				if ($riskAssessment['level'] === 'moderate') {
-					$actions = ResponseEngine::mergeActions($actions, SafetyPolicy::getModerateRiskActions());
-					$response .= "\n\n" . SafetyPolicy::buildModerateRiskFooter();
-				}
+				$response = 'Ollama reply ekak ganna ba. Please check if Ollama server eka run wenawada, model eka load vela thiyenawada.';
 
 				ConversationLogger::logMentalHealthEvent($conn, $patientId, $message, $riskAssessment, false);
 			}
 		} else {
-			$response = ResponseEngine::handlePatternMatching($message, $patientId, $conn, $actions, $conversationHistory, $styleHint);
-
-			if ($riskAssessment['level'] === 'moderate') {
-				$actions = ResponseEngine::mergeActions($actions, SafetyPolicy::getModerateRiskActions());
-				$response .= "\n\n" . SafetyPolicy::buildModerateRiskFooter();
-			}
-
+			$response = 'Ollama API not configured. Please set LLM_PROVIDER=ollama and check the local server.';
 			ConversationLogger::logMentalHealthEvent($conn, $patientId, $message, $riskAssessment, false);
+		}
+
+		if ($riskAssessment['level'] === 'high') {
+			$actions = SafetyPolicy::getHighRiskActions();
+			if ($source !== 'safety_protocol') {
+				$response = SafetyPolicy::buildHighRiskResponse();
+				$source = 'safety_protocol';
+			}
+		} elseif ($riskAssessment['level'] === 'moderate') {
+			$actions = ResponseEngine::mergeActions($actions, SafetyPolicy::getModerateRiskActions());
 		}
 
 		return self::buildResult($response, $actions, $source, $riskAssessment, $debug);
