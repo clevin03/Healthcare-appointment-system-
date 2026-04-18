@@ -36,11 +36,22 @@ async function sendMessage(message) {
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+        const contentType = response.headers.get('content-type') || '';
+        let data = null;
+
+        if (contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const rawText = await response.text();
+            const snippet = rawText ? rawText.slice(0, 160).replace(/\s+/g, ' ').trim() : '';
+            throw new Error(`Server returned invalid response format (HTTP ${response.status}). ${snippet}`.trim());
         }
 
-        const data = await response.json();
+        if (!response.ok) {
+            const serverError = data && data.error ? data.error : `HTTP ${response.status}`;
+            throw new Error(serverError);
+        }
+
         removeTypingIndicator();
         
         if (data.success) {
@@ -73,7 +84,15 @@ async function sendMessage(message) {
     } catch (error) {
         console.error('Network Error:', error);
         removeTypingIndicator();
-        addMessage('Sorry, I\'m having trouble connecting. Please check your internet and try again.', 'bot');
+
+        const messageText = (error && error.message) ? error.message : '';
+        const isLikelyNetworkIssue = error instanceof TypeError;
+
+        if (isLikelyNetworkIssue) {
+            addMessage('Unable to reach the chatbot service right now. Please check if the site server is running and try again.', 'bot');
+        } else {
+            addMessage(`Chatbot service error: ${messageText}`, 'bot');
+        }
     }
 }
 
@@ -244,6 +263,7 @@ function showCrisisModal() {
 
     if (consentModal) {
         consentModal.classList.add('hidden');
+        consentModal.setAttribute('hidden', 'hidden');
     }
 
     if (consentModalTimer) {
@@ -252,6 +272,7 @@ function showCrisisModal() {
     }
 
     modal.classList.remove('hidden');
+    modal.removeAttribute('hidden');
     currentRiskLevel = 'high';
     document.body.style.overflow = 'hidden';
 }
@@ -263,6 +284,7 @@ function closeCrisisModal() {
     }
 
     modal.classList.add('hidden');
+    modal.setAttribute('hidden', 'hidden');
     currentRiskLevel = 'none';
     document.body.style.overflow = 'auto';
 }
@@ -278,12 +300,14 @@ function showMemoryConsentModal() {
     }
 
     modal.classList.remove('hidden');
+    modal.removeAttribute('hidden');
 }
 
 function setMemoryConsent(consent) {
     const modal = document.getElementById('memoryConsentModal');
     if (modal) {
         modal.classList.add('hidden');
+        modal.setAttribute('hidden', 'hidden');
     }
 
     if (consentModalTimer) {

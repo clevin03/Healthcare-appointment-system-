@@ -8,6 +8,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
 
 $patient_name = isset($_SESSION['patient_name']) ? $_SESSION['patient_name'] : 'Patient';
 $patient_id = $_SESSION['user_id'];
+$chatbot_css_ver = @filemtime(__DIR__ . '/static/chatbot.css') ?: time();
+$chatbot_js_ver = @filemtime(__DIR__ . '/static/chatbot.js') ?: time();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +18,7 @@ $patient_id = $_SESSION['user_id'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Healthcare Assistant</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-    <link rel="stylesheet" href="static/chatbot.css">
+    <link rel="stylesheet" href="static/chatbot.css?v=<?php echo (int)$chatbot_css_ver; ?>">
 </head>
 <body>
     <div class="chatbot-container">
@@ -89,7 +91,7 @@ $patient_id = $_SESSION['user_id'];
         </div>
     </div>
 
-    <div id="crisisModal" class="crisis-modal hidden">
+    <div id="crisisModal" class="crisis-modal hidden" hidden>
         <div class="crisis-modal-content">
             <div class="crisis-header">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -120,7 +122,7 @@ $patient_id = $_SESSION['user_id'];
         </div>
     </div>
 
-    <div id="memoryConsentModal" class="consent-modal hidden">
+    <div id="memoryConsentModal" class="consent-modal hidden" hidden>
         <div class="consent-modal-content">
             <h3>Save Mental Health Progress?</h3>
             <p>We can save your conversation patterns and mood trends to help provide better support over time.</p>
@@ -134,8 +136,7 @@ $patient_id = $_SESSION['user_id'];
     <script>
         const patientId = <?php echo json_encode((int)$patient_id); ?>;
         const patientName = <?php echo json_encode((string)$patient_name); ?>;
-        let currentRiskLevel = 'none';
     </script>
-    <script src="static/chatbot.js"></script>
+    <script src="static/chatbot.js?v=<?php echo (int)$chatbot_js_ver; ?>"></script>
 </body>
 </html>

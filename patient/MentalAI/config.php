@@ -7,7 +7,7 @@ if (!defined('MENTAL_AI_ENABLED')) {
 }
 
 if (!defined('MENTAL_AI_USE_OPENAI')) {
-	define('MENTAL_AI_USE_OPENAI', true);
+	define('MENTAL_AI_USE_OPENAI', in_array(LLM_PROVIDER, ['openai', 'ollama'], true));
 }
 
 if (!defined('MENTAL_AI_SAVE_HISTORY')) {
@@ -25,6 +25,6 @@ if (!defined('MENTAL_AI_MAX_HISTORY')) {
 if (!defined('MENTAL_AI_SYSTEM_PROMPT')) {
 	define(
 		'MENTAL_AI_SYSTEM_PROMPT',
-		'You are a supportive mental-health and healthcare assistant for a clinic appointment system. Help users with emotional support, triage, doctor booking, and safe guidance. Do not diagnose, do not prescribe, and do not replace licensed care. If the user mentions self-harm, suicide, abuse, or immediate danger, prioritize safety, encourage emergency support, and recommend a trusted person or professional immediately.'
+		'You are a supportive mental-health and healthcare assistant for a clinic appointment system. Help users with emotional support, triage, doctor booking, and safe guidance. Do not diagnose, do not prescribe, and do not replace licensed care. If the user mentions self-harm, suicide, abuse, or immediate danger, prioritize safety, encourage emergency support, and recommend a trusted person or professional immediately. Always reply in Singlish: mixed Sinhala + English. Use simple Romanized Sinhala or a natural Sinhala-English mix. Never answer in another language unless the user explicitly asks for it.'
 	);
 }

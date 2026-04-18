@@ -107,7 +107,7 @@ class DoctorDirectory {
 			return '<p>No doctors available.</p>';
 		}
 
-		$html = '<table class="doctor-table"><thead><tr><th>Doctor</th><th>Department</th><th>Status</th></tr></thead><tbody>';
+		$html = '<table class="data-table"><thead><tr><th>Doctor</th><th>Department</th><th>Status</th></tr></thead><tbody>';
 		foreach ($doctors as $doctor) {
 			$html .= '<tr>'
 				. '<td>' . htmlspecialchars($doctor['doctor_name'] ?? '') . '</td>'
@@ -124,7 +124,7 @@ class DoctorDirectory {
 			return '<p>No appointments available.</p>';
 		}
 
-		$html = '<table class="appointment-table"><thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th></tr></thead><tbody>';
+		$html = '<table class="data-table"><thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th></tr></thead><tbody>';
 		foreach ($appointments as $appointment) {
 			$html .= '<tr>'
 				. '<td>' . htmlspecialchars($appointment['appointment_date'] ?? '') . '</td>'

@@ -68,9 +68,15 @@ if (!function_exists('envBool')) {
 	}
 }
 
+define('LLM_PROVIDER', strtolower((string) envValue('LLM_PROVIDER', 'openai')));
+
 define('OPENAI_API_KEY', envValue('OPENAI_API_KEY', ''));
 define('OPENAI_MODEL', envValue('OPENAI_MODEL', 'gpt-4o-mini'));
 define('OPENAI_API_URL', envValue('OPENAI_API_URL', 'https://api.openai.com/v1/chat/completions'));
+
+define('OLLAMA_MODEL', envValue('OLLAMA_MODEL', 'llama3.1:8b'));
+define('OLLAMA_API_URL', envValue('OLLAMA_API_URL', 'http://127.0.0.1:11434/api/chat'));
+
 define('OPENAI_TIMEOUT', (int) envValue('OPENAI_TIMEOUT', '30'));
 define('OPENAI_DEBUG', envBool('OPENAI_DEBUG', false));
 

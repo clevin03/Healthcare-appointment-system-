@@ -4,6 +4,7 @@ class AgentOrchestrator {
 	public static function handle($message, $conversationHistory, $patientId, $conn, $aiHandler) {
 		$message = trim((string) $message);
 		$message = function_exists('mb_substr') ? mb_substr($message, 0, 2000) : substr($message, 0, 2000);
+		$styleHint = 'singlish';
 
 		$riskAssessment = RiskEngine::assess($message);
 		$actions = [];
@@ -28,12 +29,12 @@ class AgentOrchestrator {
 
 		if (MENTAL_AI_USE_OPENAI && $aiHandler->isConfigured()) {
 			$basePrompt = defined('MENTAL_AI_SYSTEM_PROMPT') ? MENTAL_AI_SYSTEM_PROMPT : SYSTEM_PROMPT;
-			$enhancedSystemPrompt = SafetyPolicy::buildSafetyAwarePrompt($basePrompt, $dbContext, $riskAssessment);
+			$enhancedSystemPrompt = SafetyPolicy::buildSafetyAwarePrompt($basePrompt, $dbContext, $riskAssessment, $styleHint);
 			$aiResponse = $aiHandler->chat($message, $conversationHistory, $enhancedSystemPrompt);
 
 			if ($aiResponse['success']) {
 				$response = $aiResponse['message'];
-				$source = 'openai';
+				$source = $aiResponse['provider'] ?? 'openai';
 				$actions = ResponseEngine::getContextualActions($message, $patientId, $conn);
 
 				if ($riskAssessment['level'] === 'moderate') {
@@ -51,7 +52,7 @@ class AgentOrchestrator {
 					$debug = $apiError;
 				}
 
-				$response = ResponseEngine::handlePatternMatching($message, $patientId, $conn, $actions);
+				$response = ResponseEngine::handlePatternMatching($message, $patientId, $conn, $actions, $conversationHistory, $styleHint);
 				if ($riskAssessment['level'] === 'moderate') {
 					$actions = ResponseEngine::mergeActions($actions, SafetyPolicy::getModerateRiskActions());
 					$response .= "\n\n" . SafetyPolicy::buildModerateRiskFooter();
@@ -60,7 +61,7 @@ class AgentOrchestrator {
 				ConversationLogger::logMentalHealthEvent($conn, $patientId, $message, $riskAssessment, false);
 			}
 		} else {
-			$response = ResponseEngine::handlePatternMatching($message, $patientId, $conn, $actions);
+			$response = ResponseEngine::handlePatternMatching($message, $patientId, $conn, $actions, $conversationHistory, $styleHint);
 
 			if ($riskAssessment['level'] === 'moderate') {
 				$actions = ResponseEngine::mergeActions($actions, SafetyPolicy::getModerateRiskActions());
@@ -86,4 +87,5 @@ class AgentOrchestrator {
 			'debug' => $debug
 		];
 	}
+
 }

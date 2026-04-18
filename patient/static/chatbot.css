@@ -14,6 +14,10 @@ body {
     padding: 20px;
 }
 
+.hidden {
+    display: none !important;
+}
+
 .chatbot-container {
     width: 100%;
     max-width: 800px;
@@ -491,17 +495,17 @@ body {
     animation: badgePulse 2s infinite;
 }
 
-.risk-badge.high {
+.risk-badge.risk-high {
     background: rgba(220, 38, 38, 0.2);
     border: 2px solid #dc2626;
 }
 
-.risk-badge.moderate {
+.risk-badge.risk-moderate {
     background: rgba(234, 88, 12, 0.2);
     border: 2px solid #ea580c;
 }
 
-.risk-badge.low {
+.risk-badge.risk-low {
     background: rgba(22, 163, 74, 0.2);
     border: 2px solid #16a34a;
 }

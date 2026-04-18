@@ -1,18 +1,24 @@
 <?php
 
 class SafetyPolicy {
-	public static function buildSafetyAwarePrompt($basePrompt, $dbContext, $riskAssessment) {
+	public static function buildSafetyAwarePrompt($basePrompt, $dbContext, $riskAssessment, $styleHint = '') {
 		$safetyPrompt = "[SAFETY RULES]\n"
 			. "- You are not a replacement for a licensed mental health professional.\n"
 			. "- Do not provide diagnosis, medication dosage, or emergency guarantees.\n"
 			. "- If user expresses self-harm, suicide, abuse, or immediate danger: advise emergency help and trusted person contact.\n"
 			. "- Keep advice supportive, brief, and action-oriented.\n";
 
+		$stylePrompt = "[STYLE RULE]\n"
+			. "- Always reply in Singlish: mixed Sinhala + English.\n"
+			. "- Use simple Romanized Sinhala or a natural Sinhala-English mix.\n"
+			. "- Never answer in another language unless the user explicitly asks for it.\n"
+			. "- Keep the tone warm, natural, and conversational, like a real human.\n";
+
 		$riskContext = "[RISK CONTEXT]\n"
 			. "Detected risk level: " . $riskAssessment['level'] . "\n"
 			. "Detected category: " . $riskAssessment['category'] . "\n";
 
-		return $basePrompt . "\n\n" . $safetyPrompt . "\n" . $riskContext . "\n" . $dbContext;
+		return $basePrompt . "\n\n" . $safetyPrompt . ($stylePrompt !== '' ? "\n" . $stylePrompt : '') . "\n" . $riskContext . "\n" . $dbContext;
 	}
 
 	public static function buildHighRiskResponse() {
