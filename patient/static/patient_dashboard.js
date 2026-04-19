@@ -62,16 +62,8 @@ function openChatbotModal() {
 }
 
 function initializeLogoutButton() {
-    const logoutBtn = document.querySelector('.logout-btn');
-    
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            if (confirm('Are you sure you want to log out?')) {
-                window.location.href = '../auth/logout.php';
-            }
-        });
+    if (confirm('Are you sure you want to log out?')) {
+        window.location.href = '/Healthcare-appointment-system-/auth/logout.php';
     }
 }
 

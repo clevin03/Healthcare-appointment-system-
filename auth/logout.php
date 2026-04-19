@@ -15,7 +15,5 @@ if (ini_get('session.use_cookies')) {
 
 session_destroy();
 
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-$redirect = $protocol . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/login.php';
-header('Location: ' . $redirect);
+header('Location: /Healthcare-appointment-system-/auth/login.php');
 exit;

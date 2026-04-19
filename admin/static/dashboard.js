@@ -1,6 +1,6 @@
 function logout() {
     if (confirm('Are you sure you want to logout?')) {
-        window.location.href = '../auth/logout.php';
+        window.location.href = '/Healthcare-appointment-system-/auth/logout.php';
     }
 }
 

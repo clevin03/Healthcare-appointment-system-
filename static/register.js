@@ -218,7 +218,7 @@ function handleSubmit(e) {
         showAlert('Registration successful! Redirecting to login...', 'success');
         
         setTimeout(() => {
-            window.location.href = 'auth/login.php';
+            window.location.href = '/Healthcare-appointment-system-/auth/login.php';
         }, 2000);
     }, 1500);
 

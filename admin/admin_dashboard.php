@@ -6,7 +6,7 @@ header('Pragma: no-cache');
 header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
 if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') {
-    header('Location: ../auth/login.php');
+    header('Location: /Healthcare-appointment-system-/auth/login.php');
     exit();
 }
 ?>
@@ -84,7 +84,9 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
             <div class="logo"><i class="fa-solid fa-hospital"></i> HealthCare Admin</div>
             <div class="user-info">
                 <span>Admin User</span>
-                <button onclick="logout()">Logout</button>
+                <form method="post" action="/Healthcare-appointment-system-/auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" style="display:inline; margin:0;">
+                    <button type="submit">Logout</button>
+                </form>
             </div>
         </div>
     </div>

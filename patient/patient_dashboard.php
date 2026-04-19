@@ -6,7 +6,7 @@ header('Pragma: no-cache');
 header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
-    header("Location: ../auth/login.php");
+    header("Location: /Healthcare-appointment-system-/auth/login.php");
     exit();
 }
 
@@ -55,7 +55,9 @@ $current_date = date('Y-m-d');
                 </div>
             </div>
 
-            <a href="../auth/logout.php" class="logout-btn">Log out</a>
+            <form method="post" action="/Healthcare-appointment-system-/auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" class="logout-form">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
 
             <nav class="sidebar-menu">
                 <ul>

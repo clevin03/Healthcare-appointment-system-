@@ -76,6 +76,14 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.logout-form {
+    margin: 0 0 30px;
+}
+
+.logout-form .logout-btn {
+    width: 100%;
+}
+
 .logout-btn:hover {
     background-color: #99c7ff;
 }
