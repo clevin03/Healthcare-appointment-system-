@@ -53,8 +53,8 @@ $chatbot_js_ver = @filemtime(__DIR__ . '/static/chatbot.js') ?: time();
                             <i class="fas fa-user-md"></i>
                             <span>Find a Doctor</span>
                         </div>
-                        <div class="suggestion-item" onclick="sendMessage('Book an appointment')">
-                            <i class="fas fa-calendar"></i>
+                        <div class="suggestion-item" onclick="openBookingPage()">
+                            <i class="fas fa-calendar-check"></i>
                             <span>Book Appointment</span>
                         </div>
                         <div class="suggestion-item mental-health-item" onclick="sendMessage('I need mental health support')">
@@ -86,7 +86,7 @@ $chatbot_js_ver = @filemtime(__DIR__ . '/static/chatbot.js') ?: time();
                 </div>
             </form>
             <div class="input-hints">
-                <small>Try: "Find a cardiologist", "Book an appointment", "Show my appointments"</small>
+                <small>Try: "Book an appointment", "Find a cardiologist", "Show my appointments"</small>
             </div>
         </div>
     </div>

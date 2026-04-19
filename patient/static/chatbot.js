@@ -244,11 +244,17 @@ function handleMentalHealthActions(actions) {
     }
 }
 
+function openBookingPage() {
+    window.location.href = 'book_appointment.php';
+}
+
 function handleActionClick(action) {
     if (action === 'Show emergency contacts') {
         showCrisisModal();
     } else if (action === 'I want to call a trusted person') {
         alert('Please reach out to a trusted family member or friend right now.\n\nYou can also call:\n- 911 (Emergency)\n- 988 (Suicide & Crisis Lifeline)\n- 741741 (Text to Crisis Text Line)');
+    } else if (typeof action === 'string' && action.toLowerCase().includes('book') && action.toLowerCase().includes('appointment')) {
+        openBookingPage();
     } else {
         sendMessage(action);
     }

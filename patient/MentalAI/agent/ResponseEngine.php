@@ -8,27 +8,24 @@ class ResponseEngine {
 		if (preg_match('/(self\s*-?care|coping|calm down|breathing|grounding|relax|sleep tips)/i', $message)) {
 			$response = self::buildSelfCareResponse();
 			$actions = [
-				['label' => 'Book Counseling', 'action' => 'Book counseling appointment'],
 				['label' => 'Find Psychiatrist', 'action' => 'Find psychiatrist'],
 				['label' => 'I Need Better Sleep', 'action' => 'I cannot sleep well these days']
 			];
 			return $response;
 		}
 
-		if (preg_match('/(book|need|want|schedule).*(counsel|therapy|psychiatrist|mental health)/i', $message)
-			|| preg_match('/(psychiatrist|counseling|therapy).*(book|appointment|visit)/i', $message)) {
+		if (preg_match('/(need|want|schedule).*(counsel|therapy|psychiatrist|mental health)/i', $message)
+			|| preg_match('/(psychiatrist|counseling|therapy).*(help|visit|support)/i', $message)) {
 			$doctors = DoctorDirectory::getDoctorsBySpecialty($conn, 'psychiatrist');
 			if (!empty($doctors)) {
-				$response = "I can help you book a mental health consultation right away.\n\nHere are available psychiatrists/counselors:\n\n" . DoctorDirectory::buildDoctorTable($doctors) . "\n\nTell me which doctor you prefer, and I will guide you to the booking step.";
+				$response = "I can help you connect with a mental health specialist right away.\n\nHere are available psychiatrists/counselors:\n\n" . DoctorDirectory::buildDoctorTable($doctors) . "\n\nTell me which doctor you prefer, and I will guide you to the next step.";
 				$actions = [
-					['label' => 'Book First Available', 'action' => 'Book the earliest psychiatrist appointment'],
 					['label' => 'Show My Appointments', 'action' => 'Show my appointments'],
 					['label' => 'Self-Care For Now', 'action' => 'Show self-care steps']
 				];
 			} else {
-				$response = "I understand. I could not find a psychiatrist right now, but I can still help you request the earliest mental health appointment.";
+				$response = "I understand. I could not find a psychiatrist right now, but I can still help you look for the right mental health support.";
 				$actions = [
-					['label' => 'Book Earliest Appointment', 'action' => 'Book an appointment'],
 					['label' => 'View All Doctors', 'action' => 'Show me all doctors'],
 					['label' => 'Self-Care Steps', 'action' => 'Show self-care steps']
 				];
@@ -54,14 +51,13 @@ class ResponseEngine {
 			if (!empty($doctors)) {
 				$response = "Great! I found " . count($doctors) . " doctor(s) for you:\n\n" . DoctorDirectory::buildDoctorTable($doctors);
 				$actions = [
-					['label' => 'Book Appointment', 'action' => 'I want to book an appointment'],
 					['label' => 'Show My Appointments', 'action' => 'Show my appointments']
 				];
 			} else {
 				$response = "I could not find doctors for '" . $specialty . "'. Would you like to view all doctors?";
 				$actions = [
 					['label' => 'View All Doctors', 'action' => 'Show me all doctors'],
-					['label' => 'Book Appointment', 'action' => 'Book an appointment']
+					['label' => 'Show My Appointments', 'action' => 'Show my appointments']
 				];
 			}
 			return $response;
@@ -72,7 +68,7 @@ class ResponseEngine {
 			if (!empty($doctors)) {
 				$response = "Here are all available doctors:\n\n" . DoctorDirectory::buildDoctorTable($doctors);
 				$actions = [
-					['label' => 'Book Appointment', 'action' => 'I want to book an appointment']
+					['label' => 'Show My Appointments', 'action' => 'Show my appointments']
 				];
 			} else {
 				$response = "No doctors are currently available.";
@@ -83,14 +79,13 @@ class ResponseEngine {
 		if (preg_match('/(view|show|list|my).*(appointment|booking)/i', $message)) {
 			$appointments = DoctorDirectory::getPatientAppointments($conn, $patientId);
 			if (!empty($appointments)) {
-				$response = "Here are your appointments:\n\n" . DoctorDirectory::buildAppointmentTable($appointments);
+				$response = "Here are your upcoming appointment details:\n\n" . DoctorDirectory::buildAppointmentTable($appointments);
 				$actions = [
-					['label' => 'Book New', 'action' => 'Book an appointment']
+					['label' => 'Find Doctor', 'action' => 'Find a doctor']
 				];
 			} else {
-				$response = "You do not have any appointments yet. Would you like to book one now?";
+				$response = "You do not have any appointments yet. Would you like me to help you find a doctor?";
 				$actions = [
-					['label' => 'Book Appointment', 'action' => 'Book an appointment'],
 					['label' => 'Find Doctor', 'action' => 'Find a doctor']
 				];
 			}
@@ -101,7 +96,7 @@ class ResponseEngine {
 		$actions = [
 			['label' => 'Talk To Me', 'action' => 'I want to talk about what I am feeling'],
 			['label' => 'Self-Care Plan', 'action' => 'Show self-care steps'],
-			['label' => 'Book Mental Health Doctor', 'action' => 'Book counseling appointment']
+			['label' => 'Find Psychiatrist', 'action' => 'Find psychiatrist']
 		];
 
 		return $response;

@@ -121,19 +121,60 @@ class DoctorDirectory {
 
 	public static function buildAppointmentTable($appointments) {
 		if (empty($appointments)) {
-			return '<p>No appointments available.</p>';
+			return '<div class="appointment-empty-state"><div class="appointment-empty-icon"><i class="fas fa-calendar-xmark"></i></div><div class="appointment-empty-copy"><h4>No upcoming appointments</h4><p>You do not have any booked appointments right now.</p></div></div>';
 		}
 
-		$html = '<table class="data-table"><thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Status</th></tr></thead><tbody>';
+		$html = '<div class="appointment-summary"><div class="appointment-summary-label">Upcoming appointments</div><div class="appointment-summary-count">' . count($appointments) . '</div></div><div class="appointment-cards">';
 		foreach ($appointments as $appointment) {
-			$html .= '<tr>'
-				. '<td>' . htmlspecialchars($appointment['appointment_date'] ?? '') . '</td>'
-				. '<td>' . htmlspecialchars($appointment['appointment_time'] ?? '') . '</td>'
-				. '<td>' . htmlspecialchars($appointment['doctor_name'] ?? 'N/A') . '</td>'
-				. '<td>' . htmlspecialchars($appointment['status'] ?? 'Unknown') . '</td>'
-				. '</tr>';
+			$dateText = self::formatAppointmentDate($appointment['appointment_date'] ?? '');
+			$timeText = self::formatAppointmentTime($appointment['appointment_time'] ?? '');
+			$status = strtoupper(trim((string) ($appointment['status'] ?? 'UNKNOWN')));
+			$statusClass = strtolower($status);
+
+			$html .= '<div class="appointment-card">'
+				. '<div class="appointment-card-header">'
+				. '<div class="appointment-card-title">Appointment #' . htmlspecialchars((string) ($appointment['appointment_number'] ?? 'N/A')) . '</div>'
+				. '<div class="appointment-status status-' . htmlspecialchars($statusClass) . '">' . htmlspecialchars($status) . '</div>'
+				. '</div>'
+				. '<div class="appointment-card-body">'
+				. '<div class="appointment-main">'
+				. '<div class="appointment-doctor">' . htmlspecialchars($appointment['doctor_name'] ?? 'N/A') . '</div>'
+				. '<div class="appointment-department">' . htmlspecialchars($appointment['department_name'] ?? 'General Practice') . '</div>'
+				. '</div>'
+				. '<div class="appointment-meta-grid">'
+				. '<div class="appointment-meta-item"><span>Date</span><strong>' . htmlspecialchars($dateText) . '</strong></div>'
+				. '<div class="appointment-meta-item"><span>Time</span><strong>' . htmlspecialchars($timeText) . '</strong></div>'
+				. '</div>'
+				. '</div>'
+				. '</div>';
 		}
-		$html .= '</tbody></table>';
+		$html .= '</div>';
 		return $html;
+	}
+
+	private static function formatAppointmentDate($date) {
+		if (empty($date)) {
+			return 'Not scheduled';
+		}
+
+		$dateTime = DateTime::createFromFormat('Y-m-d', $date);
+		if ($dateTime instanceof DateTime) {
+			return $dateTime->format('M j, Y');
+		}
+
+		return (string) $date;
+	}
+
+	private static function formatAppointmentTime($time) {
+		if (empty($time)) {
+			return 'Not set';
+		}
+
+		$dateTime = DateTime::createFromFormat('H:i:s', $time) ?: DateTime::createFromFormat('H:i', $time);
+		if ($dateTime instanceof DateTime) {
+			return $dateTime->format('g:i A');
+		}
+
+		return (string) $time;
 	}
 }
