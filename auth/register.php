@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Healthcare Appointment System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-    <link rel="stylesheet" href="static/register.css">
+    <link rel="stylesheet" href="../static/register.css">
 </head>
 <body>
     <div class="cursor-dot"></div>
@@ -138,7 +138,7 @@
         </div>
     </div>
 
-    <script src="static/cursor_effect.js"></script>
-    <script src="static/register.js"></script>
+    <script src="../static/cursor_effect.js"></script>
+    <script src="../static/register.js"></script>
 </body>
 </html>

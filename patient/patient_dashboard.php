@@ -1,8 +1,12 @@
 <?php
 session_start();
 
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+
 if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
-    header("Location: ../login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -51,7 +55,7 @@ $current_date = date('Y-m-d');
                 </div>
             </div>
 
-            <a href="../logout.php" class="logout-btn">Log out</a>
+            <a href="../auth/logout.php" class="logout-btn">Log out</a>
 
             <nav class="sidebar-menu">
                 <ul>

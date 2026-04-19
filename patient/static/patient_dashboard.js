@@ -69,19 +69,7 @@ function initializeLogoutButton() {
             e.preventDefault();
             
             if (confirm('Are you sure you want to log out?')) {
-                fetch('../logout.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    }
-                })
-                .then(response => {
-                    window.location.href = '../login.php';
-                })
-                .catch(error => {
-                    console.error('Logout error:', error);
-                    window.location.href = '../login.php';
-                });
+                window.location.href = '../auth/logout.php';
             }
         });
     }

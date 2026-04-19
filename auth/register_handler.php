@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/db_connection.php';
+require_once '../config/db_connection.php';
 
 header('Content-Type: application/json');
 
@@ -131,7 +131,7 @@ try {
         echo json_encode([
             'success' => true, 
             'message' => 'Registration successful!',
-            'redirect' => 'patient/patient_dashboard.php'
+            'redirect' => '../patient/patient_dashboard.php'
         ]);
         
     } catch (Exception $e) {

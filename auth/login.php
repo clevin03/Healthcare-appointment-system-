@@ -4,13 +4,13 @@ session_start();
 if (isset($_SESSION['user_id'])) {
     switch ($_SESSION['user_type']) {
         case 'admin':
-            header("Location: admin/admin_dashboard.php");
+            header("Location: ../admin/admin_dashboard.php");
             break;
         case 'doctor':
-            header("Location: doctor/doctor_dashboard.php");
+            header("Location: ../doctor/doctor_dashboard.php");
             break;
         case 'patient':
-            header("Location: patient/patient_dashboard.php");
+            header("Location: ../patient/patient_dashboard.php");
             break;
     }
     exit;
@@ -40,13 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             switch ($user_type) {
                 case 'admin':
-                    header("Location: admin/admin_dashboard.php");
+                    header("Location: ../admin/admin_dashboard.php");
                     break;
                 case 'doctor':
-                    header("Location: doctor/doctor_dashboard.php");
+                    header("Location: ../doctor/doctor_dashboard.php");
                     break;
                 case 'patient':
-                    header("Location: patient/patient_dashboard.php");
+                    header("Location: ../patient/patient_dashboard.php");
                     break;
             }
             exit;
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Healthcare Appointment - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-    <link rel="stylesheet" href="./static/login.css">
+    <link rel="stylesheet" href="../static/login.css">
 </head>
 <body>
     <div class="container">
@@ -126,6 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
     </div>
-    <script src="static/cursor_effect.js"></script>
+    <script src="../static/cursor_effect.js"></script>
 </body>
 </html>
