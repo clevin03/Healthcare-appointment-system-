@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     initializeMenuListeners();
-    initializeLogoutButton();
     initializeSearchForm();
 });
 
@@ -58,12 +57,6 @@ function openChatbotModal() {
         if (chatbotInput) {
             chatbotInput.focus();
         }
-    }
-}
-
-function initializeLogoutButton() {
-    if (confirm('Are you sure you want to log out?')) {
-        window.location.href = '/Healthcare-appointment-system-/auth/logout.php';
     }
 }
 
