@@ -7,7 +7,7 @@ if (!defined('MENTAL_AI_ENABLED')) {
 }
 
 if (!defined('MENTAL_AI_USE_OPENAI')) {
-	define('MENTAL_AI_USE_OPENAI', in_array(LLM_PROVIDER, ['openai', 'ollama'], true));
+	define('MENTAL_AI_USE_OPENAI', in_array(LLM_PROVIDER, ['openai', 'ollama', 'dify'], true));
 }
 
 if (!defined('MENTAL_AI_SAVE_HISTORY')) {

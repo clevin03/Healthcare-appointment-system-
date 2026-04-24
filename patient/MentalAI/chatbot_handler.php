@@ -44,6 +44,7 @@ try {
 
     $patientId = (int) $_SESSION['user_id'];
     $conversationHistory = is_array($input['history'] ?? null) ? $input['history'] : [];
+    $conversationId = is_string($input['conversation_id'] ?? null) ? trim((string) $input['conversation_id']) : (string) ($_SESSION['dify_conversation_id'] ?? DIFY_CONVERSATION_ID);
 
     mysqli_report(MYSQLI_REPORT_OFF);
     $conn = @new mysqli('localhost', 'root', '', 'edoctor');
@@ -55,12 +56,27 @@ try {
     }
     $conn->set_charset('utf8mb4');
 
-    $apiKey = LLM_PROVIDER === 'ollama' ? '' : OPENAI_API_KEY;
-    $model = LLM_PROVIDER === 'ollama' ? OLLAMA_MODEL : OPENAI_MODEL;
-    $apiUrl = LLM_PROVIDER === 'ollama' ? OLLAMA_API_URL : OPENAI_API_URL;
+    if (LLM_PROVIDER === 'ollama') {
+        $apiKey = '';
+        $model = OLLAMA_MODEL;
+        $apiUrl = OLLAMA_API_URL;
+    } elseif (LLM_PROVIDER === 'dify') {
+        $apiKey = DIFY_API_KEY;
+        $model = 'dify';
+        $apiUrl = DIFY_API_URL;
+    } else {
+        $apiKey = OPENAI_API_KEY;
+        $model = OPENAI_MODEL;
+        $apiUrl = OPENAI_API_URL;
+    }
 
-    $aiHandler = new OpenAIHandler($apiKey, $model, $apiUrl, OPENAI_TIMEOUT, LLM_PROVIDER);
+    $difyUser = 'patient-' . $patientId;
+    $aiHandler = new OpenAIHandler($apiKey, $model, $apiUrl, OPENAI_TIMEOUT, LLM_PROVIDER, $conversationId, $difyUser);
     $result = AgentOrchestrator::handle($message, $conversationHistory, $patientId, $conn, $aiHandler);
+
+    if (!empty($result['conversation_id'])) {
+        $_SESSION['dify_conversation_id'] = (string) $result['conversation_id'];
+    }
 
     respondJson($result, 200);
 } catch (Throwable $e) {

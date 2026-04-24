@@ -35,19 +35,32 @@ class AgentOrchestrator {
 				if (MENTAL_AI_SAVE_HISTORY) {
 					ConversationLogger::saveConversation($conn, $patientId, $message, $response);
 				}
+				$conversationId = $aiResponse['conversation_id'] ?? null;
 			} else {
 				$apiError = $aiResponse['error'] ?? 'Unknown OpenAI error';
-				error_log('[MentalAI OpenAI] ' . $apiError);
+				error_log('[MentalAI ' . strtoupper((string) ($aiHandler->getProvider() ?? 'llm')) . '] ' . $apiError);
 				if (defined('OPENAI_DEBUG') && OPENAI_DEBUG) {
 					$debug = $apiError;
 				}
 
-				$response = 'Ollama reply ekak ganna ba. Please check if Ollama server eka run wenawada, model eka load vela thiyenawada.';
+				if ($aiHandler->getProvider() === 'dify') {
+					$response = 'Dify reply ekak ganna ba. Please check if the Dify app is published and the API key is correct.';
+				} elseif ($aiHandler->getProvider() === 'ollama') {
+					$response = 'Ollama reply ekak ganna ba. Please check if Ollama server eka run wenawada, model eka load vela thiyenawada.';
+				} else {
+					$response = 'AI provider reply ekak ganna ba. Please check the API configuration.';
+				}
 
 				ConversationLogger::logMentalHealthEvent($conn, $patientId, $message, $riskAssessment, false);
 			}
 		} else {
-			$response = 'Ollama API not configured. Please set LLM_PROVIDER=ollama and check the local server.';
+			if ($aiHandler->getProvider() === 'dify') {
+				$response = 'Dify API not configured. Please set DIFY_API_KEY and confirm the app is published.';
+			} elseif ($aiHandler->getProvider() === 'ollama') {
+				$response = 'Ollama API not configured. Please set LLM_PROVIDER=ollama and check the local server.';
+			} else {
+				$response = 'AI provider not configured. Please check your .env file and API settings.';
+			}
 			ConversationLogger::logMentalHealthEvent($conn, $patientId, $message, $riskAssessment, false);
 		}
 
@@ -61,15 +74,16 @@ class AgentOrchestrator {
 			$actions = ResponseEngine::mergeActions($actions, SafetyPolicy::getModerateRiskActions());
 		}
 
-		return self::buildResult($response, $actions, $source, $riskAssessment, $debug);
+		return self::buildResult($response, $actions, $source, $riskAssessment, $debug, $conversationId ?? null);
 	}
 
-	private static function buildResult($response, $actions, $source, $riskAssessment, $debug) {
+	private static function buildResult($response, $actions, $source, $riskAssessment, $debug, $conversationId = null) {
 		return [
 			'success' => true,
 			'response' => $response,
 			'actions' => $actions,
 			'source' => $source,
+			'conversation_id' => $conversationId,
 			'risk' => [
 				'level' => $riskAssessment['level'],
 				'category' => $riskAssessment['category']

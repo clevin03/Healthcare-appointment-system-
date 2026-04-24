@@ -7,13 +7,17 @@ class OpenAIHandler {
     private $apiUrl;
     private $timeout;
     private $provider;
+    private $conversationId;
+    private $difyUser;
     
-    public function __construct($apiKey, $model = 'gpt-4o-mini', $apiUrl = 'https://api.openai.com/v1/chat/completions', $timeout = 30, $provider = 'openai') {
+    public function __construct($apiKey, $model = 'gpt-4o-mini', $apiUrl = 'https://api.openai.com/v1/chat/completions', $timeout = 30, $provider = 'openai', $conversationId = '', $difyUser = 'patient-user') {
         $this->apiKey = (string) $apiKey;
         $this->model = (string) $model;
         $this->apiUrl = (string) $apiUrl;
         $this->timeout = (int) $timeout;
         $this->provider = strtolower((string) $provider);
+        $this->conversationId = (string) $conversationId;
+        $this->difyUser = trim((string) $difyUser) !== '' ? trim((string) $difyUser) : 'patient-user';
     }
 
     public function chat($userMessage, $conversationHistory = [], $systemPrompt = '') {
@@ -53,9 +57,13 @@ class OpenAIHandler {
                 'content' => $userMessage
             ];
             
-            $response = $this->provider === 'ollama'
-                ? $this->makeOllamaRequest($messages)
-                : $this->makeOpenAIRequest($messages);
+            if ($this->provider === 'ollama') {
+                $response = $this->makeOllamaRequest($messages);
+            } elseif ($this->provider === 'dify') {
+                $response = $this->makeDifyRequest($userMessage, $conversationHistory, $systemPrompt);
+            } else {
+                $response = $this->makeOpenAIRequest($messages);
+            }
             
             if ($response['success']) {
                 return [
@@ -63,7 +71,8 @@ class OpenAIHandler {
                     'message' => $response['message'],
                     'usage' => $response['usage'] ?? null,
                     'tokens_used' => $response['tokens_used'] ?? 0,
-                    'provider' => $this->provider
+                    'provider' => $this->provider,
+                    'conversation_id' => $response['conversation_id'] ?? $this->conversationId
                 ];
             } else {
                 return [
@@ -205,10 +214,167 @@ class OpenAIHandler {
             'tokens_used' => (int) (($responseData['prompt_eval_count'] ?? 0) + ($responseData['eval_count'] ?? 0))
         ];
     }
+
+    private function makeDifyRequest($userMessage, $conversationHistory, $systemPrompt) {
+        $responseMode = defined('DIFY_RESPONSE_MODE') ? DIFY_RESPONSE_MODE : 'streaming';
+        if (!in_array($responseMode, ['blocking', 'streaming'], true)) {
+            $responseMode = 'streaming';
+        }
+
+        $requestData = [
+            'inputs' => new stdClass(),
+            'query' => (string) $userMessage,
+            'response_mode' => $responseMode,
+            'user' => $this->difyUser,
+        ];
+
+        if (!empty($this->conversationId)) {
+            $requestData['conversation_id'] = $this->conversationId;
+        }
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($requestData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Accept: application/json',
+            'Authorization: Bearer ' . $this->apiKey
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($error) {
+            return [
+                'success' => false,
+                'error' => 'Dify connection error: ' . $error,
+                'debug' => [
+                    'provider' => 'dify',
+                    'curl_error' => $error
+                ]
+            ];
+        }
+
+        if ($httpCode !== 200) {
+            $rawBody = (string) $response;
+            $errorData = json_decode($rawBody, true);
+            $errorMessage = is_array($errorData)
+                ? ($errorData['message'] ?? $errorData['error'] ?? $errorData['msg'] ?? $errorData['detail'] ?? 'Unknown error')
+                : 'Unknown error';
+            return [
+                'success' => false,
+                'error' => "Dify API Error ($httpCode): " . $errorMessage,
+                'debug' => [
+                    'provider' => 'dify',
+                    'http_code' => $httpCode,
+                    'body' => $rawBody
+                ]
+            ];
+        }
+
+        $responseData = json_decode((string) $response, true);
+        $answer = $responseData['answer'] ?? null;
+        $conversationId = $responseData['conversation_id'] ?? $this->conversationId;
+        $usage = $responseData['metadata']['usage'] ?? null;
+
+        if (($responseMode === 'streaming' || !is_array($responseData)) && (!is_string($answer) || $answer === '')) {
+            $streamParsed = $this->parseDifyStreamingResponse((string) $response);
+            if (!empty($streamParsed['message'])) {
+                $answer = $streamParsed['message'];
+                $conversationId = $streamParsed['conversation_id'] ?? $conversationId;
+                $usage = $streamParsed['usage'] ?? $usage;
+            }
+        }
+
+        if (!is_string($answer) || $answer === '') {
+            return [
+                'success' => false,
+                'error' => 'Invalid response format from Dify',
+                'debug' => [
+                    'provider' => 'dify',
+                    'body' => (string) $response
+                ]
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => $answer,
+            'conversation_id' => $conversationId,
+            'usage' => $usage,
+            'tokens_used' => (int) (($usage['total_tokens'] ?? 0)),
+            'debug' => [
+                'provider' => 'dify',
+                'http_code' => $httpCode,
+                'response_mode' => $responseMode
+            ]
+        ];
+    }
+
+    private function parseDifyStreamingResponse($rawResponse) {
+        $raw = trim((string) $rawResponse);
+        if ($raw === '') {
+            return [];
+        }
+
+        $lines = preg_split('/\r\n|\r|\n/', $raw);
+        if (!is_array($lines)) {
+            return [];
+        }
+
+        $message = '';
+        $conversationId = $this->conversationId;
+        $usage = null;
+
+        foreach ($lines as $line) {
+            $line = trim((string) $line);
+            if ($line === '' || strpos($line, 'data: ') !== 0) {
+                continue;
+            }
+
+            $payload = substr($line, 6);
+            if ($payload === '' || $payload === '[DONE]') {
+                continue;
+            }
+
+            $eventData = json_decode($payload, true);
+            if (!is_array($eventData)) {
+                continue;
+            }
+
+            if (isset($eventData['answer']) && is_string($eventData['answer'])) {
+                $message .= $eventData['answer'];
+            }
+
+            if (!empty($eventData['conversation_id'])) {
+                $conversationId = (string) $eventData['conversation_id'];
+            }
+
+            if (isset($eventData['metadata']['usage']) && is_array($eventData['metadata']['usage'])) {
+                $usage = $eventData['metadata']['usage'];
+            }
+        }
+
+        return [
+            'message' => trim($message),
+            'conversation_id' => $conversationId,
+            'usage' => $usage
+        ];
+    }
     
     public function isConfigured() {
         if ($this->provider === 'ollama') {
             return !empty($this->apiUrl) && !empty($this->model);
+        }
+
+        if ($this->provider === 'dify') {
+            return !empty($this->apiKey) && !empty($this->apiUrl);
         }
 
         return !empty($this->apiKey) && strpos($this->apiKey, 'sk-') === 0 && $this->apiKey !== 'sk-your-api-key-here';

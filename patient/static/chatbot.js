@@ -6,6 +6,7 @@ let conversationHistory = [];
 const MAX_HISTORY = 10;
 let currentRiskLevel = 'none';
 let consentModalTimer = null;
+let conversationId = sessionStorage.getItem('dify_conversation_id') || '';
 
 function handleFormSubmit(event) {
     event.preventDefault();
@@ -32,7 +33,8 @@ async function sendMessage(message) {
             body: JSON.stringify({
                 message: message,
                 patient_id: patientId,
-                history: limitHistory(conversationHistory)
+                history: limitHistory(conversationHistory),
+                conversation_id: conversationId
             })
         });
 
@@ -55,6 +57,10 @@ async function sendMessage(message) {
         removeTypingIndicator();
         
         if (data.success) {
+            if (data.conversation_id) {
+                conversationId = data.conversation_id;
+                sessionStorage.setItem('dify_conversation_id', conversationId);
+            }
             if (data.source && data.source !== 'openai') {
                 console.warn('Chatbot fallback response used instead of OpenAI.');
             }
