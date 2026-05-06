@@ -93,11 +93,8 @@ try {
         echo json_encode(['success' => false, 'message' => 'Email already registered']);
         exit;
     }
-    }
 
     $conn->begin_transaction();
-    
-    try {
 
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         
@@ -135,10 +132,12 @@ try {
         ]);
         
     } catch (Exception $e) {
-
-        $conn->rollback();
-        throw $e;
-}
+        if (isset($conn)) {
+            $conn->rollback();
+        }
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'An error occurred during registration.']);
+    }
 
 if (isset($stmt)) {
     $stmt->close();

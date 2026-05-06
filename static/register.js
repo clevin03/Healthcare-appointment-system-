@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const email = document.getElementById('email');
     const phone = document.getElementById('phone');
 
+
     password.addEventListener('input', validatePassword);
     confirmPassword.addEventListener('input', validateConfirmPassword);
     email.addEventListener('blur', validateEmail);
@@ -213,15 +214,30 @@ function handleSubmit(e) {
     submitBtn.classList.add('loading');
     submitBtn.disabled = true;
 
-    setTimeout(() => {
-
-        showAlert('Registration successful! Redirecting to login...', 'success');
+    fetch('register_handler.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
         
-        setTimeout(() => {
-            window.location.href = '/Healthcare-appointment-system-/auth/login.php';
-        }, 2000);
-    }, 1500);
-
+        if (data.success) {
+            showAlert(data.message || 'Registration successful! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = data.redirect || '/auth/login.php';
+            }, 2000);
+        } else {
+            showAlert(data.message || 'Registration failed.', 'error');
+        }
+    })
+    .catch(error => {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+        showAlert('An error occurred during registration.', 'error');
+        console.error('Error:', error);
+    });
 }
 
 document.querySelectorAll('.form-group input, .form-group select, .form-group textarea').forEach(element => {

@@ -6,7 +6,7 @@ header('Pragma: no-cache');
 header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
 if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'doctor') {
-    header('Location: /Healthcare-appointment-system-/auth/login.php');
+    header('Location: ../auth/login.php');
     exit();
 }
 ?>
@@ -123,7 +123,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'doctor')
 
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
-                window.location.href = '/Healthcare-appointment-system-/auth/logout.php';
+                window.location.href = '../auth/logout.php';
             }
         }
     </script>

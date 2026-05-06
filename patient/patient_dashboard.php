@@ -6,28 +6,66 @@ header('Pragma: no-cache');
 header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
-    header("Location: /Healthcare-appointment-system-/auth/login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
+require_once '../config/db_connection.php';
+
 $patient_name = isset($_SESSION['patient_name']) ? $_SESSION['patient_name'] : 'Test Patient';
 $patient_email = isset($_SESSION['patient_email']) ? $_SESSION['patient_email'] : 'patient@edoc.com';
-$patient_id = $_SESSION['user_id'];
+$patient_id = $_SESSION['patient_id'] ?? $_SESSION['user_id'];
 
+// Get all active doctors count
+$sql_doctors = "SELECT COUNT(*) AS total FROM doctors WHERE status = 'ACTIVE'";
+$result_doctors = $conn->query($sql_doctors);
+$all_doctors = $result_doctors->fetch_assoc()['total'] ?? 0;
 
-$all_doctors = 1;
-$all_patients = 2;
-$new_bookings = 1;
-$today_sessions = 0;
+// Get all patients count
+$sql_patients = "SELECT COUNT(*) AS total FROM patients";
+$result_patients = $conn->query($sql_patients);
+$all_patients = $result_patients->fetch_assoc()['total'] ?? 0;
 
-$upcoming_bookings = [
-    [
-        'appt_number' => 1,
-        'session_title' => 'Test Session',
-        'doctor' => 'Test Doctor',
-        'scheduled_date_time' => '2050-01-01 18:00'
-    ]
-];
+// Get new pending bookings count for this patient
+$sql_new_bookings = "SELECT COUNT(*) AS total FROM appointments WHERE patient_id = ? AND status = 'PENDING'";
+$stmt = $conn->prepare($sql_new_bookings);
+$stmt->bind_param("i", $patient_id);
+$stmt->execute();
+$new_bookings = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+$stmt->close();
+
+// Get today's sessions count for this patient
+$sql_today = "SELECT COUNT(*) AS total FROM appointments WHERE patient_id = ? AND DATE(appointment_date) = CURDATE() AND status != 'CANCELLED'";
+$stmt = $conn->prepare($sql_today);
+$stmt->bind_param("i", $patient_id);
+$stmt->execute();
+$today_sessions = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+$stmt->close();
+
+// Get upcoming bookings
+$upcoming_bookings = [];
+$sql_upcoming = "SELECT a.appointment_number, dep.department_name, d.doctor_name, a.appointment_date, a.appointment_time 
+                 FROM appointments a 
+                 LEFT JOIN doctors d ON a.doctor_id = d.doctor_id 
+                 LEFT JOIN departments dep ON a.department_id = dep.department_id 
+                 WHERE a.patient_id = ? AND a.appointment_date >= CURDATE() AND a.status != 'CANCELLED' 
+                 ORDER BY a.appointment_date ASC, a.appointment_time ASC 
+                 LIMIT 5";
+$stmt = $conn->prepare($sql_upcoming);
+$stmt->bind_param("i", $patient_id);
+$stmt->execute();
+$result_upcoming = $stmt->get_result();
+if ($result_upcoming && $result_upcoming->num_rows > 0) {
+    while ($row = $result_upcoming->fetch_assoc()) {
+        $upcoming_bookings[] = [
+            'appt_number' => $row['appointment_number'],
+            'session_title' => ($row['department_name'] ?? 'General') . ' Consultation',
+            'doctor' => $row['doctor_name'],
+            'scheduled_date_time' => date('Y-m-d H:i', strtotime($row['appointment_date'] . ' ' . $row['appointment_time']))
+        ];
+    }
+}
+$stmt->close();
 
 $current_date = date('Y-m-d');
 ?>
@@ -43,8 +81,10 @@ $current_date = date('Y-m-d');
     <link rel="stylesheet" href="static/patient_dashboard.css">
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
+
+
+    <div class="top-header" style="background-color: #007bff; color: white;"> <!-- Added unique class and inline style -->
+        <div class="header-content">
             <div class="user-profile">
                 <div class="user-avatar">
                     <span class="avatar-icon"><i class="fas fa-user"></i></span>
@@ -54,10 +94,13 @@ $current_date = date('Y-m-d');
                     <p class="user-email"><?php echo htmlspecialchars($patient_email); ?></p>
                 </div>
             </div>
-
-            <form method="post" action="/Healthcare-appointment-system-/auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" class="logout-form">
+            <form method="post" action="../auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" class="logout-form">
                 <button type="submit" class="logout-btn">Logout</button>
             </form>
+        </div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
 
             <nav class="sidebar-menu">
                 <ul>
@@ -128,36 +171,34 @@ $current_date = date('Y-m-d');
                         </form>
                     </div>
                 </div>
-                <div class="banner-image">
-                    <div class="image-placeholder"><i class="fas fa-heartbeat"></i></div>
-                </div>
+                
             </div>
 
             <div class="status-section">
                 <h3>Status</h3>
-                <div class="status-grid">
-                    <div class="status-card">
+                <div class="status-grid blue">
+                    <div class="status-card line">
                         <div class="status-number"><?php echo $all_doctors; ?></div>
                         <div class="status-label">All Doctors</div>
-                        <div class="status-icon"><i class="fas fa-user-md"></i></div>
+                        <!--<div class="status-icon"><i class="fas fa-user-md"></i></div>-->
                     </div>
 
-                    <div class="status-card">
+                    <div class="status-card green">
                         <div class="status-number"><?php echo $all_patients; ?></div>
                         <div class="status-label">All Patients</div>
-                        <div class="status-icon"><i class="fas fa-users"></i></div>
+                        <!--<div class="status-icon"><i class="fas fa-users"></i></div>-->
                     </div>
 
-                    <div class="status-card">
+                    <div class="status-card orange">
                         <div class="status-number"><?php echo $new_bookings; ?></div>
                         <div class="status-label">NewBooking</div>
-                        <div class="status-icon"><i class="fas fa-file-medical"></i></div>
+                        <!--<div class="status-icon"><i class="fas fa-file-medical"></i></div>-->
                     </div>
 
-                    <div class="status-card">
+                    <div class="status-card red">
                         <div class="status-number"><?php echo $today_sessions; ?></div>
                         <div class="status-label">Today Sessions</div>
-                        <div class="status-icon"><i class="fas fa-tv"></i></div>
+                        <!--<div class="status-icon"><i class="fas fa-tv"></i></div>-->
                     </div>
                 </div>
             </div>

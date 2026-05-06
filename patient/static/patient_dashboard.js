@@ -31,7 +31,7 @@ function handleNavigation(page) {
             window.location.href = 'chatbot.php';
             break;
         case '#doctors':
-            window.location.href = '../doctor/all_doctors.php';
+            window.location.href = 'allDoctors.php';
             break;
         case '#sessions':
             window.location.href = 'scheduled_sessions.php';
