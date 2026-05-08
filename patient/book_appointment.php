@@ -40,7 +40,7 @@ if ($patientName !== '') {
 }
 
 if ($patientId <= 0 && $patientEmail !== '') {
-    $findByEmail = $conn->prepare('SELECT patient_id, patient_name, email, phone FROM patients WHERE email = ? LIMIT 1');
+    $findByEmail = $conn->prepare('SELECT patient_id, first_name, last_name, email, phone FROM patients WHERE email = ? LIMIT 1');
     if ($findByEmail) {
         $findByEmail->bind_param('s', $patientEmail);
         $findByEmail->execute();
