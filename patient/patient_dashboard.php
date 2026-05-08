@@ -6,29 +6,26 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
     exit();
 }
 
-$patient_name = isset($_SESSION['patient_name']) ? $_SESSION['patient_name'] : 'Test Patient';
+$patient_name  = isset($_SESSION['patient_name'])  ? $_SESSION['patient_name']  : 'Test Patient';
 $patient_email = isset($_SESSION['patient_email']) ? $_SESSION['patient_email'] : 'patient@edoc.com';
-$patient_id = $_SESSION['user_id'];
+$patient_id    = $_SESSION['user_id'];
 
-
-$all_doctors = 1;
-$all_patients = 2;
-$new_bookings = 1;
+$all_doctors    = 1;
+$all_patients   = 2;
+$new_bookings   = 1;
 $today_sessions = 0;
 
 $upcoming_bookings = [
     [
-        'appt_number' => 1,
-        'session_title' => 'Test Session',
-        'doctor' => 'Test Doctor',
+        'appt_number'         => 1,
+        'session_title'       => 'Test Session',
+        'doctor'              => 'Test Doctor',
         'scheduled_date_time' => '2050-01-01 18:00'
     ]
 ];
 
 $current_date = date('Y-m-d');
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +34,30 @@ $current_date = date('Y-m-d');
     <title>Patient Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <link rel="stylesheet" href="static/patient_dashboard.css">
+    <style>
+        /* ── Clickable status card ── */
+        .status-card.clickable {
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .status-card.clickable:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(59,130,246,0.2);
+        }
+        .status-card.clickable:active {
+            transform: translateY(0);
+        }
+
+        /* ── Small new-tab hint icon on card ── */
+        .card-link-hint {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.65rem;
+            color: #94a3b8;
+        }
+        .status-card { position: relative; }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -85,6 +106,16 @@ $current_date = date('Y-m-d');
                             <span class="menu-text">My Bookings</span>
                         </a>
                     </li>
+                    <!-- ✅ My Patients opens in new tab -->
+                    <li>
+                        <a href="patients_list.php" target="_blank" class="menu-item">
+                            <span class="menu-icon"><i class="fas fa-users"></i></span>
+                            <span class="menu-text">
+                                All Patients
+                                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem; margin-left:4px;"></i>
+                            </span>
+                        </a>
+                    </li>
                     <li>
                         <a href="#settings" class="menu-item">
                             <span class="menu-icon"><i class="fas fa-cog"></i></span>
@@ -104,13 +135,14 @@ $current_date = date('Y-m-d');
                     <span class="calendar-icon"><i class="fas fa-calendar-alt"></i></span>
                 </div>
             </div>
+
             <div class="welcome-banner">
                 <div class="banner-content">
                     <h2>Welcome!</h2>
-                    <h3>Test Patient.</h3>
+                    <h3><?php echo htmlspecialchars($patient_name); ?>.</h3>
                     <p>Haven't any idea about doctors? no problem let's jumping to <strong>"All Doctors"</strong> section or <strong>"Sessions"</strong> Track your past and future appointments history.<br>
                     Also find out the expected arrival time of your doctor or medical consultant.</p>
-                    
+
                     <div class="search-section">
                         <h4>Channel a Doctor Here</h4>
                         <form class="search-form">
@@ -130,29 +162,36 @@ $current_date = date('Y-m-d');
             <div class="status-section">
                 <h3>Status</h3>
                 <div class="status-grid">
+
+                    <!-- All Doctors card -->
                     <div class="status-card">
                         <div class="status-number"><?php echo $all_doctors; ?></div>
                         <div class="status-label">All Doctors</div>
                         <div class="status-icon"><i class="fas fa-user-md"></i></div>
                     </div>
 
-                    <div class="status-card">
+                    <!-- ✅ All Patients card - opens patients_list.php in new tab -->
+                    <div class="status-card clickable" onclick="window.open('patients_list.php', '_blank')" title="View All Patients">
+                        <i class="fa-solid fa-arrow-up-right-from-square card-link-hint"></i>
                         <div class="status-number"><?php echo $all_patients; ?></div>
                         <div class="status-label">All Patients</div>
                         <div class="status-icon"><i class="fas fa-users"></i></div>
                     </div>
 
+                    <!-- New Booking card -->
                     <div class="status-card">
                         <div class="status-number"><?php echo $new_bookings; ?></div>
-                        <div class="status-label">NewBooking</div>
+                        <div class="status-label">New Booking</div>
                         <div class="status-icon"><i class="fas fa-file-medical"></i></div>
                     </div>
 
+                    <!-- Today Sessions card -->
                     <div class="status-card">
                         <div class="status-number"><?php echo $today_sessions; ?></div>
                         <div class="status-label">Today Sessions</div>
                         <div class="status-icon"><i class="fas fa-tv"></i></div>
                     </div>
+
                 </div>
             </div>
 
