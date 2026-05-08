@@ -56,23 +56,19 @@ try {
     }
     $conn->set_charset('utf8mb4');
 
-    if (LLM_PROVIDER === 'ollama') {
-        $apiKey = '';
-        $model = OLLAMA_MODEL;
-        $apiUrl = OLLAMA_API_URL;
-    } elseif (LLM_PROVIDER === 'dify') {
-        $apiKey = DIFY_API_KEY;
-        $model = 'dify';
-        $apiUrl = DIFY_API_URL;
-    } else {
-        $apiKey = OPENAI_API_KEY;
-        $model = OPENAI_MODEL;
-        $apiUrl = OPENAI_API_URL;
-    }
-
     $difyUser = 'patient-' . $patientId;
-    $aiHandler = new OpenAIHandler($apiKey, $model, $apiUrl, OPENAI_TIMEOUT, LLM_PROVIDER, $conversationId, $difyUser);
-    $result = AgentOrchestrator::handle($message, $conversationHistory, $patientId, $conn, $aiHandler);
+    $handlers = [];
+
+    $ollamaHandler = new OpenAIHandler('', OLLAMA_MODEL, OLLAMA_API_URL, OPENAI_TIMEOUT, 'ollama');
+    $handlers[] = $ollamaHandler;
+
+    $openaiHandler = new OpenAIHandler(OPENAI_API_KEY, OPENAI_MODEL, OPENAI_API_URL, OPENAI_TIMEOUT, 'openai');
+    $handlers[] = $openaiHandler;
+
+    $difyHandler = new OpenAIHandler(DIFY_API_KEY, 'dify', DIFY_API_URL, OPENAI_TIMEOUT, 'dify', $conversationId, $difyUser);
+    $handlers[] = $difyHandler;
+
+    $result = AgentOrchestrator::handle($message, $conversationHistory, $patientId, $conn, $handlers);
 
     if (!empty($result['conversation_id'])) {
         $_SESSION['dify_conversation_id'] = (string) $result['conversation_id'];

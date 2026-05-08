@@ -62,7 +62,7 @@ async function sendMessage(message) {
                 sessionStorage.setItem('dify_conversation_id', conversationId);
             }
             if (data.source && data.source !== 'openai') {
-                console.warn('Chatbot fallback response used instead of OpenAI.');
+                console.log('Chatbot responded via ' + data.source + ' provider.');
             }
             if (data.debug) {
                 console.warn('OpenAI debug:', data.debug);

@@ -1,7 +1,7 @@
 <?php
 
 class AgentOrchestrator {
-	public static function handle($message, $conversationHistory, $patientId, $conn, $aiHandler) {
+	public static function handle($message, $conversationHistory, $patientId, $conn, $handlers) {
 		$message = trim((string) $message);
 		$message = function_exists('mb_substr') ? mb_substr($message, 0, 2000) : substr($message, 0, 2000);
 
@@ -13,7 +13,15 @@ class AgentOrchestrator {
 
 		$dbContext = DoctorDirectory::buildDatabaseContext($conn, $patientId);
 
-		if (MENTAL_AI_USE_OPENAI && $aiHandler->isConfigured()) {
+		$handlers = is_array($handlers) ? $handlers : [$handlers];
+		$usedProvider = null;
+		$lastError = null;
+
+		foreach ($handlers as $aiHandler) {
+			if (!MENTAL_AI_USE_OPENAI || !$aiHandler->isConfigured()) {
+				continue;
+			}
+
 			$basePrompt = defined('MENTAL_AI_SYSTEM_PROMPT') ? MENTAL_AI_SYSTEM_PROMPT : SYSTEM_PROMPT;
 			$enhancedSystemPrompt = SafetyPolicy::buildSafetyAwarePrompt($basePrompt, $dbContext, $riskAssessment);
 			$aiResponse = $aiHandler->chat($message, $conversationHistory, $enhancedSystemPrompt);
@@ -21,6 +29,7 @@ class AgentOrchestrator {
 			if ($aiResponse['success']) {
 				$response = (string) $aiResponse['message'];
 				$source = $aiResponse['provider'] ?? 'openai';
+				$usedProvider = $aiHandler->getProvider();
 				$actions = ResponseEngine::getContextualActions($message, $patientId, $conn);
 
 				if ($riskAssessment['level'] === 'high') {
@@ -36,31 +45,18 @@ class AgentOrchestrator {
 					ConversationLogger::saveConversation($conn, $patientId, $message, $response);
 				}
 				$conversationId = $aiResponse['conversation_id'] ?? null;
+				break;
 			} else {
-				$apiError = $aiResponse['error'] ?? 'Unknown OpenAI error';
-				error_log('[MentalAI ' . strtoupper((string) ($aiHandler->getProvider() ?? 'llm')) . '] ' . $apiError);
-				if (defined('OPENAI_DEBUG') && OPENAI_DEBUG) {
-					$debug = $apiError;
-				}
-
-				if ($aiHandler->getProvider() === 'dify') {
-					$response = 'Dify reply ekak ganna ba. Please check if the Dify app is published and the API key is correct.';
-				} elseif ($aiHandler->getProvider() === 'ollama') {
-					$response = 'Ollama reply ekak ganna ba. Please check if Ollama server eka run wenawada, model eka load vela thiyenawada.';
-				} else {
-					$response = 'AI provider reply ekak ganna ba. Please check the API configuration.';
-				}
-
-				ConversationLogger::logMentalHealthEvent($conn, $patientId, $message, $riskAssessment, false);
+				$lastError = $aiResponse['error'] ?? 'Unknown error';
+				error_log('[MentalAI ' . strtoupper((string) ($aiHandler->getProvider() ?? 'llm')) . '] ' . $lastError);
 			}
-		} else {
-			if ($aiHandler->getProvider() === 'dify') {
-				$response = 'Dify API not configured. Please set DIFY_API_KEY and confirm the app is published.';
-			} elseif ($aiHandler->getProvider() === 'ollama') {
-				$response = 'Ollama API not configured. Please set LLM_PROVIDER=ollama and check the local server.';
-			} else {
-				$response = 'AI provider not configured. Please check your .env file and API settings.';
+		}
+
+		if ($usedProvider === null) {
+			if (defined('OPENAI_DEBUG') && OPENAI_DEBUG && $lastError) {
+				$debug = $lastError;
 			}
+			$response = 'AI reply ekak ganna ba. Providers tinaima (Ollama, OpenAI, Dify) weda nahata. Karunakara .env file eke settings check karanna.';
 			ConversationLogger::logMentalHealthEvent($conn, $patientId, $message, $riskAssessment, false);
 		}
 
