@@ -25,7 +25,7 @@ function handleNavigation(page) {
     
     switch(page) {
         case '#home':
-            console.log('Home page');
+            window.location.href = 'patient_dashboard.php';
             break;
         case '#chatbot':
             window.location.href = 'chatbot.php';
@@ -72,6 +72,7 @@ function initializeSearchForm() {
             
             if (searchTerm) {
                 window.location.href = 'all_doctors.php?search=' + encodeURIComponent(searchTerm);
+                window.location.href = 'allDoctors.php?search=' + encodeURIComponent(searchTerm);
             } else {
                 alert('Please enter a doctor name');
             }

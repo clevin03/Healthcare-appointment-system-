@@ -12,13 +12,28 @@ $patient_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : (isset(
 $patient_email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : 'patient@edoc.com';
 $patient_id = $_SESSION['patient_id'] ?? $_SESSION['user_id'];
 
+$search_term = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 // Get all doctors with their departments
 $sql = "SELECT d.*, dep.department_name 
         FROM doctors d 
         LEFT JOIN departments dep ON d.department_id = dep.department_id 
-        WHERE d.status = 'ACTIVE'
-        ORDER BY d.doctor_name ASC";
-$result = $conn->query($sql);
+        WHERE d.status = 'ACTIVE'";
+
+if (!empty($search_term)) {
+    $sql .= " AND d.doctor_name LIKE ?";
+}
+$sql .= " ORDER BY d.doctor_name ASC";
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($search_term)) {
+    $like_term = "%{$search_term}%";
+    $stmt->bind_param('s', $like_term);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 $doctors = [];
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -26,6 +41,7 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
+$stmt->close();
 $current_date = date('Y-m-d');
 ?>
 
@@ -109,6 +125,17 @@ $current_date = date('Y-m-d');
                 <span class="date-value"><?php echo $current_date; ?></span>
                 <span class="calendar-icon"><i class="fas fa-calendar-alt"></i></span>
             </div>
+            
+        </div>
+        <div class="search-section">
+            <h4>Search for a Doctor</h4>
+            <form class="search-form" method="get" action="allDoctors.php">
+                <div class="search-box">
+                    <span class="search-icon"><i class="fas fa-search"></i></span>
+                    <input type="text" placeholder="Enter Doctor name" name="search" class="search-input" id="doctor-search" value="<?php echo htmlspecialchars($search_term); ?>">
+                </div>
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            </form>
         </div>
 
         <div class="doctors-section">
@@ -131,16 +158,48 @@ $current_date = date('Y-m-d');
                         </div>
                     <?php endforeach; ?>
                 </div>
+                <div class="no-doctors" id="client-no-results" style="display: none;">
+                    <i class="fas fa-user-slash fa-3x" style="color: #ccc; margin-bottom: 15px;"></i>
+                    <p>No doctors found matching your filter.</p>
+                </div>
             <?php else: ?>
                 <div class="no-doctors">
                     <i class="fas fa-user-slash fa-3x" style="color: #ccc; margin-bottom: 15px;"></i>
-                    <p>No doctors found at the moment.</p>
+                    <p><?php echo !empty($search_term) ? 'No doctors found matching "' . htmlspecialchars($search_term) . '".' : 'No doctors found at the moment.'; ?></p>
                 </div>
             <?php endif; ?>
         </div>
     </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('doctor-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterDoctors);
+        // Initial filter call in case of back-navigation with filled form
+        filterDoctors();
+    }
+});
+
+function filterDoctors() {
+    const searchTerm = document.getElementById('doctor-search').value.toLowerCase();
+    const doctorCards = document.querySelectorAll('.doctor-card');
+    const noResultsDiv = document.getElementById('client-no-results');
+    let anyVisible = false;
+
+    doctorCards.forEach(card => {
+        const doctorName = card.querySelector('h3').textContent.toLowerCase();
+        const isVisible = doctorName.includes(searchTerm);
+        card.style.display = isVisible ? '' : 'none';
+        if (isVisible) anyVisible = true;
+    });
+
+    if (noResultsDiv) {
+        noResultsDiv.style.display = anyVisible ? 'none' : 'block';
+    }
+}
+</script>
 <script src="static/patient_dashboard.js"></script>
 </body>
 </html>
