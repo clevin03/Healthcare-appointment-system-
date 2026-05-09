@@ -71,7 +71,6 @@ function initializeSearchForm() {
             const searchTerm = searchInput.value.trim();
             
             if (searchTerm) {
-                window.location.href = 'all_doctors.php?search=' + encodeURIComponent(searchTerm);
                 window.location.href = 'allDoctors.php?search=' + encodeURIComponent(searchTerm);
             } else {
                 alert('Please enter a doctor name');
