@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
 
 require_once '../config/db_connection.php';
 
-$patient_name = isset($_SESSION['patient_name']) ? $_SESSION['patient_name'] : 'Test Patient';
+$patient_name = $_SESSION['user_name'] ?? 'Patient';
 $patient_email = isset($_SESSION['patient_email']) ? $_SESSION['patient_email'] : 'patient@edoc.com';
 $patient_id = $_SESSION['patient_id'] ?? $_SESSION['user_id'];
 
@@ -156,8 +156,8 @@ $current_date = date('Y-m-d');
             <div class="welcome-banner">
                 <div class="banner-content">
                     <h2>Welcome!</h2>
-                    <h3>Test Patient.</h3>
-                    <p>Haven't any idea about doctors? no problem let's jumping to <strong>"All Doctors"</strong> section or <strong>"Sessions"</strong> Track your past and future appointments history.<br>
+                    <h3><?php echo htmlspecialchars($patient_name); ?>.</h3>
+                    <p>Don't know which doctor to choose? No problem! Jump to the <strong>"All Doctors"</strong> section or check <strong>"Scheduled Sessions"</strong>. You can also track your past and future appointments.<br>
                     Also find out the expected arrival time of your doctor or medical consultant.</p>
                     
                     <div class="search-section">

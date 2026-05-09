@@ -16,42 +16,64 @@ if (isset($_SESSION['user_id'])) {
     exit;
 }
 
+require_once '../config/db_connection.php';
+
 $error_message = '';
 $success_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
-    $user_type = isset($_POST['user_type']) ? $_POST['user_type'] : 'patient';
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $user_type_from_form = $_POST['user_type'] ?? 'patient';
 
     if (empty($email) || empty($password)) {
         $error_message = "Please fill in all fields.";
     } else {
-        $valid_users = array(
-            'admin' => array('admin@healthcare.com' => 'admin123'),
-            'doctor' => array('doctor@healthcare.com' => 'doctor123'),
-            'patient' => array('patient@healthcare.com' => 'patient123')
-        );
-
-        if (isset($valid_users[$user_type][$email]) && $valid_users[$user_type][$email] === $password) {
-            $_SESSION['user_id'] = uniqid();
-            $_SESSION['user_email'] = $email;
-            $_SESSION['user_type'] = $user_type;
-
-            switch ($user_type) {
-                case 'admin':
-                    header("Location: ../admin/admin_dashboard.php");
-                    break;
-                case 'doctor':
-                    header("Location: ../doctor/doctor_dashboard.php");
-                    break;
-                case 'patient':
-                    header("Location: ../patient/patient_dashboard.php");
-                    break;
+        try {
+            $stmt = $conn->prepare("SELECT user_id, password, user_type, is_active FROM users WHERE email = ?");
+            if (!$stmt) {
+                throw new Exception('Database query preparation failed: ' . $conn->error);
             }
-            exit;
-        } else {
-            $error_message = "Invalid email or password.";
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows === 1) {
+                $user = $result->fetch_assoc();
+
+                if (password_verify($password, $user['password']) && $user['user_type'] === $user_type_from_form) {
+                    if ($user['is_active'] == 0) {
+                        $error_message = "Your account is inactive. Please contact support.";
+                    } else {
+                        $_SESSION['user_id'] = $user['user_id'];
+                        $_SESSION['user_email'] = $email;
+                        $_SESSION['user_type'] = $user['user_type'];
+
+                        if ($user['user_type'] === 'patient') {
+                            $patient_stmt = $conn->prepare("SELECT patient_id, first_name, last_name FROM patients WHERE user_id = ?");
+                            $patient_stmt->bind_param("i", $user['user_id']);
+                            $patient_stmt->execute();
+                            if ($patient_data = $patient_stmt->get_result()->fetch_assoc()) {
+                                $_SESSION['patient_id'] = $patient_data['patient_id'];
+                                $_SESSION['user_name'] = $patient_data['first_name'] . ' ' . $patient_data['last_name'];
+                            }
+                            $patient_stmt->close();
+                        }
+
+                        header("Location: ../{$user['user_type']}/{$user['user_type']}_dashboard.php");
+                        exit;
+                    }
+                } else {
+                    $error_message = "Invalid email, password, or user role.";
+                }
+            } else {
+                $error_message = "Invalid email, password, or user role.";
+            }
+            $stmt->close();
+            $conn->close();
+        } catch (Exception $e) {
+            $error_message = "An error occurred during login. Please try again later.";
+            // For debugging, you could log the error: error_log('Login error: ' . $e->getMessage());
         }
     }
 }
