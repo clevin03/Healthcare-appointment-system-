@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
 require_once '../config/db_connection.php';
 
 $patient_name = $_SESSION['user_name'] ?? 'Patient';
-$patient_email = isset($_SESSION['patient_email']) ? $_SESSION['patient_email'] : 'patient@edoc.com';
+$patient_email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : 'patient@edoc.com';
 $patient_id = $_SESSION['patient_id'] ?? $_SESSION['user_id'];
 
 // Get all active doctors count
