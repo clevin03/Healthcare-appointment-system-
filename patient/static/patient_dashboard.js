@@ -40,7 +40,7 @@ function handleNavigation(page) {
             window.location.href = 'my_bookings.php';
             break;
         case '#settings':
-            window.location.href = 'settings.php';
+            window.location.href = 'patientSettings.php';
             break;
         default:
             console.log('Unknown page');
