@@ -18,7 +18,7 @@ $patientPhone = '';
 $patientId = 0;
 $successMessage = '';
 $errorMessage = '';
-
+/*
 if ($patientName !== '') {
     $findByName = $conn->prepare('SELECT patient_id, patient_name, email, phone FROM patients WHERE patient_name = ? LIMIT 1');
     if ($findByName) {
@@ -37,17 +37,18 @@ if ($patientName !== '') {
         }
         $findByName->close();
     }
-}
+}*/
 
 if ($patientId <= 0 && $patientEmail !== '') {
-    $findByEmail = $conn->prepare('SELECT patient_id, first_name, last_name, email, phone FROM patients WHERE email = ? LIMIT 1');
+    $findByEmail = $conn->prepare('SELECT p.patient_id, p.first_name, p.last_name, u.email, p.phone FROM patients p LEFT JOIN users u ON p.user_id = u.user_id WHERE u.email = ? LIMIT 1');
     if ($findByEmail) {
         $findByEmail->bind_param('s', $patientEmail);
         $findByEmail->execute();
         $result = $findByEmail->get_result();
         if ($row = $result->fetch_assoc()) {
             $patientId = (int) $row['patient_id'];
-            $patientName = (string) ($row['patient_name'] ?? $patientName);
+            $patientFirstName = (string) ($row['first_name'] ?? '');
+            $patientLastName = (string) ($row['last_name'] ?? '');
             $normalizedLoadedName = strtolower(trim($patientName));
             if ($normalizedLoadedName === 'patient' || $normalizedLoadedName === 'test patient') {
                 $patientName = '';
@@ -172,9 +173,13 @@ $cssVer = @filemtime(__DIR__ . '/static/book_appointment.css') ?: time();
             <?php endif; ?>
 
             <form method="POST" class="booking-form">
-                <div class="form-group full">
-                    <label for="patient_name">Patient Name</label>
-                    <input type="text" id="patient_name" name="patient_name" value="<?php echo htmlspecialchars($patientName); ?>" placeholder="Enter patient full name" required>
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($patientFirstName); ?>" placeholder="Enter first name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($patientLastName); ?>" placeholder="Enter last name" required>
                 </div>
 
                 <div class="form-group">

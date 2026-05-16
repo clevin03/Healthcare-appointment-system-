@@ -58,6 +58,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $_SESSION['user_name'] = $patient_data['first_name'] . ' ' . $patient_data['last_name'];
                             }
                             $patient_stmt->close();
+                        } elseif ($user['user_type'] === 'doctor') {
+                            $doctor_stmt = $conn->prepare("SELECT doctor_id, doctor_name FROM doctors WHERE user_id = ?");
+                            if ($doctor_stmt) {
+                                $doctor_stmt->bind_param("i", $user['user_id']);
+                                $doctor_stmt->execute();
+                                if ($doctor_data = $doctor_stmt->get_result()->fetch_assoc()) {
+                                    $_SESSION['doctor_id'] = $doctor_data['doctor_id'];
+                                    $_SESSION['user_name'] = $doctor_data['doctor_name'];
+                                }
+                                $doctor_stmt->close();
+                            }
+                        }else{
+                            $admin_stmt = $conn->prepare("SELECT admin_id, admin_name FROM admin WHERE user_id = ?");
+                            if($admin_stmt){
+                                $admin_stmt->bind_param("i", $user['user_id']);
+                                $admin_stmt->execute();
+                                if ($admin_data = $admin_stmt->get_result()->fetch_assoc()) {
+                                    $_SESSION['user_id'] = $admin_data['admin_id'];
+                                    $_SESSION['user_name'] = $admin_data['admin_name'];
+                                    $_SESSION['user_type'] = 'admin';
+                                }
+                                $admin_stmt->close();
+                            }
                         }
 
                         header("Location: ../{$user['user_type']}/{$user['user_type']}_dashboard.php");
@@ -72,8 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->close();
             $conn->close();
         } catch (Exception $e) {
-            $error_message = "An error occurred during login. Please try again later.";
-            // For debugging, you could log the error: error_log('Login error: ' . $e->getMessage());
+            // For development, it's helpful to see the actual error message.
+            $error_message = "An error occurred during login: " . $e->getMessage();
+            // In production, it's better to log errors than to display them.
+            error_log('Login error: ' . $e->getMessage());
         }
     }
 }

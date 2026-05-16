@@ -40,7 +40,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
     $pending_appointments = $sql_result->fetch_assoc()['pending_appointments'];
 
     $sql = "SELECT a.appointment_id, a.appointment_number, a.appointment_date, a.appointment_time, a.status,
-                   p.first_name, d.doctor_name, dep.department_name
+                   CONCAT(p.first_name, ' ', p.last_name) AS patient_name, d.doctor_name, dep.department_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
@@ -50,13 +50,13 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
             LIMIT 5";
     $upcoming_appointments = [];
     $result = $conn->query($sql);
-    if ($result && $result->num_rows > 0) {
+    if ($result) {
         while ($row = $result->fetch_assoc()) {
             $upcoming_appointments[] = $row;
         }
     }
 
-    $sql = "SELECT patient_id, first_name, phone FROM patients ORDER BY created_at DESC LIMIT 5";
+    $sql = "SELECT patient_id, CONCAT(first_name, ' ', last_name) AS patient_name, phone FROM patients ORDER BY created_at DESC LIMIT 5";
     $recent_patients = [];
     $result = $conn->query($sql);
     if ($result && $result->num_rows > 0) {
@@ -158,7 +158,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                             ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($apt['appointment_number']); ?></td>
-                                    <td><?php echo htmlspecialchars($apt['patient_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($apt['patient_name'] ?? $apt['first_name']); ?></td>
                                     <td><?php echo htmlspecialchars($apt['doctor_name']); ?></td>
                                     <td><?php echo date('M d, Y - h:i A', strtotime($apt['appointment_date'] . ' ' . $apt['appointment_time'])); ?></td>
                                     <td><?php echo htmlspecialchars($apt['department_name']); ?></td>
