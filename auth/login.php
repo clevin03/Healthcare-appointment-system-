@@ -24,9 +24,9 @@ $success_message = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-    $user_type_from_form = $_POST['user_type'] ?? 'patient';
+    $user_type_from_form = $_POST['user_type'] ?? '';
 
-    if (empty($email) || empty($password)) {
+    if (empty($email) || empty($password) || empty($user_type_from_form)) {
         $error_message = "Please fill in all fields.";
     } else {
         try {
