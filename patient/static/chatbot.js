@@ -25,6 +25,8 @@ async function sendMessage(message) {
     showTypingIndicator();
     
     try {
+        const selectedModel = document.getElementById('modelSelect') ? document.getElementById('modelSelect').value : null;
+
         const response = await fetch('MentalAI/chatbot_handler.php', {
             method: 'POST',
             headers: {
@@ -34,7 +36,8 @@ async function sendMessage(message) {
                 message: message,
                 patient_id: patientId,
                 history: limitHistory(conversationHistory),
-                conversation_id: conversationId
+                conversation_id: conversationId,
+                model_override: selectedModel
             })
         });
 

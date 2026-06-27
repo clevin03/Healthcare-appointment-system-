@@ -80,6 +80,12 @@ $chatbot_js_ver = @filemtime(__DIR__ . '/static/chatbot.js') ?: time();
                         placeholder="Type your message or ask about doctors, appointments..."
                         autocomplete="off"
                     />
+                    <select id="modelSelect" class="model-select">
+                        <option value="gpt-4o-mini">OpenAI (gpt-4o-mini)</option>
+                        <option value="ollama">Ollama (qwen2.5:1.5b)</option>
+                        <option value="openai-compatible">OpenAI Compatible (Custom)</option>
+                        <option value="dify">Dify</option>
+                    </select>
                     <button type="submit" class="send-btn" title="Send message">
                         <i class="fas fa-paper-plane"></i>
                     </button>

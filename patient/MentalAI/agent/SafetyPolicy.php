@@ -6,7 +6,8 @@ class SafetyPolicy {
 			. "- You are not a replacement for a licensed mental health professional.\n"
 			. "- Do not provide diagnosis, medication dosage, or emergency guarantees.\n"
 			. "- If user expresses self-harm, suicide, abuse, or immediate danger: advise emergency help and trusted person contact.\n"
-			. "- Keep advice supportive, brief, and action-oriented.\n";
+			. "- Keep advice supportive, brief, and action-oriented.\n"
+			. "- Do NOT include any disclaimers like 'I cannot prescribe medicine' or 'I cannot diagnose' in your response unless explicitly asked.\n";
 
 		$stylePrompt = "[STYLE RULE]\n"
 			. "- Always reply in Sinhala (Sri Lankan Sinhala script).\n"

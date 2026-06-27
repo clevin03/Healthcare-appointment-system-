@@ -74,6 +74,10 @@ define('OPENAI_API_KEY', envValue('OPENAI_API_KEY', ''));
 define('OPENAI_MODEL', envValue('OPENAI_MODEL', 'gpt-4o-mini'));
 define('OPENAI_API_URL', envValue('OPENAI_API_URL', 'https://api.openai.com/v1/chat/completions'));
 
+define('OPENAI_COMPATIBLE_API_KEY', envValue('OPENAI_COMPATIBLE_API_KEY', ''));
+define('OPENAI_COMPATIBLE_MODEL', envValue('OPENAI_COMPATIBLE_MODEL', 'gpt-4o-mini'));
+define('OPENAI_COMPATIBLE_BASE_URL', envValue('OPENAI_COMPATIBLE_BASE_URL', 'https://api.openai.com/v1/chat/completions'));
+
 define('DIFY_API_KEY', envValue('DIFY_API_KEY', ''));
 define('DIFY_API_URL', envValue('DIFY_API_URL', 'https://api.dify.ai/v1/chat-messages'));
 define('DIFY_CONVERSATION_ID', envValue('DIFY_CONVERSATION_ID', ''));

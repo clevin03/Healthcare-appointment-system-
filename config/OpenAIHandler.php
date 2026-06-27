@@ -376,8 +376,7 @@ class OpenAIHandler {
         if ($this->provider === 'dify') {
             return !empty($this->apiKey) && !empty($this->apiUrl);
         }
-
-        return !empty($this->apiKey) && strpos($this->apiKey, 'sk-') === 0 && $this->apiKey !== 'sk-your-api-key-here';
+        return !empty($this->apiKey) && $this->apiKey !== 'sk-your-key-here' && $this->apiKey !== 'sk-your-api-key-here';
     }
 
     public function getProvider() {

@@ -58,15 +58,46 @@ try {
 
     $difyUser = 'patient-' . $patientId;
     $handlers = [];
+    $modelOverride = isset($input['model_override']) ? $input['model_override'] : null;
 
-    $ollamaHandler = new OpenAIHandler('', OLLAMA_MODEL, OLLAMA_API_URL, OPENAI_TIMEOUT, 'ollama');
-    $handlers[] = $ollamaHandler;
+    if ($modelOverride === 'ollama') {
+        $handlers[] = new OpenAIHandler('', OLLAMA_MODEL, OLLAMA_API_URL, OPENAI_TIMEOUT, 'ollama');
+    } elseif ($modelOverride === 'gpt-4o-mini' || $modelOverride === 'openai') {
+        $handlers[] = new OpenAIHandler(OPENAI_API_KEY, OPENAI_MODEL, OPENAI_API_URL, OPENAI_TIMEOUT, 'openai');
+    } elseif ($modelOverride === 'openai-compatible') {
+        $baseUrl = OPENAI_COMPATIBLE_BASE_URL;
+        if (substr($baseUrl, -1) !== '/') {
+            $baseUrl .= '/';
+        }
+        if (strpos($baseUrl, 'chat/completions') === false) {
+            $baseUrl .= 'chat/completions';
+        }
+        $handlers[] = new OpenAIHandler(OPENAI_COMPATIBLE_API_KEY, OPENAI_COMPATIBLE_MODEL, $baseUrl, 60, 'openai');
+    } elseif ($modelOverride === 'dify') {
+        $handlers[] = new OpenAIHandler(DIFY_API_KEY, 'dify', DIFY_API_URL, OPENAI_TIMEOUT, 'dify', $conversationId, $difyUser);
+    } else {
+        // Fallback or default order
+        $ollamaHandler = new OpenAIHandler('', OLLAMA_MODEL, OLLAMA_API_URL, OPENAI_TIMEOUT, 'ollama');
+        $handlers[] = $ollamaHandler;
+    
+        $openaiHandler = new OpenAIHandler(OPENAI_API_KEY, OPENAI_MODEL, OPENAI_API_URL, OPENAI_TIMEOUT, 'openai');
+        $handlers[] = $openaiHandler;
 
-    $openaiHandler = new OpenAIHandler(OPENAI_API_KEY, OPENAI_MODEL, OPENAI_API_URL, OPENAI_TIMEOUT, 'openai');
-    $handlers[] = $openaiHandler;
-
-    $difyHandler = new OpenAIHandler(DIFY_API_KEY, 'dify', DIFY_API_URL, OPENAI_TIMEOUT, 'dify', $conversationId, $difyUser);
-    $handlers[] = $difyHandler;
+        if (!empty(OPENAI_COMPATIBLE_API_KEY) && OPENAI_COMPATIBLE_API_KEY !== 'sk-your-key-here') {
+            $baseUrl = OPENAI_COMPATIBLE_BASE_URL;
+            if (substr($baseUrl, -1) !== '/') {
+                $baseUrl .= '/';
+            }
+            if (strpos($baseUrl, 'chat/completions') === false) {
+                $baseUrl .= 'chat/completions';
+            }
+            $openaiCompatibleHandler = new OpenAIHandler(OPENAI_COMPATIBLE_API_KEY, OPENAI_COMPATIBLE_MODEL, $baseUrl, 60, 'openai');
+            $handlers[] = $openaiCompatibleHandler;
+        }
+    
+        $difyHandler = new OpenAIHandler(DIFY_API_KEY, 'dify', DIFY_API_URL, OPENAI_TIMEOUT, 'dify', $conversationId, $difyUser);
+        $handlers[] = $difyHandler;
+    }
 
     $result = AgentOrchestrator::handle($message, $conversationHistory, $patientId, $conn, $handlers);
 
