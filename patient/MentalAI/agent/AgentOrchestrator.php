@@ -27,10 +27,23 @@ class AgentOrchestrator {
 			$aiResponse = $aiHandler->chat($message, $conversationHistory, $enhancedSystemPrompt);
 
 			if ($aiResponse['success']) {
-				$response = (string) $aiResponse['message'];
+				// Let the AI provide the primary response. Only override for HIGH risk crises.
+				$aiResponseMsg = (string) $aiResponse['message'];
 				$source = $aiResponse['provider'] ?? 'openai';
 				$usedProvider = $aiHandler->getProvider();
 				$actions = ResponseEngine::getContextualActions($message, $patientId, $conn);
+				
+				// Let ResponseEngine try to pattern match for some hardcoded scenarios (like finding doctors)
+				$patternActions = [];
+				$patternResponse = ResponseEngine::handlePatternMatching($message, $patientId, $conn, $patternActions, $conversationHistory);
+				
+				if (!empty($patternResponse)) {
+				    $response = $patternResponse;
+				    $actions = $patternActions;
+				    $source = 'pattern_matcher';
+				} else {
+				    $response = $aiResponseMsg;
+				}
 
 				if ($riskAssessment['level'] === 'high') {
 					$actions = SafetyPolicy::getHighRiskActions();

@@ -94,7 +94,7 @@ class OpenAIHandler {
             'model' => $this->model,
             'messages' => $messages,
             'temperature' => 0.7,
-            'max_tokens' => 500,
+            'max_tokens' => 1500,
             'top_p' => 0.9
         ];
 
@@ -157,7 +157,7 @@ class OpenAIHandler {
             'options' => [
                 'temperature' => 0.4,
                 'top_p' => 0.9,
-                'num_predict' => 220,
+                'num_predict' => 800,
                 'num_ctx' => 2048
             ]
         ];
