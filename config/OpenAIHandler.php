@@ -20,7 +20,7 @@ class OpenAIHandler {
         $this->difyUser = trim((string) $difyUser) !== '' ? trim((string) $difyUser) : 'patient-user';
     }
 
-    public function chat($userMessage, $conversationHistory = [], $systemPrompt = '') {
+    public function chat($userMessage, $conversationHistory = [], $systemPrompt = '', $imageData = null) {
         try {
             $messages = [];
 
@@ -52,10 +52,36 @@ class OpenAIHandler {
                 }
             }
             
-            $messages[] = [
-                'role' => 'user',
-                'content' => $userMessage
-            ];
+            if ($imageData && ($this->provider === 'openai' || $this->provider === 'openai-compatible')) {
+                // OpenAI Vision format
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => [
+                        [
+                            'type' => 'text',
+                            'text' => $userMessage
+                        ],
+                        [
+                            'type' => 'image_url',
+                            'image_url' => [
+                                'url' => $imageData
+                            ]
+                        ]
+                    ]
+                ];
+            } else if ($imageData && $this->provider === 'ollama') {
+                // Ollama image format
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => $userMessage,
+                    'images' => [preg_replace('/^data:image\/\w+;base64,/', '', $imageData)]
+                ];
+            } else {
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => $userMessage
+                ];
+            }
             
             if ($this->provider === 'ollama') {
                 $response = $this->makeOllamaRequest($messages);

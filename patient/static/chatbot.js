@@ -1,26 +1,51 @@
 const chatMessages = document.getElementById('chatMessages');
 const userInput = document.getElementById('userInput');
 const chatForm = document.getElementById('chatForm');
+const imageInput = document.getElementById('imageInput');
+const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+const imagePreview = document.getElementById('imagePreview');
 
 let conversationHistory = [];
 const MAX_HISTORY = 10;
 let currentRiskLevel = 'none';
 let consentModalTimer = null;
 let conversationId = sessionStorage.getItem('dify_conversation_id') || '';
+let selectedImageBase64 = '';
+
+function handleImageSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            selectedImageBase64 = e.target.result;
+            imagePreview.src = selectedImageBase64;
+            imagePreviewContainer.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeImage() {
+    selectedImageBase64 = '';
+    imageInput.value = '';
+    imagePreview.src = '';
+    imagePreviewContainer.classList.add('hidden');
+}
 
 function handleFormSubmit(event) {
     event.preventDefault();
     const message = userInput.value.trim();
-    if (message) {
+    if (message || selectedImageBase64) {
         sendMessage(message);
         userInput.value = '';
+        removeImage();
         userInput.focus(); 
     }
 }
 
 async function sendMessage(message) {
 
-    addMessage(message, 'user');
+    addMessage(message, 'user', null, null, selectedImageBase64);
     
     showTypingIndicator();
     
@@ -33,11 +58,12 @@ async function sendMessage(message) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                message: message,
+                message: message || "Can you identify this medicine?",
                 patient_id: patientId,
                 history: limitHistory(conversationHistory),
                 conversation_id: conversationId,
-                model_override: selectedModel
+                model_override: selectedModel,
+                image: selectedImageBase64 || null
             })
         });
 
@@ -109,7 +135,7 @@ function limitHistory(history) {
     return history.slice(-MAX_HISTORY);
 }
 
-function addMessage(text, sender, actions = null, risk = null) {
+function addMessage(text, sender, actions = null, risk = null, imageBase64 = null) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}-message`;
     
@@ -134,15 +160,26 @@ function addMessage(text, sender, actions = null, risk = null) {
     const content = document.createElement('div');
     content.className = 'message-content';
 
-    if (text.includes('<table>') || text.includes('<div class=')) {
-        content.innerHTML = text;
-    } else {
-        const paragraphs = text.split('\n').filter(p => p.trim());
-        paragraphs.forEach(para => {
-            const p = document.createElement('p');
-            p.textContent = para;
-            content.appendChild(p);
-        });
+    if (imageBase64) {
+        const img = document.createElement('img');
+        img.src = imageBase64;
+        img.className = 'message-image';
+        content.appendChild(img);
+    }
+
+    if (text) {
+        if (text.includes('<table>') || text.includes('<div class=')) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = text;
+            content.appendChild(tempDiv);
+        } else {
+            const paragraphs = text.split('\n').filter(p => p.trim());
+            paragraphs.forEach(para => {
+                const p = document.createElement('p');
+                p.textContent = para;
+                content.appendChild(p);
+            });
+        }
     }
 
     if (actions && actions.length > 0) {

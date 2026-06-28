@@ -35,7 +35,7 @@ try {
     }
 
     $message = trim((string) $input['message']);
-    if ($message === '') {
+    if ($message === '' && !isset($input['image'])) {
         respondJson([
             'success' => false,
             'error' => 'Message cannot be empty'
@@ -45,6 +45,7 @@ try {
     $patientId = (int) $_SESSION['user_id'];
     $conversationHistory = is_array($input['history'] ?? null) ? $input['history'] : [];
     $conversationId = is_string($input['conversation_id'] ?? null) ? trim((string) $input['conversation_id']) : (string) ($_SESSION['dify_conversation_id'] ?? DIFY_CONVERSATION_ID);
+    $imageData = is_string($input['image'] ?? null) ? trim((string) $input['image']) : null;
 
     mysqli_report(MYSQLI_REPORT_OFF);
     $conn = @new mysqli('localhost', 'root', '', 'edoctor');
@@ -99,7 +100,7 @@ try {
         $handlers[] = $difyHandler;
     }
 
-    $result = AgentOrchestrator::handle($message, $conversationHistory, $patientId, $conn, $handlers);
+    $result = AgentOrchestrator::handle($message, $conversationHistory, $patientId, $conn, $handlers, $imageData);
 
     if (!empty($result['conversation_id'])) {
         $_SESSION['dify_conversation_id'] = (string) $result['conversation_id'];
