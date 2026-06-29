@@ -20,7 +20,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
     require_once '../config/db_connection.php';
     
     $sql = "SELECT a.appointment_id, a.appointment_number, a.appointment_date, a.appointment_time, a.status,
-                   p.first_name, p.phone,
+                   p.patient_name, p.phone,
                    d.doctor_name,
                    dept.department_name
             FROM appointments a
