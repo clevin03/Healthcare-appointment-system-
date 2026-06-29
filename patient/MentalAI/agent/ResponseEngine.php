@@ -92,13 +92,9 @@ class ResponseEngine {
 			return $response;
 		}
 
-		$response = "I am here with you. We can talk step by step.\n\nWould you like to:\n1) talk about what you are feeling now\n2) get a quick self-care plan\n3) connect with a mental health doctor";
-		$actions = [
-			['label' => 'Talk To Me', 'action' => 'I want to talk about what I am feeling'],
-			['label' => 'Self-Care Plan', 'action' => 'Show self-care steps'],
-			['label' => 'Find Psychiatrist', 'action' => 'Find psychiatrist']
-		];
-
+		$response = '';
+		// We rely on the AI model to handle general questions, medication info, etc.
+		// Returning empty response/actions means the orchestrator will just use the AI's response.
 		return $response;
 	}
 

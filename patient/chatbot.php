@@ -71,15 +71,31 @@ $chatbot_js_ver = @filemtime(__DIR__ . '/static/chatbot.js') ?: time();
         </div>
 
         <div class="chatbot-input-area">
+            <div id="imagePreviewContainer" class="image-preview-container hidden">
+                <img id="imagePreview" src="" alt="Selected Image">
+                <button type="button" class="remove-image-btn" onclick="removeImage()" title="Remove image">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <form id="chatForm" onsubmit="handleFormSubmit(event)">
                 <div class="input-wrapper">
+                    <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
+                    <button type="button" class="attach-btn" onclick="document.getElementById('imageInput').click()" title="Attach a medicine image">
+                        <i class="fas fa-camera"></i>
+                    </button>
                     <input 
                         type="text" 
                         id="userInput" 
                         class="chat-input" 
-                        placeholder="Type your message or ask about doctors, appointments..."
+                        placeholder="Type message or ask about a medicine image..."
                         autocomplete="off"
                     />
+                    <select id="modelSelect" class="model-select">
+                        <option value="gpt-4o-mini">OpenAI (gpt-4o-mini)</option>
+                        <option value="ollama">Ollama (qwen2.5:1.5b)</option>
+                        <option value="openai-compatible">OpenAI Compatible (Custom)</option>
+                        <option value="dify">Dify</option>
+                    </select>
                     <button type="submit" class="send-btn" title="Send message">
                         <i class="fas fa-paper-plane"></i>
                     </button>
