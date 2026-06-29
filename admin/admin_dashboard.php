@@ -40,7 +40,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
     $pending_appointments = $sql_result->fetch_assoc()['pending_appointments'];
 
     $sql = "SELECT a.appointment_id, a.appointment_number, a.appointment_date, a.appointment_time, a.status,
-                   p.first_name, d.doctor_name, dep.department_name
+                   p.patient_name, d.doctor_name, dep.department_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
@@ -56,7 +56,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
         }
     }
 
-    $sql = "SELECT patient_id, first_name, phone FROM patients ORDER BY created_at DESC LIMIT 5";
+    $sql = "SELECT patient_id, patient_name, phone FROM patients ORDER BY created_at DESC LIMIT 5";
     $recent_patients = [];
     $result = $conn->query($sql);
     if ($result && $result->num_rows > 0) {
@@ -208,7 +208,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                                 ?>
                                     <tr>
                                         <td>PAT<?php echo str_pad($patient['patient_id'], 3, '0', STR_PAD_LEFT); ?></td>
-                                        <td><?php echo htmlspecialchars($patient['first_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($patient['patient_name']); ?></td>
                                         <td><?php echo htmlspecialchars($patient['phone'] ?: 'N/A'); ?></td>
                                         <td><span class="badge badge-success">Active</span></td>
                                     </tr>
