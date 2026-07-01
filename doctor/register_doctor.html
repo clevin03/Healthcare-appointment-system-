@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Doctor</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="register-box">
+        <h2>Register New Doctor</h2>
+
+        <form id="doctorForm" method="POST" action="register_doctor_handler.php">
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" required placeholder="Dr. Kamal Perera">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="doctor@healthcare.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Min 6 characters">
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="text" id="phone" name="phone" placeholder="0771234567">
+            </div>
+
+            <div class="form-group">
+                <label for="specialization">Specialization</label>
+                <input type="text" id="specialization" name="specialization" placeholder="Cardiologist">
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department" placeholder="Cardiology">
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Experience (years)</label>
+                <input type="number" id="experience" name="experience" min="0" placeholder="5">
+            </div>
+
+            <button type="submit" class="btn-submit">Register Doctor</button>
+
+            <div class="form-footer">
+                <a href="doctors_list.php">← Back to Doctors List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

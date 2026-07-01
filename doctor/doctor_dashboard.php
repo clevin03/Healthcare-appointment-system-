@@ -9,27 +9,57 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',sans-serif;background:#f4f6fb;min-height:100vh;}
 
-/* ── LOGIN ───────────────────────────────────────────────────────────── */
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6C4FC4 0%,#9B7FE8 100%);}
-.login-card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 24px 70px rgba(44,47,63,0.2);}
+/* ── LOGIN / REGISTER PAGE ───────────────────────────────────────────── */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6C4FC4 0%,#9B7FE8 100%);padding:24px 16px;}
+.login-card{background:#fff;border-radius:16px;padding:36px 36px 32px;width:100%;max-width:440px;box-shadow:0 24px 70px rgba(44,47,63,0.2);}
 .login-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;}
 .login-logo i{font-size:36px;color:#6C4FC4;}
 .login-logo span{font-size:24px;font-weight:700;color:#2C2F3F;}
 .login-title{font-size:18px;font-weight:700;color:#2C2F3F;text-align:center;margin-bottom:4px;}
-.login-sub{font-size:13px;color:#9ca3c0;text-align:center;margin-bottom:28px;}
-.field{margin-bottom:18px;}
+.login-sub{font-size:13px;color:#9ca3c0;text-align:center;margin-bottom:20px;}
+
+/* ── TABS ────────────────────────────────────────────────────────────── */
+.auth-tabs{display:flex;border-bottom:2px solid #ede9fb;margin-bottom:22px;}
+.auth-tab{flex:1;background:none;border:none;border-bottom:2.5px solid transparent;margin-bottom:-2px;padding:10px 0;font-size:13px;font-weight:600;font-family:'Segoe UI',sans-serif;color:#9ca3c0;cursor:pointer;transition:color .15s,border-color .15s;}
+.auth-tab.active{color:#6C4FC4;border-bottom-color:#6C4FC4;}
+.auth-tab:hover:not(.active){color:#534AB7;}
+.auth-panel{display:none;}
+.auth-panel.active{display:block;}
+
+/* ── ALERT ───────────────────────────────────────────────────────────── */
+.alert-box{border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:16px;display:flex;align-items:flex-start;gap:8px;}
+.alert-box i{flex-shrink:0;font-size:15px;margin-top:1px;}
+.alert-success{background:#f0fff4;color:#276749;border:1px solid #c6f6d5;}
+.alert-danger{background:#fff5f5;color:#c53030;border:1px solid #fed7d7;}
+
+/* ── FIELD ───────────────────────────────────────────────────────────── */
+.field{margin-bottom:16px;}
 .field label{display:block;font-size:12px;font-weight:600;color:#534AB7;margin-bottom:7px;letter-spacing:0.3px;}
+.field label .req{color:#6C4FC4;margin-left:2px;}
 .field-wrap{position:relative;}
 .field-wrap .fi{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:17px;color:#9ca3c0;pointer-events:none;}
-.field input{width:100%;padding:11px 44px 11px 40px;border:1.5px solid #e0daf5;border-radius:9px;font-size:14px;color:#2C2F3F;outline:none;transition:border-color 0.15s,box-shadow 0.15s;}
-.field input:focus{border-color:#6C4FC4;box-shadow:0 0 0 3px rgba(108,79,196,0.1);}
-.field input.err{border-color:#EF4444;}
+.field input,.field select{width:100%;padding:11px 14px 11px 40px;border:1.5px solid #e0daf5;border-radius:9px;font-size:13px;color:#2C2F3F;background:#f8f7ff;outline:none;transition:border-color .15s,box-shadow .15s;appearance:none;font-family:'Segoe UI',sans-serif;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3c0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:#f8f7ff;padding-right:36px;}
+.field input:focus,.field select:focus{border-color:#6C4FC4;box-shadow:0 0 0 3px rgba(108,79,196,0.1);background:#fff;}
+.field input.err,.field select.err{border-color:#EF4444;background:#fff5f5;}
 .eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3c0;font-size:17px;display:flex;align-items:center;padding:2px;}
 .eye-btn:hover{color:#6C4FC4;}
-.err-msg{font-size:12px;color:#EF4444;margin-top:7px;display:flex;align-items:center;gap:4px;}
-.login-btn{width:100%;background:#6C4FC4;color:#fff;border:none;padding:13px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.err-msg{font-size:11px;color:#EF4444;margin-top:5px;display:flex;align-items:center;gap:4px;}
+
+/* ── FIELD ROW ───────────────────────────────────────────────────────── */
+.field-row{display:flex;gap:12px;}
+.field-row .field{flex:1;}
+
+/* ── SECTION LABEL ───────────────────────────────────────────────────── */
+.sec-lbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#9ca3c0;margin:4px 0 12px;}
+.sec-divider{border:none;border-top:1px solid #ede9fb;margin:4px 0 16px;}
+
+/* ── BUTTONS ─────────────────────────────────────────────────────────── */
+.login-btn{width:100%;background:#6C4FC4;color:#fff;border:none;padding:13px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Segoe UI',sans-serif;}
 .login-btn:hover{background:#534AB7;}
-.divider{display:flex;align-items:center;gap:10px;margin:22px 0 18px;}
+
+/* ── DEMO ACCOUNTS ───────────────────────────────────────────────────── */
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0 16px;}
 .divider span{font-size:12px;color:#c5bff0;white-space:nowrap;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:#ede9fb;}
 .demo-accounts{background:#f4f0ff;border-radius:10px;padding:14px 16px;}
@@ -42,7 +72,7 @@ body{font-family:'Segoe UI',sans-serif;background:#f4f6fb;min-height:100vh;}
 .demo-spec{font-size:11px;color:#9ca3c0;}
 .demo-creds{font-size:11px;color:#9ca3c0;text-align:right;}
 .demo-creds strong{color:#534AB7;display:block;}
-.use-btn{background:#EEEDFE;border:none;color:#534AB7;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer;margin-left:8px;transition:background 0.15s;}
+.use-btn{background:#EEEDFE;border:none;color:#534AB7;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer;margin-left:8px;transition:background .15s;}
 .use-btn:hover{background:#6C4FC4;color:#fff;}
 
 /* ── APP SHELL ───────────────────────────────────────────────────────── */
@@ -52,11 +82,11 @@ body{font-family:'Segoe UI',sans-serif;background:#f4f6fb;min-height:100vh;}
 .topbar-brand i{font-size:24px;}
 .topbar-right{display:flex;align-items:center;gap:14px;color:#fff;font-size:14px;}
 .topbar-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,0.4);}
-.logout-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:7px 16px;border-radius:7px;cursor:pointer;font-size:13px;transition:background 0.15s;display:flex;align-items:center;gap:6px;}
+.logout-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:7px 16px;border-radius:7px;cursor:pointer;font-size:13px;transition:background .15s;display:flex;align-items:center;gap:6px;}
 .logout-btn:hover{background:rgba(255,255,255,0.28);}
 .body{display:flex;flex:1;}
 .sidebar{width:200px;background:#2C2F3F;flex-shrink:0;padding:18px 0;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;color:#9ca3c0;font-size:13px;cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;color:#9ca3c0;font-size:13px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
 .nav-item:hover{background:rgba(255,255,255,0.06);color:#fff;}
 .nav-item.active{color:#fff;border-left:3px solid #7c6ee0;background:rgba(255,255,255,0.08);}
 .nav-item i{font-size:18px;}
@@ -71,32 +101,30 @@ body{font-family:'Segoe UI',sans-serif;background:#f4f6fb;min-height:100vh;}
 .welcome-doc-badge .ava{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
 .welcome-doc-badge .info strong{font-size:14px;color:#2C2F3F;display:block;}
 .welcome-doc-badge .info small{font-size:12px;color:#9ca3c0;}
-.view-btn{background:#6C4FC4;color:#fff;border:none;padding:10px 20px;border-radius:7px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background 0.15s;}
+.view-btn{background:#6C4FC4;color:#fff;border:none;padding:10px 20px;border-radius:7px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background .15s;}
 .view-btn:hover{background:#534AB7;}
 .status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
-.stat-card{background:#fff;border:1px solid #e8e4f8;border-radius:12px;padding:18px 14px;text-align:center;transition:border-color 0.15s;cursor:pointer;}
+.stat-card{background:#fff;border:1px solid #e8e4f8;border-radius:12px;padding:18px 14px;text-align:center;transition:border-color .15s;cursor:pointer;}
 .stat-card:hover{border-color:#7c6ee0;}
 .stat-card.hl{border:2px solid #7c6ee0;}
 .stat-icon{font-size:24px;color:#c5bff0;margin-bottom:8px;}
 .stat-num{font-size:30px;font-weight:700;color:#534AB7;margin-bottom:4px;}
 .stat-label{font-size:12px;color:#9ca3c0;}
-
-/* Inline appt on dashboard */
 .appt-box{background:#fff;border:1px solid #e8e4f8;border-radius:12px;overflow:hidden;margin-top:0;}
 .appt-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #f0edf8;}
 .appt-hdr span{font-size:14px;font-weight:600;color:#2C2F3F;display:flex;align-items:center;gap:8px;}
-.hide-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:#534AB7;cursor:pointer;background:none;border:none;transition:opacity 0.15s;}
+.hide-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:#534AB7;cursor:pointer;background:none;border:none;transition:opacity .15s;}
 .hide-btn:hover{opacity:0.7;}
 .appt-bdy{padding:18px;}
 .search-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.search-row input{flex:1;background:#f4f6fb;border:1px solid #e0daf5;border-radius:8px;padding:9px 14px;font-size:13px;color:#2C2F3F;outline:none;transition:border-color 0.15s;}
+.search-row input{flex:1;background:#f4f6fb;border:1px solid #e0daf5;border-radius:8px;padding:9px 14px;font-size:13px;color:#2C2F3F;outline:none;transition:border-color .15s;}
 .search-row input:focus{border-color:#7c6ee0;}
 .city-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.pill{padding:5px 16px;border-radius:20px;font-size:12px;border:1px solid #7c6ee0;background:#fff;color:#534AB7;cursor:pointer;transition:all 0.15s;}
+.pill{padding:5px 16px;border-radius:20px;font-size:12px;border:1px solid #7c6ee0;background:#fff;color:#534AB7;cursor:pointer;transition:all .15s;}
 .pill:hover{background:#EEEDFE;}
 .pill.active{background:#6C4FC4;color:#fff;border-color:#6C4FC4;}
 .count-lbl{font-size:12px;color:#9ca3c0;margin-bottom:12px;}
-.hosp-card{background:#f9f8fe;border:1px solid #ede9fb;border-radius:10px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;transition:border-color 0.15s;}
+.hosp-card{background:#f9f8fe;border:1px solid #ede9fb;border-radius:10px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;transition:border-color .15s;}
 .hosp-card:hover{border-color:#7c6ee0;}
 .hc-left{display:flex;align-items:center;gap:12px;}
 .hc-ico{width:40px;height:40px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -104,7 +132,7 @@ body{font-family:'Segoe UI',sans-serif;background:#f4f6fb;min-height:100vh;}
 .hc-name{font-size:14px;font-weight:600;color:#2C2F3F;margin-bottom:3px;}
 .hc-meta{font-size:12px;color:#9ca3c0;}
 .city-badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;background:#EEEDFE;color:#534AB7;margin-left:8px;font-weight:500;}
-.book-btn{background:#6C4FC4;color:#fff;border:none;padding:8px 16px;border-radius:7px;font-size:12px;cursor:pointer;transition:background 0.15s;flex-shrink:0;}
+.book-btn{background:#6C4FC4;color:#fff;border:none;padding:8px 16px;border-radius:7px;font-size:12px;cursor:pointer;transition:background .15s;flex-shrink:0;}
 .book-btn:hover{background:#534AB7;}
 .empty-msg{text-align:center;color:#9ca3c0;padding:2rem;font-size:13px;}
 
@@ -118,7 +146,7 @@ body{font-family:'Segoe UI',sans-serif;background:#f4f6fb;min-height:100vh;}
 .sum-card .num{font-size:22px;font-weight:700;color:#2C2F3F;line-height:1.2;}
 .sum-card .lbl{font-size:11px;color:#9ca3c0;}
 .tab-row{display:flex;gap:4px;border-bottom:2px solid #ede9fb;margin-bottom:18px;}
-.tab{padding:9px 18px;font-size:13px;color:#9ca3c0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;}
+.tab{padding:9px 18px;font-size:13px;color:#9ca3c0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;}
 .tab:hover{color:#534AB7;}
 .tab.active{color:#6C4FC4;border-bottom:2px solid #6C4FC4;font-weight:700;}
 .toolbar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
@@ -136,7 +164,7 @@ tr:hover td{background:#faf8ff;}
 .badge.confirmed{background:#D1FAE5;color:#065F46;}
 .badge.cancelled{background:#FEE2E2;color:#991B1B;}
 .badge.completed{background:#DBEAFE;color:#1E40AF;}
-.act-btn{background:none;border:1px solid #e0daf5;border-radius:6px;padding:5px 11px;font-size:12px;cursor:pointer;color:#534AB7;margin-right:4px;transition:all 0.15s;}
+.act-btn{background:none;border:1px solid #e0daf5;border-radius:6px;padding:5px 11px;font-size:12px;cursor:pointer;color:#534AB7;margin-right:4px;transition:all .15s;}
 .act-btn:hover{background:#EEEDFE;border-color:#7c6ee0;}
 .act-btn.danger{color:#991B1B;border-color:#fecaca;}
 .act-btn.danger:hover{background:#FEE2E2;}
@@ -160,23 +188,23 @@ tr:hover td{background:#faf8ff;}
 .field-lbl{font-size:12px;color:#9ca3c0;margin-bottom:8px;margin-top:16px;display:flex;align-items:center;gap:6px;}
 .calendar{background:#f9f8fe;border-radius:10px;padding:14px;}
 .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.cal-nav{background:none;border:none;color:#534AB7;cursor:pointer;font-size:18px;padding:2px 8px;border-radius:6px;transition:background 0.15s;}
+.cal-nav{background:none;border:none;color:#534AB7;cursor:pointer;font-size:18px;padding:2px 8px;border-radius:6px;transition:background .15s;}
 .cal-nav:hover{background:#EEEDFE;}
 .cal-month-lbl{font-size:14px;font-weight:700;color:#2C2F3F;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;}
 .cal-dow{font-size:11px;color:#9ca3c0;padding:3px 0;font-weight:600;}
-.cal-day{font-size:12px;padding:7px 2px;border-radius:7px;cursor:pointer;color:#2C2F3F;transition:all 0.12s;}
+.cal-day{font-size:12px;padding:7px 2px;border-radius:7px;cursor:pointer;color:#2C2F3F;transition:all .12s;}
 .cal-day:hover{background:#EEEDFE;color:#534AB7;}
 .cal-day.selected{background:#6C4FC4;color:#fff;font-weight:700;}
 .cal-day.disabled{color:#d1d5db;cursor:default;}
 .cal-day.disabled:hover{background:none;color:#d1d5db;}
 .time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px;}
-.time-slot{font-size:12px;padding:8px 4px;text-align:center;border:1px solid #e0daf5;border-radius:7px;cursor:pointer;background:#fff;color:#2C2F3F;transition:all 0.12s;}
+.time-slot{font-size:12px;padding:8px 4px;text-align:center;border:1px solid #e0daf5;border-radius:7px;cursor:pointer;background:#fff;color:#2C2F3F;transition:all .12s;}
 .time-slot:hover{border-color:#7c6ee0;color:#534AB7;background:#EEEDFE;}
 .time-slot.selected{background:#6C4FC4;color:#fff;border-color:#6C4FC4;font-weight:700;}
 .time-slot.taken{background:#f9f8fe;color:#d1d5db;cursor:default;text-decoration:line-through;}
 .time-slot.taken:hover{background:#f9f8fe;color:#d1d5db;border-color:#e0daf5;}
-.confirm-btn{width:100%;background:#6C4FC4;color:#fff;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:20px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.15s;}
+.confirm-btn{width:100%;background:#6C4FC4;color:#fff;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:20px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;}
 .confirm-btn:hover{background:#534AB7;}
 .confirm-btn:disabled{opacity:0.4;cursor:default;}
 .confirm-btn:disabled:hover{background:#6C4FC4;}
@@ -185,7 +213,7 @@ tr:hover td{background:#faf8ff;}
 .success-ico i{font-size:28px;color:#3B6D11;}
 .success-box h3{font-size:17px;font-weight:700;color:#2C2F3F;margin-bottom:10px;}
 .success-box p{font-size:13px;color:#6b7280;line-height:1.9;margin-bottom:20px;}
-.done-btn{background:#6C4FC4;color:#fff;border:none;padding:10px 30px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:background 0.15s;}
+.done-btn{background:#6C4FC4;color:#fff;border:none;padding:10px 30px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;}
 .done-btn:hover{background:#534AB7;}
 
 @media(max-width:768px){
@@ -193,83 +221,210 @@ tr:hover td{background:#faf8ff;}
   .sidebar{display:none;}
   .time-grid{grid-template-columns:repeat(3,1fr);}
   .welcome-box{flex-direction:column;}
+  .field-row{flex-direction:column;gap:0;}
 }
 </style>
 </head>
 <body>
 
 <!-- ═══════════════════════════════════════════════════════
-     LOGIN PAGE
+     LOGIN / REGISTER PAGE
 ════════════════════════════════════════════════════════ -->
 <div id="loginPage">
   <div class="login-page">
     <div class="login-card">
+
+      <!-- Branding -->
       <div class="login-logo">
         <i class="ti ti-building-hospital"></i>
         <span>HealthCare</span>
       </div>
       <div class="login-title">Doctor Portal</div>
-      <div class="login-sub">Sign in with your doctor credentials</div>
+      <div class="login-sub" id="authSub">Sign in with your doctor credentials</div>
 
-      <div class="field">
-        <label>Username</label>
-        <div class="field-wrap">
-          <i class="ti ti-user fi"></i>
-          <input type="text" id="usernameInput" placeholder="Enter your username" oninput="clearErr()"/>
-        </div>
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin"    onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab"        id="tabRegister" onclick="switchAuthTab('register')">Register New Doctor</button>
       </div>
 
-      <div class="field">
-        <label>Password</label>
-        <div class="field-wrap">
-          <i class="ti ti-lock fi"></i>
-          <input type="password" id="passwordInput" placeholder="Enter your password" oninput="clearErr()" onkeydown="if(event.key==='Enter')doLogin()"/>
-          <button class="eye-btn" onclick="togglePwd()" type="button"><i class="ti ti-eye" id="eyeIcon"></i></button>
-        </div>
-        <div class="err-msg" id="loginError" style="display:none;">
-          <i class="ti ti-alert-circle"></i> Invalid username or password.
-        </div>
-      </div>
+      <!-- ── SIGN IN PANEL ── -->
+      <div class="auth-panel active" id="panelLogin">
 
-      <button class="login-btn" onclick="doLogin()">
-        <i class="ti ti-login"></i> Sign In
-      </button>
+        <div id="loginAlertBox"></div>
 
-      <div class="divider"><span>Demo Accounts</span></div>
+        <div class="field">
+          <label>Username</label>
+          <div class="field-wrap">
+            <i class="ti ti-user fi"></i>
+            <input type="text" id="usernameInput" placeholder="Enter your username" oninput="clearLoginErr()"/>
+          </div>
+        </div>
 
-      <div class="demo-accounts">
-        <p><i class="ti ti-info-circle"></i> Click "Use" to auto-fill credentials</p>
-        <div class="demo-item">
-          <div class="demo-info">
-            <div class="demo-avatar" style="background:#6C4FC4;">AJ</div>
-            <div><div class="demo-name">Dr. Adam Johnson</div><div class="demo-spec">Cardiologist</div></div>
+        <div class="field">
+          <label>Password</label>
+          <div class="field-wrap">
+            <i class="ti ti-lock fi"></i>
+            <input type="password" id="passwordInput" placeholder="Enter your password" oninput="clearLoginErr()" onkeydown="if(event.key==='Enter')function doLogin() {()"/>
+            <button class="eye-btn" onclick="togglePwd('passwordInput','eyeIcon')" type="button">
+              <i class="ti ti-eye" id="eyeIcon"></i>
+            </button>
           </div>
-          <div style="display:flex;align-items:center;">
-            <div class="demo-creds"><strong>dr.adam</strong>pass123</div>
-            <button class="use-btn" onclick="fillLogin('dr.adam','pass123')">Use</button>
-          </div>
-        </div>
-        <div class="demo-item">
-          <div class="demo-info">
-            <div class="demo-avatar" style="background:#0EA5E9;">PM</div>
-            <div><div class="demo-name">Dr. Priya Mendis</div><div class="demo-spec">Neurologist</div></div>
-          </div>
-          <div style="display:flex;align-items:center;">
-            <div class="demo-creds"><strong>dr.priya</strong>pass123</div>
-            <button class="use-btn" onclick="fillLogin('dr.priya','pass123')">Use</button>
+          <div class="err-msg" id="loginError" style="display:none;">
+            <i class="ti ti-alert-circle"></i> Invalid username or password.
           </div>
         </div>
-        <div class="demo-item">
-          <div class="demo-info">
-            <div class="demo-avatar" style="background:#10B981;">NF</div>
-            <div><div class="demo-name">Dr. Nimal Fernando</div><div class="demo-spec">General Surgeon</div></div>
+
+        <button class="login-btn" onclick="doLogin()">
+          <i class="ti ti-login"></i> Sign In
+        </button>
+
+        <div class="divider"><span>Demo Accounts</span></div>
+        <div class="demo-accounts">
+          <p><i class="ti ti-info-circle"></i> Click "Use" to auto-fill credentials</p>
+          <div class="demo-item">
+            <div class="demo-info">
+              <div class="demo-avatar" style="background:#6C4FC4;">AJ</div>
+              <div><div class="demo-name">Dr. Adam Johnson</div><div class="demo-spec">Cardiologist</div></div>
+            </div>
+            <div style="display:flex;align-items:center;">
+              <div class="demo-creds"><strong>dr.adam</strong>pass123</div>
+              <button class="use-btn" onclick="fillLogin('dr.adam','pass123')">Use</button>
+            </div>
           </div>
-          <div style="display:flex;align-items:center;">
-            <div class="demo-creds"><strong>dr.nimal</strong>pass123</div>
-            <button class="use-btn" onclick="fillLogin('dr.nimal','pass123')">Use</button>
+          <div class="demo-item">
+            <div class="demo-info">
+              <div class="demo-avatar" style="background:#0EA5E9;">PM</div>
+              <div><div class="demo-name">Dr. Priya Mendis</div><div class="demo-spec">Neurologist</div></div>
+            </div>
+            <div style="display:flex;align-items:center;">
+              <div class="demo-creds"><strong>dr.priya</strong>pass123</div>
+              <button class="use-btn" onclick="fillLogin('dr.priya','pass123')">Use</button>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-info">
+              <div class="demo-avatar" style="background:#10B981;">NF</div>
+              <div><div class="demo-name">Dr. Nimal Fernando</div><div class="demo-spec">General Surgeon</div></div>
+            </div>
+            <div style="display:flex;align-items:center;">
+              <div class="demo-creds"><strong>dr.nimal</strong>pass123</div>
+              <button class="use-btn" onclick="fillLogin('dr.nimal','pass123')">Use</button>
+            </div>
           </div>
         </div>
-      </div>
+      </div><!-- /panelLogin -->
+
+      <!-- ── REGISTER PANEL ── -->
+      <div class="auth-panel" id="panelRegister">
+
+        <div id="regAlertBox"></div>
+
+        <p class="sec-lbl">Personal Information</p>
+        <div class="field-row">
+          <div class="field">
+            <label>First Name <span class="req">*</span></label>
+            <div class="field-wrap">
+              <i class="ti ti-user fi"></i>
+              <input type="text" id="reg_first" placeholder="First name" oninput="clearRegErr('reg_first')"/>
+            </div>
+            <div class="err-msg" id="err_first" style="display:none;"><i class="ti ti-alert-circle"></i> <span></span></div>
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req">*</span></label>
+            <div class="field-wrap">
+              <i class="ti ti-user fi"></i>
+              <input type="text" id="reg_last" placeholder="Last name" oninput="clearRegErr('reg_last')"/>
+            </div>
+            <div class="err-msg" id="err_last" style="display:none;"><i class="ti ti-alert-circle"></i> <span></span></div>
+          </div>
+        </div>
+
+        <hr class="sec-divider">
+        <p class="sec-lbl">Account Details</p>
+
+        <div class="field">
+          <label>Username <span class="req">*</span></label>
+          <div class="field-wrap">
+            <i class="ti ti-at fi"></i>
+            <input type="text" id="reg_username" placeholder="e.g. dr.john" oninput="clearRegErr('reg_username')"/>
+          </div>
+          <div class="err-msg" id="err_username" style="display:none;"><i class="ti ti-alert-circle"></i> <span></span></div>
+        </div>
+
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <div class="field-wrap">
+            <i class="ti ti-mail fi"></i>
+            <input type="email" id="reg_email" placeholder="doctor@hospital.lk" oninput="clearRegErr('reg_email')"/>
+          </div>
+          <div class="err-msg" id="err_email" style="display:none;"><i class="ti ti-alert-circle"></i> <span></span></div>
+        </div>
+
+        <div class="field">
+          <label>Phone Number <span class="req">*</span></label>
+          <div class="field-wrap">
+            <i class="ti ti-phone fi"></i>
+            <input type="tel" id="reg_phone" placeholder="+94 77 123 4567" oninput="clearRegErr('reg_phone')"/>
+          </div>
+          <div class="err-msg" id="err_phone" style="display:none;"><i class="ti ti-alert-circle"></i> <span></span></div>
+        </div>
+
+        <hr class="sec-divider">
+        <p class="sec-lbl">Medical Information</p>
+
+        <div class="field">
+          <label>Specialty <span class="req">*</span></label>
+          <div class="field-wrap">
+            <i class="ti ti-stethoscope fi"></i>
+            <select id="reg_specialty" onchange="clearRegErr('reg_specialty')">
+              <option value="">— Select specialty —</option>
+              <option>Cardiology</option><option>Dermatology</option>
+              <option>Emergency Medicine</option><option>Endocrinology</option>
+              <option>Gastroenterology</option><option>General Practice</option>
+              <option>General Surgery</option><option>Neurology</option>
+              <option>Obstetrics & Gynecology</option><option>Oncology</option>
+              <option>Ophthalmology</option><option>Orthopedics</option>
+              <option>Pediatrics</option><option>Psychiatry</option>
+              <option>Radiology</option><option>Surgery</option><option>Urology</option>
+            </select>
+          </div>
+          <div class="err-msg" id="err_specialty" style="display:none;"><i class="ti ti-alert-circle"></i> <span></span></div>
+        </div>
+
+        <hr class="sec-divider">
+        <p class="sec-lbl">Set Password</p>
+
+        <div class="field">
+          <label>Password <span class="req">*</span></label>
+          <div class="field-wrap">
+            <i class="ti ti-lock fi"></i>
+            <input type="password" id="reg_password" placeholder="Min. 6 characters" oninput="clearRegErr('reg_password')"/>
+            <button class="eye-btn" onclick="togglePwd('reg_password','regEyeIcon1')" type="button">
+              <i class="ti ti-eye" id="regEyeIcon1"></i>
+            </button>
+          </div>
+          <div class="err-msg" id="err_password" style="display:none;"><i class="ti ti-alert-circle"></i> <span></span></div>
+        </div>
+
+        <div class="field">
+          <label>Confirm Password <span class="req">*</span></label>
+          <div class="field-wrap">
+            <i class="ti ti-lock fi"></i>
+            <input type="password" id="reg_confirm" placeholder="Re-enter password" oninput="clearRegErr('reg_confirm')"/>
+            <button class="eye-btn" onclick="togglePwd('reg_confirm','regEyeIcon2')" type="button">
+              <i class="ti ti-eye" id="regEyeIcon2"></i>
+            </button>
+          </div>
+          <div class="err-msg" id="err_confirm" style="display:none;"><i class="ti ti-alert-circle"></i> <span></span></div>
+        </div>
+
+        <button class="login-btn" onclick="doRegister()">
+          <i class="ti ti-user-plus"></i> Register &amp; Sign In
+        </button>
+
+      </div><!-- /panelRegister -->
+
     </div>
   </div>
 </div>
@@ -289,7 +444,7 @@ tr:hover td{background:#faf8ff;}
     </div>
     <div class="body">
       <div class="sidebar">
-        <div class="nav-item" id="snav-dashboard" onclick="showPage('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+        <div class="nav-item" id="snav-dashboard"    onclick="showPage('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
         <div class="nav-item" id="snav-appointments" onclick="showPage('appointments')"><i class="ti ti-calendar"></i>My Appointments</div>
         <div class="nav-item"><i class="ti ti-video"></i>My Sessions</div>
         <div class="nav-item"><i class="ti ti-users"></i>My Patients</div>
@@ -355,15 +510,18 @@ const hospitals = [
   {name:"Kurunegala Teaching Hospital",        city:"Kurunegala", specialty:"General",        beds:1100},
 ];
 
-const cities    = ["All",...new Set(hospitals.map(h=>h.city))];
-const timeSlots = ["8:00 AM","8:30 AM","9:00 AM","9:30 AM","10:00 AM","10:30 AM","11:00 AM","11:30 AM","2:00 PM","2:30 PM","3:00 PM","3:30 PM"];
-const takenSlots= ["9:00 AM","10:30 AM","2:30 PM"];
+const cities     = ["All",...new Set(hospitals.map(h=>h.city))];
+const timeSlots  = ["8:00 AM","8:30 AM","9:00 AM","9:30 AM","10:00 AM","10:30 AM","11:00 AM","11:30 AM","2:00 PM","2:30 PM","3:00 PM","3:30 PM"];
+const takenSlots = ["9:00 AM","10:30 AM","2:30 PM"];
+
+// Avatar colors for newly registered doctors
+const avatarColors = ["#6C4FC4","#0EA5E9","#10B981","#F59E0B","#EF4444","#8B5CF6","#EC4899","#14B8A6","#F97316"];
 
 // ════════════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════════════
 let currentDoctor = null;
-let showPwd       = false;
+let showPwdMap    = {};
 let showInline    = false;
 let activeCity    = "All";
 let hospSearch    = "";
@@ -378,29 +536,58 @@ let selTimeVal    = null;
 let calYear, calMonth;
 
 // ════════════════════════════════════════════════════════
+// AUTH TABS
+// ════════════════════════════════════════════════════════
+function switchAuthTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active',    tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active', tab==='register');
+  document.getElementById('panelLogin').classList.toggle('active',    tab==='login');
+  document.getElementById('panelRegister').classList.toggle('active', tab==='register');
+  document.getElementById('authSub').textContent = tab==='login'
+    ? 'Sign in with your doctor credentials'
+    : 'Create a new doctor account';
+  document.getElementById('loginAlertBox').innerHTML = '';
+  document.getElementById('regAlertBox').innerHTML   = '';
+}
+
+// ════════════════════════════════════════════════════════
 // LOGIN
 // ════════════════════════════════════════════════════════
 function fillLogin(u, p) {
   document.getElementById("usernameInput").value = u;
   document.getElementById("passwordInput").value = p;
-  clearErr();
+  clearLoginErr();
 }
 
-function doLogin() {
+
+ function doLogin() {
   const u = document.getElementById("usernameInput").value.trim().toLowerCase();
   const p = document.getElementById("passwordInput").value;
-  const doc = doctors.find(d => d.username === u && d.password === p);
-  if (!doc) {
-    document.getElementById("loginError").style.display = "flex";
-    document.getElementById("usernameInput").classList.add("err");
-    document.getElementById("passwordInput").classList.add("err");
-    return;
-  }
+
+  fetch('api_login.php', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({username:u, password:p})
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (result.success) {
+      loginAs(result.doctor);
+    } else {
+      document.getElementById("loginError").style.display = "flex";
+      document.getElementById("usernameInput").classList.add("err");
+      document.getElementById("passwordInput").classList.add("err");
+    }
+  });
+}
+
+
+function loginAs(doc) {
   currentDoctor = doc;
-  document.getElementById("loginPage").style.display = "none";
-  document.getElementById("dashApp").style.display   = "block";
-  document.getElementById("topbarName").textContent  = doc.name;
-  document.getElementById("topbarAvatar").textContent= doc.initials;
+  document.getElementById("loginPage").style.display  = "none";
+  document.getElementById("dashApp").style.display    = "block";
+  document.getElementById("topbarName").textContent   = doc.name;
+  document.getElementById("topbarAvatar").textContent = doc.initials;
   document.getElementById("topbarAvatar").style.background = doc.color;
   apptTab="all"; apptSearch=""; apptStatus="all"; apptHosp="All"; apptCity="All";
   showInline=false; activeCity="All"; hospSearch="";
@@ -409,23 +596,133 @@ function doLogin() {
 
 function doLogout() {
   currentDoctor = null;
-  document.getElementById("dashApp").style.display   = "none";
+  document.getElementById("dashApp").style.display  = "none";
   document.getElementById("loginPage").style.display = "block";
   document.getElementById("usernameInput").value = "";
   document.getElementById("passwordInput").value = "";
-  clearErr();
+  clearLoginErr();
+  switchAuthTab('login');
 }
 
-function clearErr() {
+function clearLoginErr() {
   document.getElementById("loginError").style.display = "none";
   document.getElementById("usernameInput").classList.remove("err");
   document.getElementById("passwordInput").classList.remove("err");
 }
 
-function togglePwd() {
-  showPwd = !showPwd;
-  document.getElementById("passwordInput").type = showPwd ? "text" : "password";
-  document.getElementById("eyeIcon").className  = showPwd ? "ti ti-eye-off" : "ti ti-eye";
+// ════════════════════════════════════════════════════════
+// REGISTER
+// ════════════════════════════════════════════════════════
+function doRegister() {
+  // Gather values
+  const first    = document.getElementById('reg_first').value.trim();
+  const last     = document.getElementById('reg_last').value.trim();
+  const username = document.getElementById('reg_username').value.trim().toLowerCase();
+  const email    = document.getElementById('reg_email').value.trim();
+  const phone    = document.getElementById('reg_phone').value.trim();
+  const specialty= document.getElementById('reg_specialty').value;
+  const password = document.getElementById('reg_password').value;
+  const confirm  = document.getElementById('reg_confirm').value;
+
+  let valid = true;
+
+  function setErr(fieldId, errId, msg) {
+    document.getElementById(fieldId).classList.add('err');
+    const box = document.getElementById(errId);
+    box.style.display = 'flex';
+    box.querySelector('span').textContent = msg;
+    valid = false;
+  }
+
+  // Clear all errors first
+  ['reg_first','reg_last','reg_username','reg_email','reg_phone','reg_specialty','reg_password','reg_confirm']
+    .forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('err'); });
+  ['err_first','err_last','err_username','err_email','err_phone','err_specialty','err_password','err_confirm']
+    .forEach(id => { document.getElementById(id).style.display='none'; });
+  document.getElementById('regAlertBox').innerHTML = '';
+
+  // Validate
+  if (!first)    setErr('reg_first',    'err_first',    'First name is required.');
+  if (!last)     setErr('reg_last',     'err_last',     'Last name is required.');
+
+  if (!username) {
+    setErr('reg_username', 'err_username', 'Username is required.');
+  } else if (doctors.find(d => d.username === username)) {
+    setErr('reg_username', 'err_username', 'Username already taken.');
+  }
+
+  if (!email) {
+    setErr('reg_email', 'err_email', 'Email is required.');
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    setErr('reg_email', 'err_email', 'Enter a valid email address.');
+  }
+
+  if (!phone) {
+    setErr('reg_phone', 'err_phone', 'Phone number is required.');
+  } else if (!/^\+?[\d\s\-\(\)]{7,20}$/.test(phone)) {
+    setErr('reg_phone', 'err_phone', 'Enter a valid phone number.');
+  }
+
+  if (!specialty) setErr('reg_specialty', 'err_specialty', 'Please select a specialty.');
+
+  if (!password) {
+    setErr('reg_password', 'err_password', 'Password is required.');
+  } else if (password.length < 6) {
+    setErr('reg_password', 'err_password', 'Password must be at least 6 characters.');
+  } else if (password !== confirm) {
+    setErr('reg_confirm', 'err_confirm', 'Passwords do not match.');
+  }
+
+  if (!valid) {
+    document.getElementById('regAlertBox').innerHTML =
+      `<div class="alert-box alert-danger"><i class="ti ti-alert-circle"></i>Please fix the errors below.</div>`;
+    return;
+  }
+
+  // Build new doctor object
+  const initls = (first[0]+(last[0]||'')).toUpperCase();
+  const color  = avatarColors[doctors.length % avatarColors.length];
+  const newDoc = {
+    username, password, name:`Dr. ${first} ${last}`,
+    specialty, initials: initls, color
+  };
+
+  fetch('api_register.php', {
+  method: 'POST',
+  headers: {'Content-Type':'application/json'},
+  body: JSON.stringify({first, last, username, email, phone, specialty, password})
+})
+.then(res => res.json())
+.then(result => {
+  if (result.success) {
+    allAppointments[result.doctor.username] = [];
+    loginAs(result.doctor);
+  } else {
+    document.getElementById('regAlertBox').innerHTML =
+      `<div class="alert-box alert-danger"><i class="ti ti-alert-circle"></i>${result.message}</div>`;
+  }
+});
+}
+
+function clearRegErr(fieldId) {
+  document.getElementById(fieldId).classList.remove('err');
+  const errMap = {
+    reg_first:'err_first', reg_last:'err_last', reg_username:'err_username',
+    reg_email:'err_email', reg_phone:'err_phone', reg_specialty:'err_specialty',
+    reg_password:'err_password', reg_confirm:'err_confirm'
+  };
+  if (errMap[fieldId]) document.getElementById(errMap[fieldId]).style.display = 'none';
+}
+
+// ════════════════════════════════════════════════════════
+// TOGGLE PASSWORD VISIBILITY
+// ════════════════════════════════════════════════════════
+function togglePwd(inputId, iconId) {
+  const input = document.getElementById(inputId);
+  const icon  = document.getElementById(iconId);
+  const hide  = input.type === 'password';
+  input.type  = hide ? 'text' : 'password';
+  icon.className = hide ? 'ti ti-eye-off' : 'ti ti-eye';
 }
 
 // ════════════════════════════════════════════════════════
@@ -443,7 +740,7 @@ function showPage(p) {
 // DASHBOARD
 // ════════════════════════════════════════════════════════
 function renderDashboard() {
-  const appts    = allAppointments[currentDoctor.username];
+  const appts    = allAppointments[currentDoctor.username] || [];
   const today    = appts.filter(a => a.date === "2026-05-14").length;
   const pending  = appts.filter(a => a.status === "pending").length;
   const confirmed= appts.filter(a => a.status === "confirmed").length;
@@ -551,7 +848,7 @@ function renderHospList() {
 // APPOINTMENTS PAGE
 // ════════════════════════════════════════════════════════
 function renderApptPage() {
-  const appts   = allAppointments[currentDoctor.username];
+  const appts   = allAppointments[currentDoctor.username] || [];
   const total   = appts.length;
   const todayCnt= appts.filter(a=>a.date==="2026-05-14").length;
   const pendCnt = appts.filter(a=>a.status==="pending").length;
@@ -612,10 +909,15 @@ function renderApptPage() {
         </td>
       </tr>
     `).join("")
-    :`<tr class="empty-row"><td colspan="6">
-       <i class="ti ti-calendar-off" style="font-size:28px;display:block;margin-bottom:10px;"></i>
-       No appointments found.
-     </td></tr>`;
+    : (appts.length === 0
+      ? `<tr class="empty-row"><td colspan="6">
+           <i class="ti ti-calendar-plus" style="font-size:28px;display:block;margin-bottom:10px;color:#c5bff0;"></i>
+           No appointments yet. Go to Dashboard to book your first appointment.
+         </td></tr>`
+      : `<tr class="empty-row"><td colspan="6">
+           <i class="ti ti-calendar-off" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+           No appointments found.
+         </td></tr>`);
 
   document.getElementById("mainContent").innerHTML = `
     <div class="page-hdr">
@@ -662,13 +964,13 @@ function renderApptPage() {
   `;
 }
 
-function setTab(t)    { apptTab=t;             renderApptPage(); }
+function setTab(t)    { apptTab=t;                  renderApptPage(); }
 function setSearch(v) { apptSearch=v.toLowerCase(); renderApptPage(); }
-function setCity(v)   { apptCity=v;            renderApptPage(); }
-function setHosp(v)   { apptHosp=v;            renderApptPage(); }
-function setStat(v)   { apptStatus=v;          renderApptPage(); }
+function setCity(v)   { apptCity=v;                 renderApptPage(); }
+function setHosp(v)   { apptHosp=v;                 renderApptPage(); }
+function setStat(v)   { apptStatus=v;               renderApptPage(); }
 function updStatus(id,s) {
-  const a = allAppointments[currentDoctor.username].find(x=>x.id===id);
+  const a = (allAppointments[currentDoctor.username]||[]).find(x=>x.id===id);
   if(a){ a.status=s; renderApptPage(); }
 }
 
