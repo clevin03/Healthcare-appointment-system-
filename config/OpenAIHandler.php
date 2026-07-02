@@ -9,8 +9,9 @@ class OpenAIHandler {
     private $provider;
     private $conversationId;
     private $difyUser;
+    private $modelKey;
     
-    public function __construct($apiKey, $model = 'gpt-4o-mini', $apiUrl = 'https://api.openai.com/v1/chat/completions', $timeout = 30, $provider = 'openai', $conversationId = '', $difyUser = 'patient-user') {
+    public function __construct($apiKey, $model = 'gpt-4o-mini', $apiUrl = 'https://api.openai.com/v1/chat/completions', $timeout = 30, $provider = 'openai', $conversationId = '', $difyUser = 'patient-user', $modelKey = null) {
         $this->apiKey = (string) $apiKey;
         $this->model = (string) $model;
         $this->apiUrl = (string) $apiUrl;
@@ -18,9 +19,16 @@ class OpenAIHandler {
         $this->provider = strtolower((string) $provider);
         $this->conversationId = (string) $conversationId;
         $this->difyUser = trim((string) $difyUser) !== '' ? trim((string) $difyUser) : 'patient-user';
+        $this->modelKey = $modelKey !== null ? (string) $modelKey : $this->provider;
     }
 
-    public function chat($userMessage, $conversationHistory = [], $systemPrompt = '') {
+    public function chat($userMessage, $conversationHistory = [], $systemPrompt = '', $imageData = null) {
+        if ($imageData && $this->provider === 'dify') {
+            return [
+                'success' => false,
+                'error' => 'Cannot read "image.png" (this model does not support image input). Inform the user.'
+            ];
+        }
         try {
             $messages = [];
 
@@ -52,10 +60,36 @@ class OpenAIHandler {
                 }
             }
             
-            $messages[] = [
-                'role' => 'user',
-                'content' => $userMessage
-            ];
+            if ($imageData && ($this->provider === 'openai' || $this->provider === 'openai-compatible')) {
+                // OpenAI Vision format
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => [
+                        [
+                            'type' => 'text',
+                            'text' => $userMessage
+                        ],
+                        [
+                            'type' => 'image_url',
+                            'image_url' => [
+                                'url' => $imageData
+                            ]
+                        ]
+                    ]
+                ];
+            } else if ($imageData && $this->provider === 'ollama') {
+                // Ollama image format
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => $userMessage,
+                    'images' => [preg_replace('/^data:image\/\w+;base64,/', '', $imageData)]
+                ];
+            } else {
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => $userMessage
+                ];
+            }
             
             if ($this->provider === 'ollama') {
                 $response = $this->makeOllamaRequest($messages);
@@ -94,7 +128,7 @@ class OpenAIHandler {
             'model' => $this->model,
             'messages' => $messages,
             'temperature' => 0.7,
-            'max_tokens' => 500,
+            'max_tokens' => 1500,
             'top_p' => 0.9
         ];
 
@@ -157,7 +191,7 @@ class OpenAIHandler {
             'options' => [
                 'temperature' => 0.4,
                 'top_p' => 0.9,
-                'num_predict' => 220,
+                'num_predict' => 800,
                 'num_ctx' => 2048
             ]
         ];
@@ -376,12 +410,15 @@ class OpenAIHandler {
         if ($this->provider === 'dify') {
             return !empty($this->apiKey) && !empty($this->apiUrl);
         }
-
-        return !empty($this->apiKey) && strpos($this->apiKey, 'sk-') === 0 && $this->apiKey !== 'sk-your-api-key-here';
+        return !empty($this->apiKey) && $this->apiKey !== 'sk-your-key-here' && $this->apiKey !== 'sk-your-api-key-here';
     }
 
     public function getProvider() {
         return $this->provider;
+    }
+
+    public function getModelKey() {
+        return $this->modelKey;
     }
 
     private function compactOllamaPrompt($prompt) {

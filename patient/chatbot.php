@@ -71,15 +71,29 @@ $chatbot_js_ver = @filemtime(__DIR__ . '/static/chatbot.js') ?: time();
         </div>
 
         <div class="chatbot-input-area">
+            <div id="imagePreviewContainer" class="image-preview-container hidden">
+                <img id="imagePreview" src="" alt="Selected Image">
+                <button type="button" class="remove-image-btn" onclick="removeImage()" title="Remove image">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <form id="chatForm" onsubmit="handleFormSubmit(event)">
                 <div class="input-wrapper">
+                    <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
+                    <button type="button" class="attach-btn" onclick="document.getElementById('imageInput').click()" title="Attach a medicine image">
+                        <i class="fas fa-camera"></i>
+                    </button>
                     <input 
                         type="text" 
                         id="userInput" 
                         class="chat-input" 
-                        placeholder="Type your message or ask about doctors, appointments..."
+                        placeholder="Type message or ask about a medicine image..."
                         autocomplete="off"
                     />
+                    <div id="modelIndicator" class="model-indicator" title="Active AI Model">
+                        <span class="model-indicator-dot"></span>
+                        <span class="model-indicator-label">Auto</span>
+                    </div>
                     <button type="submit" class="send-btn" title="Send message">
                         <i class="fas fa-paper-plane"></i>
                     </button>
