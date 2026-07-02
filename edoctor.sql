@@ -254,6 +254,23 @@ CREATE TABLE `patient_memory` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ai_provider_config`
+--
+
+CREATE TABLE `ai_provider_config` (
+  `id` int(11) NOT NULL,
+  `provider_key` varchar(50) NOT NULL COMMENT 'ollama, gpt-4o-mini, openai-compatible, dify',
+  `label` varchar(100) NOT NULL,
+  `api_url` varchar(500) DEFAULT '',
+  `api_key` varchar(500) DEFAULT '',
+  `model` varchar(100) DEFAULT '',
+  `is_active` tinyint(1) DEFAULT 0,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Indexes for table `mental_health_events`
 --
 
@@ -279,6 +296,14 @@ ALTER TABLE `patient_memory`
   ADD KEY `idx_memory_patient_id` (`patient_id`),
   ADD KEY `idx_memory_type` (`memory_type`);
 
+--
+-- Indexes for table `ai_provider_config`
+--
+
+ALTER TABLE `ai_provider_config`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `provider_key` (`provider_key`);
+
 -- --------------------------------------------------------
 
 --
@@ -301,6 +326,13 @@ ALTER TABLE `chat_history`
 
 ALTER TABLE `patient_memory`
   MODIFY `memory_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ai_provider_config`
+--
+
+ALTER TABLE `ai_provider_config`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 -- --------------------------------------------------------
 

@@ -10,6 +10,7 @@ class AgentOrchestrator {
 		$response = '';
 		$source = 'fallback';
 		$debug = null;
+		$modelKey = null;
 
 		$dbContext = DoctorDirectory::buildDatabaseContext($conn, $patientId);
 
@@ -36,6 +37,7 @@ class AgentOrchestrator {
 				$aiResponseMsg = (string) $aiResponse['message'];
 				$source = $aiResponse['provider'] ?? 'openai';
 				$usedProvider = $aiHandler->getProvider();
+				$modelKey = $aiHandler->getModelKey();
 				$actions = ResponseEngine::getContextualActions($message, $patientId, $conn);
 				
 				// Let ResponseEngine try to pattern match for some hardcoded scenarios (like finding doctors)
@@ -67,6 +69,13 @@ class AgentOrchestrator {
 			} else {
 				$lastError = $aiResponse['error'] ?? 'Unknown error';
 				error_log('[MentalAI ' . strtoupper((string) ($aiHandler->getProvider() ?? 'llm')) . '] ' . $lastError);
+				if ($imageData && stripos($lastError, 'does not support image') !== false) {
+					$response = $lastError;
+					$usedProvider = $aiHandler->getProvider();
+					$modelKey = $aiHandler->getModelKey();
+					$source = 'error';
+					break;
+				}
 			}
 		}
 
@@ -88,15 +97,16 @@ class AgentOrchestrator {
 			$actions = ResponseEngine::mergeActions($actions, SafetyPolicy::getModerateRiskActions());
 		}
 
-		return self::buildResult($response, $actions, $source, $riskAssessment, $debug, $conversationId ?? null);
+		return self::buildResult($response, $actions, $source, $riskAssessment, $debug, $conversationId ?? null, $modelKey);
 	}
 
-	private static function buildResult($response, $actions, $source, $riskAssessment, $debug, $conversationId = null) {
+	private static function buildResult($response, $actions, $source, $riskAssessment, $debug, $conversationId = null, $modelKey = null) {
 		return [
 			'success' => true,
 			'response' => $response,
 			'actions' => $actions,
 			'source' => $source,
+			'model_key' => $modelKey,
 			'conversation_id' => $conversationId,
 			'risk' => [
 				'level' => $riskAssessment['level'],

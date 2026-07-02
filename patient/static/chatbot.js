@@ -50,8 +50,6 @@ async function sendMessage(message) {
     showTypingIndicator();
     
     try {
-        const selectedModel = document.getElementById('modelSelect') ? document.getElementById('modelSelect').value : null;
-
         const response = await fetch('MentalAI/chatbot_handler.php', {
             method: 'POST',
             headers: {
@@ -62,7 +60,6 @@ async function sendMessage(message) {
                 patient_id: patientId,
                 history: limitHistory(conversationHistory),
                 conversation_id: conversationId,
-                model_override: selectedModel,
                 image: selectedImageBase64 || null
             })
         });
@@ -89,6 +86,10 @@ async function sendMessage(message) {
             if (data.conversation_id) {
                 conversationId = data.conversation_id;
                 sessionStorage.setItem('dify_conversation_id', conversationId);
+            }
+            if (data.model_key) {
+                localStorage.setItem('preferred_ai_model', data.model_key);
+                updateModelIndicator(data.model_key);
             }
             if (data.source && data.source !== 'openai') {
                 console.log('Chatbot responded via ' + data.source + ' provider.');
@@ -373,9 +374,41 @@ function setMemoryConsent(consent) {
     }
 }
 
+const MODEL_LABELS = {
+    'ollama': 'Ollama (qwen2.5:1.5b)',
+    'gpt-4o-mini': 'OpenAI (gpt-4o-mini)',
+    'openai-compatible': 'OpenAI Compatible',
+    'dify': 'Dify'
+};
+
+const MODEL_ICONS = {
+    'ollama': 'fa-brain',
+    'gpt-4o-mini': 'fa-cloud',
+    'openai-compatible': 'fa-server',
+    'dify': 'fa-cubes'
+};
+
+function updateModelIndicator(modelKey) {
+    const indicator = document.getElementById('modelIndicator');
+    if (!indicator) return;
+    const dot = indicator.querySelector('.model-indicator-dot');
+    const label = indicator.querySelector('.model-indicator-label');
+    if (!label) return;
+    if (modelKey && MODEL_LABELS[modelKey]) {
+        label.textContent = MODEL_LABELS[modelKey];
+        if (dot) dot.style.background = '#22c55e';
+        indicator.title = 'Active: ' + MODEL_LABELS[modelKey];
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     userInput.focus();
     console.log('Mental Health Driven Healthcare Assistant loaded');
+
+    const savedModel = localStorage.getItem('preferred_ai_model');
+    if (savedModel && MODEL_LABELS[savedModel]) {
+        updateModelIndicator(savedModel);
+    }
 
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {

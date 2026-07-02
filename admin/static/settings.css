@@ -1,0 +1,115 @@
+.settings-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+@media (min-width: 768px) {
+    .settings-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+.provider-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: #fafafa;
+}
+.provider-section.active-provider {
+    border-color: #667eea;
+    background: #f0f4ff;
+}
+.provider-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+.provider-header input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+.provider-header h3 {
+    margin: 0;
+    font-size: 16px;
+    flex: 1;
+}
+.provider-active-badge {
+    background: #48bb78;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.provider-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+@media (max-width: 600px) {
+    .provider-form-row {
+        grid-template-columns: 1fr;
+    }
+}
+.provider-section .form-group input {
+    font-size: 13px;
+    padding: 8px 10px;
+}
+.provider-section .form-group label {
+    font-size: 12px;
+}
+.model-fetch-select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+}
+.model-fetch-select:focus {
+    border-color: #667eea;
+    outline: none;
+}
+.fetch-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
