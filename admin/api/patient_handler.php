@@ -26,7 +26,7 @@ switch ($action) {
 }
 
 function getAllPatients($conn) {
-    $sql = "SELECT * FROM patients ORDER BY patient_id DESC";
+    $sql = "SELECT *, users.email, CONCAT(patients.first_name, ' ', patients.last_name) AS patient_name FROM patients JOIN users ON patients.user_id = users.user_id ORDER BY patients.patient_id ASC";
     $result = $conn->query($sql);
     
     if (!$result) {
@@ -49,7 +49,7 @@ function getPatient($conn) {
     }
     
     $patient_id = intval($_GET['id']);
-    $sql = "SELECT * FROM patients WHERE patient_id = ?";
+    $sql = "SELECT *, users.email, CONCAT(patients.first_name, ' ', patients.last_name) AS patient_name FROM patients JOIN users ON patients.user_id = users.user_id WHERE patients.patient_id = ?";
     $stmt = $conn->prepare($sql);
     
     if (!$stmt) {

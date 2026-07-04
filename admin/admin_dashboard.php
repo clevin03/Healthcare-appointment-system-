@@ -95,6 +95,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
             <ul>
                 <li><a href="#dashboard" class="active"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
                 <li><a href="appointment.php"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
+                <li><a href="sessions.php"><i class="fa-solid fa-clock"></i> Sessions</a></li>
                 <li><a href="patient.php"><i class="fa-solid fa-users"></i> Patients</a></li>
                 <li><a href="doctor.php"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
                 <li><a href="department.php"><i class="fa-solid fa-building"></i> Departments</a></li> <!-- New Departments link -->
