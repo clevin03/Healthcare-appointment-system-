@@ -53,7 +53,7 @@ $defaults = [
 $activeProvider = LLM_PROVIDER;
 
 foreach ($defaults as $key => $cfg) {
-    $stmt = $conn->prepare("INSERT IGNORE INTO ai_provider_config (provider_key, label, api_url, api_key, model, is_active) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO ai_provider_config (provider_key, label, api_url, api_key, model, is_active) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE api_url = VALUES(api_url), api_key = VALUES(api_key), model = VALUES(model), is_active = VALUES(is_active)");
     $active = ($key === $activeProvider) ? 1 : 0;
     $stmt->bind_param('sssssi', $key, $cfg['label'], $cfg['api_url'], $cfg['api_key'], $cfg['model'], $active);
     $stmt->execute();
