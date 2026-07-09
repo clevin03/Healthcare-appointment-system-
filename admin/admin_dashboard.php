@@ -83,7 +83,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
         <div class="header-content">
             <div class="logo"><i class="fa-solid fa-hospital"></i> HealthCare Admin</div>
             <div class="user-info">
-                <span>Admin User</span>
+                <span><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin User'); ?></span>
                 <form method="post" action="../auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" style="display:inline; margin:0;">
                     <button type="submit">Logout</button>
                 </form>

@@ -101,10 +101,11 @@ function deleteSession($conn) {
 }
 
 function getDoctors($conn){
-    $sql = "SELECT doctor_id, doctor_name FROM doctors";
+    $sql = "SELECT doctor_id, doctor_name FROM doctors WHERE status = 'ACTIVE' ORDER BY doctor_name ASC";
     $result = $conn->query($sql);
     
     if (!$result) {
+        http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Query failed: ' . $conn->error]);
         return;
     }

@@ -27,15 +27,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // When a doctor is selected from the dropdown, update the hidden doctorId input field.
-    doctorSelect.addEventListener('change', function() {
-        if (hiddenDoctorIdInput) {
-            hiddenDoctorIdInput.value = this.value;
-        }
-    });
+    if (doctorSelect) {
+        doctorSelect.addEventListener('change', function() {
+            if (hiddenDoctorIdInput) {
+                hiddenDoctorIdInput.value = this.value;
+            }
+        });
+    }
 
     function openAddModal() {
-        // You can add logic here to reset the form or set the title
-        sessionModal.style.display = 'block';
+        loadDoctors();
+        if (sessionModal) {
+            sessionModal.style.display = 'block';
+        }
     }
 
     function closeModal() {
@@ -58,38 +62,29 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
     function populateDoctorDropdown(doctorList) {
-        const select = document.getElementById('doctor'); // Assumes the select in the modal has id="doctor"
+        const select = document.getElementById('doctorName');
         if (!select) {
-            console.warn('Doctor dropdown with id="doctor" not found in the modal.');
+            console.warn('Doctor dropdown with id="doctorName" not found in the modal.');
             return;
         }
 
         select.innerHTML = '<option value="">Select a Doctor</option>';
+
+        if (!Array.isArray(doctorList) || doctorList.length === 0) {
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'No doctors available';
+            option.disabled = true;
+            select.appendChild(option);
+            return;
+        }
+
         doctorList.forEach(doctor => {
             const option = document.createElement('option');
             option.value = doctor.doctor_id;
             option.textContent = doctor.doctor_name;
             select.appendChild(option);
         });
-    }
-
-    async function fetchSessions() {
-        try {
-            const response = await fetch('api/session_handler.php?action=getAllSessions');
-            const data = await response.json();
-            
-            if (Array.isArray(data) && data.length > 0) {
-                sessionTableBody.innerHTML = '';
-                data.forEach(session => {
-                    const row = createSessionTableRow(session);
-                    sessionTableBody.appendChild(row);
-                });
-            } else {
-                sessionTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No sessions found.</td></tr>';
-            }
-        } catch (error) {
-            console.error('Error fetching sessions:', error);
-        }
     }
 
     function createSessionTableRow(session) {
@@ -116,8 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initial fetch of data when the page loads
-    loadDoctors().then(() => {
-        fetchSessions(); // Fetch sessions after doctors are loaded
-    });
+    loadDoctors();
 
 });

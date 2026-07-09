@@ -19,6 +19,19 @@ require_once '../config/db_connection.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <?php
+    $sql = "SELECT s.session_id, d.doctor_name, s.session_day, s.start_time,
+    s.end_time, s.max_patients FROM sessions s JOIN doctors d ON
+    s.doctor_id = d.doctor_id ORDER BY s.session_id DESC";
+    $result = $conn->query($sql);
+    $sessions = [];
+    
+    if ($result && $result->num_rows > 0){
+        while ($row = $result->fetch_assoc()){
+            $sessions[]=$row;
+        }
+    }
+    ?>
     <section class="session-section">
     <div class="container">
         <header class="page-header stat-title">
@@ -30,22 +43,46 @@ require_once '../config/db_connection.php';
 
         <div class="content stat-content">
             <div class="sessions-table" id="sessionsTable">
-                <table>
-                    <thead>
+                <?php
+                if (count($sessions)>0){
+                    ?>
+                    <table>
+                            <thead>
+                                <tr>
+                                    <th>Session ID</th>
+                                    <th>Doctor Name</th>
+                                    <th>Session Date</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Max Patients</th>
+                                </tr>
+                                <tbody id="sessionTable">
+                                    
+                                </tbody>
+                            </thead>
+                        
+                        <?php
+                        foreach($sessions as $session){
+                        ?>
                         <tr>
-                            <th>Session ID</th>
-                            <th>Doctor ID</th>
-                            <th>Session Date</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Actions</th>
+                            <td><?php echo htmlspecialchars($session['session_id']); ?></td>
+                            <td><?php echo htmlspecialchars($session['doctor_name']); ?></td>
+                            <td><?php echo htmlspecialchars($session['session_day']); ?></td>
+                            <td><?php echo htmlspecialchars($session['start_time']); ?></td>
+                            <td><?php echo htmlspecialchars($session['end_time']); ?></td>
+                            <td><?php echo htmlspecialchars($session['max_patients']); ?></td>
                         </tr>
-                    </thead>
-                    <tbody id="sessionTableBody">
-                        <!-- Session rows will be populated here via JavaScript -->
-
-                    </tbody>
-                </table>
+                        <?php
+                        }
+                        ?>
+                    </table>  
+                <?php }else{ ?>
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 15px;">
+                        <i class="fas fa-calendar-times" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
+                        <h3 style="color: #666;">No sessions found</h3>
+                        <p style="color: #999;">Click "Add New Session" to create your first session.</p>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </div>

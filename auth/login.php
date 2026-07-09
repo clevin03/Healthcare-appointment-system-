@@ -69,14 +69,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 }
                                 $doctor_stmt->close();
                             }
-                        }else{
-                            $admin_stmt = $conn->prepare("SELECT admin_id, admin_name FROM admin WHERE user_id = ?");
-                            if($admin_stmt){
+                        } else {
+                            $admin_stmt = $conn->prepare("SELECT admin_id FROM admin WHERE user_id = ?");
+                            if ($admin_stmt) {
                                 $admin_stmt->bind_param("i", $user['user_id']);
                                 $admin_stmt->execute();
                                 if ($admin_data = $admin_stmt->get_result()->fetch_assoc()) {
                                     $_SESSION['user_id'] = $admin_data['admin_id'];
-                                    $_SESSION['user_name'] = $admin_data['admin_name'];
+
+                                    $display_name = explode('@', $email)[0];
+                                    $column_check = $conn->query("SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'admin' AND COLUMN_NAME = 'admin_name'");
+                                    if ($column_check && $column_check->num_rows > 0) {
+                                        $admin_name_stmt = $conn->prepare("SELECT admin_name FROM admin WHERE user_id = ?");
+                                        if ($admin_name_stmt) {
+                                            $admin_name_stmt->bind_param("i", $user['user_id']);
+                                            $admin_name_stmt->execute();
+                                            if ($admin_name_row = $admin_name_stmt->get_result()->fetch_assoc()) {
+                                                $display_name = $admin_name_row['admin_name'];
+                                            }
+                                            $admin_name_stmt->close();
+                                        }
+                                    }
+
+                                    $_SESSION['user_name'] = $display_name;
                                     $_SESSION['user_type'] = 'admin';
                                 }
                                 $admin_stmt->close();
