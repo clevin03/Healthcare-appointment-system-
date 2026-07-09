@@ -216,11 +216,52 @@ body::after {
 }
 
 @media (max-width: 720px) {
+    body {
+        padding: 12px;
+        background: #f8fafc;
+    }
+
+    .booking-page {
+        padding: 12px;
+    }
+
     .booking-card {
         padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
     }
 
     .booking-form {
         grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .booking-header h1 {
+        font-size: 24px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 11px;
+        font-size: 16px;
+    }
+
+    .book-btn {
+        padding: 14px 16px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .booking-card {
+        padding: 16px;
+    }
+
+    .booking-header h1 {
+        font-size: 20px;
+    }
+
+    .back-link {
+        font-size: 13px;
     }
 }

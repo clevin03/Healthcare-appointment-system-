@@ -163,12 +163,81 @@ h1 {
 }
 
 @media (max-width: 760px) {
+    body {
+        background:
+            radial-gradient(circle at 10% 15%, #bcdff0 0%, transparent 40%),
+            radial-gradient(circle at 85% 80%, #bfdac9 0%, transparent 40%),
+            linear-gradient(140deg, var(--bg-base), var(--bg-alt));
+    }
+
+    .hero-shell {
+        padding: 16px;
+    }
+
     .hero-card {
         padding: 28px;
         border-radius: 20px;
     }
 
+    .brand {
+        font-size: 13px;
+    }
+
+    h1 {
+        font-size: clamp(1.6rem, 5vw, 2.2rem);
+        margin: 16px 0 12px;
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 14px 22px;
+        font-size: 14px;
+    }
+
     .stats {
         grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .stats article {
+        padding: 14px;
+    }
+
+    .stats h2 {
+        font-size: 1.1rem;
+    }
+
+    .stats p {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .hero-card {
+        padding: 22px;
+        border-radius: 16px;
+    }
+
+    .brand {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .brand-icon {
+        width: 26px;
+        height: 26px;
+    }
+
+    h1 {
+        font-size: clamp(1.3rem, 5vw, 1.7rem);
     }
 }

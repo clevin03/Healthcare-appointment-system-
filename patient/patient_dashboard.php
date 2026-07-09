@@ -43,8 +43,16 @@ $current_date = date('Y-m-d');
     <link rel="stylesheet" href="static/patient_dashboard.css">
 </head>
 <body>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="overlay" id="sidebarOverlay"></div>
     <div class="container">
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header-mobile">
+                <span class="mobile-logo"><i class="fas fa-heartbeat"></i> HealthCare</span>
+                <button class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button>
+            </div>
             <div class="user-profile">
                 <div class="user-avatar">
                     <span class="avatar-icon"><i class="fas fa-user"></i></span>

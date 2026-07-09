@@ -30,8 +30,16 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'doctor')
         </div>
     </div>
 
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="overlay" id="sidebarOverlay"></div>
     <div class="container">
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header-mobile">
+                <span class="mobile-logo"><i class="fa-solid fa-hospital"></i> HealthCare</span>
+                <button class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button>
+            </div>
             <div class="sidebar-header">
                 <h3>Doctor Portal</h3>
             </div>
@@ -54,7 +62,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'doctor')
                     <button class="btn btn-primary"><i class="fa-solid fa-calendar-check"></i> View My Appointments</button>
                 </div>
                 <div class="welcome-image">
-                    <img src="image/healthcare.webp" alt="Healthcare">
+                    <img src="../image/healthcare.webp" alt="Healthcare">
                 </div>
             </div>
 
@@ -118,6 +126,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'doctor')
             link.addEventListener('click', function() {
                 document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
                 this.classList.add('active');
+                if (window.innerWidth <= 768) closeSidebar();
             });
         });
 
@@ -126,6 +135,40 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'doctor')
                 window.location.href = '/Healthcare-appointment-system-/auth/logout.php';
             }
         }
+
+        // Mobile sidebar
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const closeBtn = document.getElementById('closeSidebar');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            hamburgerBtn.classList.add('active');
+            if (overlay) overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            hamburgerBtn.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (hamburgerBtn) {
+            hamburgerBtn.addEventListener('click', function() {
+                if (sidebar.classList.contains('open')) closeSidebar();
+                else openSidebar();
+            });
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+        if (overlay) overlay.addEventListener('click', closeSidebar);
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && sidebar.classList.contains('open')) closeSidebar();
+        });
     </script>
 </body>
 </html>
