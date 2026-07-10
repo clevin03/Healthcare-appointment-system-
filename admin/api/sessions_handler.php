@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 require_once '../../config/db_connection.php';
 
@@ -118,6 +119,48 @@ function getDoctors($conn){
     echo json_encode(['success' => true, 'data' => $doctors]);
 }
 
+function createSession($conn) {
+    $created_by = null;
+    if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] !== '') {
+        $created_by = intval($_SESSION['admin_id']);
+    } elseif (isset($_POST['created_by']) && $_POST['created_by'] !== '') {
+        $created_by = intval($_POST['created_by']);
+    }
+
+    if ($created_by === null) {
+        echo json_encode(['success' => false, 'message' => 'Admin session not found']);
+        return;
+    }
+
+    // Required fields: doctor_id, session_date, start_time, end_time
+    if (!isset($_POST['doctor_id']) || !isset($_POST['session_date']) || !isset($_POST['start_time']) || !isset($_POST['end_time'])) {
+        echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+        return;
+    }
+
+    $doctor_id = intval($_POST['doctor_id']);
+    $session_date = $_POST['session_date'];
+    $start_time = $_POST['start_time'];
+    $end_time = $_POST['end_time'];
+    $max_patients = isset($_POST['max_patients']) ? intval($_POST['max_patients']) : null;
+    $status = isset($_POST['status']) ? $_POST['status'] : 'pending';
+
+    $sql = "INSERT INTO sessions (doctor_id, session_day, start_time, end_time, max_patients, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'message' => 'Prepare failed: ' . $conn->error]);
+        return;
+    }
+
+    $stmt->bind_param("isssisi", $doctor_id, $session_date, $start_time, $end_time, $max_patients, $status, $created_by);
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true, 'message' => 'Session created successfully', 'session_id' => $stmt->insert_id]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Insert failed: ' . $stmt->error]);
+    }
+}
+
 if ($action === 'getAllSessions') {
     getAllSessions($conn);
 }
@@ -128,6 +171,10 @@ if ($action === 'getDoctors') {
 
 if ($action === 'getSession') {
     getSession($conn);
+}
+
+if ($action === 'createSession') {
+    createSession($conn);
 }
 
 if ($action === 'editSession') {

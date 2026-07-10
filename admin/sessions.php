@@ -95,9 +95,10 @@ require_once '../config/db_connection.php';
                     <h2 id="modalTitle">Add New Session</h2>
                     <span class="close">&times;</span>
                 </div>
-                <form id="sessionForm">
+                <form id="sessionForm" method="POST">
                     <input type="hidden" id="sessionId" name="session_id">
                     <input type="hidden" id="doctorId" name="doctor_id">
+                    <input type="hidden" id="createdBy" name="created_by" value="<?php echo isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : ''; ?>">
                     <div class="form-group">
                         <!--<label for="doctorName">Doctor Name <span class="required">*</span></label>
                         <input type="text" id="doctorName" name="doctor_name" required>-->
@@ -117,10 +118,22 @@ require_once '../config/db_connection.php';
                         <label for="endTime">End Time <span class="required">*</span></label>
                         <input type="time" id="endTime" name="end_time" required>
                     </div>
+                    <div class="form-group">
+                        <label for="maxPatients">Max Patients<span class="required">*</span></label>
+                        <input type="number" id="maxPatients" name="maxPatients" required>
+                    </div>
+                    <div class="form-group status">
+                        <label>Status<span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label for="pending"><input type="radio" id="pending" name="status" value="pending"> Pending</label>
+                            <label for="active"><input type="radio" id="active" name="status" value="active"> Active</label>
+                        </div>
+                    </div>
                     <div class="form-actions">
                         <button type="submit" class="btn-submit">Save</button>
                         <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
                     </div>
+
                 </form>
             </div>
         </div>

@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (error) {
         console.error('Fetch error for doctors:', error);
     }
-}
+    }
 
     function populateDoctorDropdown(doctorList) {
         const select = document.getElementById('doctorName');
@@ -112,5 +112,71 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial fetch of data when the page loads
     loadDoctors();
+    // Wire form submission to the API
+    const sessionForm = document.getElementById('sessionForm');
+    if (sessionForm) {
+        sessionForm.addEventListener('submit', handleFormSubmit);
+    }
 
 });
+
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+
+        const sessionId = document.getElementById('sessionId') ? document.getElementById('sessionId').value : '';
+        const doctorId = document.getElementById('doctorId') ? document.getElementById('doctorId').value : document.getElementById('doctorName').value;
+        const sessionDate = document.getElementById('sessionDate') ? document.getElementById('sessionDate').value : '';
+        const startTime = document.getElementById('startTime') ? document.getElementById('startTime').value : '';
+        const endTime = document.getElementById('endTime') ? document.getElementById('endTime').value : '';
+        const maxPatients = document.getElementById('maxPatients') ? document.getElementById('maxPatients').value : '';
+        const createdBy = document.getElementById('createdBy') ? document.getElementById('createdBy').value : '';
+        const statusEl = document.querySelector('input[name="status"]:checked');
+        const status = statusEl ? statusEl.value : '';
+
+        const formData = new FormData();
+        // determine action: create vs edit
+        if (sessionId && sessionId.trim() !== '') {
+            formData.append('action', 'editSession');
+            formData.append('session_id', sessionId);
+        } else {
+            formData.append('action', 'createSession');
+        }
+
+        formData.append('doctor_id', doctorId);
+        formData.append('session_date', sessionDate);
+        formData.append('start_time', startTime);
+        formData.append('end_time', endTime);
+        formData.append('max_patients', maxPatients);
+        formData.append('created_by', createdBy);
+        formData.append('status', status);
+
+        try {
+            const resp = await fetch('api/sessions_handler.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const text = await resp.text();
+            let data = {};
+            try {
+                data = text ? JSON.parse(text) : {};
+            } catch (parseError) {
+                console.error('Invalid JSON response:', text);
+                alert('Server returned an invalid response. Please check the PHP handler.');
+                return;
+            }
+
+            if (data.success) {
+                // close modal and reload to show updated sessions
+                const sessionModal = document.getElementById('sessionModal');
+                if (sessionModal) sessionModal.style.display = 'none';
+                // simple approach: reload page to refresh session list
+                location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Unknown error'));
+            }
+        } catch (err) {
+            console.error('Submission error', err);
+            alert('Network error while submitting the form');
+        }
+    }

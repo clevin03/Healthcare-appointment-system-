@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $admin_stmt->bind_param("i", $user['user_id']);
                                 $admin_stmt->execute();
                                 if ($admin_data = $admin_stmt->get_result()->fetch_assoc()) {
-                                    $_SESSION['user_id'] = $admin_data['admin_id'];
+                                    $_SESSION['admin_id'] = $admin_data['admin_id'];
 
                                     $display_name = explode('@', $email)[0];
                                     $column_check = $conn->query("SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'admin' AND COLUMN_NAME = 'admin_name'");
