@@ -46,7 +46,7 @@ require_once '../config/db_connection.php';
                 <?php
                 if (count($sessions)>0){
                     ?>
-                    <table>
+                    <table class="session-table">
                             <thead>
                                 <tr>
                                     <th>Session ID</th>

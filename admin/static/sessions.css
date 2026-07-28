@@ -41,6 +41,12 @@ section{
     margin-bottom: 30px;
 }
 
+.session-table{
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+}
+
 
 .sessions-table thead {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

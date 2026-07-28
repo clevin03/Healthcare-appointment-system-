@@ -34,7 +34,7 @@ function handleNavigation(page) {
             window.location.href = 'allDoctors.php';
             break;
         case '#sessions':
-            window.location.href = 'scheduled_sessions.php';
+            window.location.href = 'sessions.php';
             break;
         case '#bookings':
             window.location.href = 'my_bookings.php';
