@@ -1,5 +1,4 @@
 <?php
-// Unified LLM handler for OpenAI and Ollama
 
 class OpenAIHandler {
     private $apiKey;
@@ -61,7 +60,6 @@ class OpenAIHandler {
             }
             
             if ($imageData && ($this->provider === 'openai' || $this->provider === 'openai-compatible')) {
-                // OpenAI Vision format
                 $messages[] = [
                     'role' => 'user',
                     'content' => [
@@ -78,7 +76,6 @@ class OpenAIHandler {
                     ]
                 ];
             } else if ($imageData && $this->provider === 'ollama') {
-                // Ollama image format
                 $messages[] = [
                     'role' => 'user',
                     'content' => $userMessage,
@@ -129,7 +126,8 @@ class OpenAIHandler {
             'messages' => $messages,
             'temperature' => 0.7,
             'max_tokens' => 1500,
-            'top_p' => 0.9
+            'top_p' => 0.9,
+            'stream' => false
         ];
 
         $ch = curl_init();
