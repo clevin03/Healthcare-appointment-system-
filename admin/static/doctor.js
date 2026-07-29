@@ -89,8 +89,8 @@ function openAddModal() {
     document.getElementById('modalTitle').textContent = 'Add New Doctor';
     document.getElementById('doctorForm').reset();
     document.getElementById('doctorId').value = '';
-    document.getElementById('doctorModal').style.display = 'block';
-}
+    document.getElementById('').style.display = 'block';
+}doctorModal
 
 function editDoctor(doctorId) {
     fetch(`api/doctor_handler.php?action=get&id=${doctorId}`)
