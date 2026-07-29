@@ -29,7 +29,7 @@ switch ($action) {
 }
 
 function getAllDoctors($conn) {
-    $sql = "SELECT d.*, dep.department_name 
+    $sql = "SELECT d.*, dep.department_name
             FROM doctors d 
             LEFT JOIN departments dep ON d.department_id = dep.department_id 
             ORDER BY d.doctor_id DESC";
@@ -82,7 +82,7 @@ function getDoctor($conn) {
 
 function addDoctor($conn) {
     $doctor_name = $_POST['doctor_name'] ?? '';
-    $email = $_POST['email'] ?? null;
+    $email = $_POST['email'] ?? '';
     $phone = $_POST['phone'] ?? null;
     $department_id = $_POST['department_id'] ?? null;
     $status = $_POST['status'] ?? 'ACTIVE';
@@ -91,45 +91,82 @@ function addDoctor($conn) {
         echo json_encode(['success' => false, 'message' => 'Doctor name is required']);
         return;
     }
+
+    if (empty($email)) {
+        echo json_encode(['success' => false, 'message' => 'Email is required to create a doctor user account.']);
+        return;
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid email format.']);
+        return;
+    }
     
     if (empty($department_id)) {
         echo json_encode(['success' => false, 'message' => 'Department is required']);
         return;
     }
     
-    if (!empty($email)) {
-        $check_sql = "SELECT doctor_id FROM doctors WHERE email = ?";
-        $check_stmt = $conn->prepare($check_sql);
-        $check_stmt->bind_param("s", $email);
-        $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
-        
-        if ($check_result->num_rows > 0) {
-            echo json_encode(['success' => false, 'message' => 'Email already exists']);
-            $check_stmt->close();
-            return;
-        }
+    // Check if email exists in users table
+    $check_sql = "SELECT user_id FROM users WHERE email = ?";
+    $check_stmt = $conn->prepare($check_sql);
+    $check_stmt->bind_param("s", $email);
+    $check_stmt->execute();
+    $check_result = $check_stmt->get_result();
+    
+    if ($check_result->num_rows > 0) {
+        echo json_encode(['success' => false, 'message' => 'Email is already registered to another user.']);
         $check_stmt->close();
-    }
-    
-    $sql = "INSERT INTO doctors (doctor_name, email, phone, department_id, status) 
-            VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    
-    if (!$stmt) {
-        echo json_encode(['success' => false, 'message' => 'Prepare failed: ' . $conn->error]);
         return;
     }
-    
-    $stmt->bind_param("sssis", $doctor_name, $email, $phone, $department_id, $status);
-    
-    if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Doctor added successfully', 'doctor_id' => $stmt->insert_id]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to add doctor: ' . $stmt->error]);
+    $check_stmt->close();
+
+    $conn->begin_transaction();
+
+    try {
+        // Create user account for the doctor
+        $temporary_password = 'doctor123'; // A default temporary password
+        $password_hash = password_hash($temporary_password, PASSWORD_DEFAULT);
+        $user_type = 'doctor';
+
+        $user_sql = "INSERT INTO users (email, password, user_type, is_active) VALUES (?, ?, ?, 1)";
+        $user_stmt = $conn->prepare($user_sql);
+        if (!$user_stmt) {
+            throw new Exception('User insert prepare failed: ' . $conn->error);
+        }
+        $user_stmt->bind_param("sss", $email, $password_hash, $user_type);
+        
+        if (!$user_stmt->execute()) {
+            throw new Exception('Failed to create user account: ' . $user_stmt->error);
+        }
+        
+        $user_id = $user_stmt->insert_id;
+        $user_stmt->close();
+
+        // Insert doctor details
+        $sql = "INSERT INTO doctors (user_id, doctor_name, phone, department_id, status) 
+                VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new Exception('Prepare failed: ' . $conn->error);
+        }
+        
+        $stmt->bind_param("issis", $user_id, $doctor_name, $phone, $department_id, $status);
+        
+        if ($stmt->execute()) {
+            $doctor_id = $stmt->insert_id;
+            $conn->commit();
+            echo json_encode(['success' => true, 'message' => 'Doctor added successfully and a user account has been created.', 'doctor_id' => $doctor_id]);
+        } else {
+            throw new Exception('Failed to add doctor: ' . $stmt->error);
+        }
+        
+        $stmt->close();
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
-    
-    $stmt->close();
 }
 
 function editDoctor($conn) {

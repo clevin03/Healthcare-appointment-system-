@@ -114,7 +114,7 @@ foreach ($aiProviders as $key => $provider) {
         <div class="header-content">
             <div class="logo"><i class="fa-solid fa-hospital"></i> HealthCare Admin</div>
             <div class="user-info">
-                <span>Admin User</span>
+                <span><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin User'); ?></span>
                 <form method="post" action="/Healthcare-appointment-system-/auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" style="display:inline; margin:0;">
                     <button type="submit">Logout</button>
                 </form>
@@ -127,6 +127,7 @@ foreach ($aiProviders as $key => $provider) {
             <ul>
                 <li><a href="admin_dashboard.php"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
                 <li><a href="appointment.php"><i class="fa-solid fa-calendar"></i> Appointments</a></li>
+                <li><a href="sessions.php"><i class="fa-solid fa-clock"></i> Sessions</a></li>
                 <li><a href="patient.php"><i class="fa-solid fa-users"></i> Patients</a></li>
                 <li><a href="doctor.php"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
                 <li><a href="department.php"><i class="fa-solid fa-building"></i> Departments</a></li>
