@@ -29,9 +29,10 @@ switch ($action) {
 }
 
 function getAllDoctors($conn) {
-    $sql = "SELECT d.*, dep.department_name
+    $sql = "SELECT d.*, dep.department_name, u.email
             FROM doctors d 
             LEFT JOIN departments dep ON d.department_id = dep.department_id 
+            LEFT JOIN users u ON d.user_id = u.user_id
             ORDER BY d.doctor_id DESC";
     $result = $conn->query($sql);
     
