@@ -15,9 +15,10 @@ $patient_id = $_SESSION['patient_id'] ?? $_SESSION['user_id'];
 $search_term = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Get all doctors with their departments
-$sql = "SELECT d.*, dep.department_name 
+$sql = "SELECT d.*, dep.department_name, u.email
         FROM doctors d 
         LEFT JOIN departments dep ON d.department_id = dep.department_id 
+        LEFT JOIN users u ON d.user_id = u.user_id
         WHERE d.status = 'ACTIVE'";
 
 if (!empty($search_term)) {
@@ -53,6 +54,7 @@ $current_date = date('Y-m-d');
     <title>All Doctors - Healthcare System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <link rel="stylesheet" href="static/patient_dashboard.css">
+    <!--<link rel="stylesheet" href="static/main.css">-->
     <link rel="stylesheet" href="static/allDoctors.css">
 </head>
 <body>

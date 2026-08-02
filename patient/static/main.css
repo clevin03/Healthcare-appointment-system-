@@ -165,3 +165,63 @@ body {
     color: #333;
     font-weight: 600;
 }
+
+.search-section {
+    margin-top: 20px;
+}
+
+.search-section h4 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+}
+
+.search-box {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    font-size: 18px;
+}
+
+.search-box input {
+    flex: 1;
+    border: none;
+    padding: 12px 15px 12px 45px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-box input::placeholder {
+    color: #999;
+}
+
+.search-btn {
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #0052a3;
+}
