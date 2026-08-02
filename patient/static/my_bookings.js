@@ -5,13 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function fetchBookings() {
     try{
-        const response = await fetch('api/booking_handler.php?action=get_bookings');
+        const response = await fetch('api/booking_handler.php?action=getBookings');
         if(!response.ok){
             throw new Error(`Response status: ${response.status}`);
         }
         const data = await response.json();
         if(data.success){
             renderBookings(data.data);
+            console.log('Bookings fetched successfully:', data.data); //To be removed
         }
     }catch(error){
         console.error('Error fetching bookings:', error);
@@ -24,6 +25,7 @@ function renderBookings(bookings) {
 
     if (bookings.length === 0) {
         grid.innerHTML = '<p style="text-align:center;">No bookings found</p>';
+        console.log('No bookings found'); //To be removed
         return;
     }
 

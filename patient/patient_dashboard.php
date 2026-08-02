@@ -35,21 +35,26 @@ $new_bookings = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
 $stmt->close();
 
 // Get today's sessions count for this patient
-$sql_today = "SELECT COUNT(*) AS total FROM appointments WHERE patient_id = ? AND DATE(appointment_date) = CURDATE() AND status != 'CANCELLED'";
+/* To get the date from the `sessions` table, we must join it.
+   This requires a `session_id` column in the `appointments` table. */
+$sql_today = "SELECT COUNT(*) AS total FROM appointments a
+              JOIN sessions s ON a.session_id = s.session_id
+              WHERE a.patient_id = ? AND DATE(s.session_day) = CURDATE() AND a.status != 'CANCELLED'";
 $stmt = $conn->prepare($sql_today);
 $stmt->bind_param("i", $patient_id);
 $stmt->execute();
 $today_sessions = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
 $stmt->close();
 
-// Get upcoming bookings
+// Get upcoming bookings by joining with sessions
 $upcoming_bookings = [];
-$sql_upcoming = "SELECT a.appointment_number, dep.department_name, d.doctor_name, a.appointment_date, a.appointment_time 
+$sql_upcoming = "SELECT a.appointment_number, dep.department_name, d.doctor_name, s.session_day, s.start_time
                  FROM appointments a 
-                 LEFT JOIN doctors d ON a.doctor_id = d.doctor_id 
+                 JOIN sessions s ON a.session_id = s.session_id
+                 LEFT JOIN doctors d ON s.doctor_id = d.doctor_id 
                  LEFT JOIN departments dep ON a.department_id = dep.department_id 
-                 WHERE a.patient_id = ? AND a.appointment_date >= CURDATE() AND a.status != 'CANCELLED' 
-                 ORDER BY a.appointment_date ASC, a.appointment_time ASC 
+                 WHERE a.patient_id = ? AND s.session_day >= CURDATE() AND a.status != 'CANCELLED' 
+                 ORDER BY s.session_day ASC, s.start_time ASC 
                  LIMIT 5";
 $stmt = $conn->prepare($sql_upcoming);
 $stmt->bind_param("i", $patient_id);
@@ -61,7 +66,7 @@ if ($result_upcoming && $result_upcoming->num_rows > 0) {
             'appt_number' => $row['appointment_number'],
             'session_title' => ($row['department_name'] ?? 'General') . ' Consultation',
             'doctor' => $row['doctor_name'],
-            'scheduled_date_time' => date('Y-m-d H:i', strtotime($row['appointment_date'] . ' ' . $row['appointment_time']))
+            'scheduled_date_time' => date('Y-m-d H:i', strtotime($row['session_day'] . ' ' . $row['appointment_time']))
         ];
     }
 }

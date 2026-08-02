@@ -25,6 +25,7 @@ $sql = "";
     <title>My Bookings</title>
 </head>
 <body>
+    <script src="static/my_bookings.js"></script>
     <div class="top-header" style="background-color: #007bff; color: white;">
         <div class="header-content">
             <div class="user-profile">
