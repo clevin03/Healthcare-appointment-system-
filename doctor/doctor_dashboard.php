@@ -66,6 +66,7 @@ $conn->close();
     <link rel="stylesheet" href="../admin/static/dashboard.css">
 </head>
 <body>
+    <script src="static/doctor_dashboard.js"></script>
     <div class="header">
         <div class="header-content">
             <div class="logo"><i class="fa-solid fa-user-doctor"></i> Doctor's Portal</div>
@@ -115,6 +116,9 @@ $conn->close();
                                 <th>Status</th>
                             </tr>
                         </thead>
+                        <tbody id="upcomingSessionsTableBody">
+                            
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -132,9 +136,7 @@ $conn->close();
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="upcomingSessionsTavleBody">
-                            
-                        </tbody>
+                        
                         <tbody>
                             <?php if (!empty($upcoming_appointments)): ?>
                                 <?php foreach ($upcoming_appointments as $apt): ?>

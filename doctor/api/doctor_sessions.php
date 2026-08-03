@@ -17,7 +17,7 @@ function getAllSessions($conn){
     $doctor_id = $_SESSION['doctor_id'];
 
     $sql = "SELECT session_day, start_time, end_time, max_patients, current_count, status 
-            FROM sessions WHERE doctor_id = ? ORDER BY session_day ASC, start_time ASC";
+            FROM sessions WHERE session_day >= CURDATE() AND doctor_id = ? ORDER BY session_day ASC, start_time ASC";
     $stmt = $conn->prepare($sql);
     if(!$stmt){
         echo json_encode(['success' =>false, 'message'=> 'Database query preparation failed']);
