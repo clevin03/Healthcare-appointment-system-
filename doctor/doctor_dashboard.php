@@ -21,14 +21,14 @@ $upcoming_appointments = [];
 
 if ($doctor_id > 0) {
     // Fetch stats for the doctor
-    $sql_today_appointments = "SELECT COUNT(*) AS total FROM appointments WHERE doctor_id = ? AND DATE(appointment_date) = CURDATE()";
+    $sql_today_appointments = "SELECT COUNT(*) AS total FROM appointments a LEFT JOIN sessions s ON a.session_id = s.session_id WHERE a.doctor_id = ? AND DATE(s.session_day) = CURDATE()";
     $stmt = $conn->prepare($sql_today_appointments);
     $stmt->bind_param("i", $doctor_id);
     $stmt->execute();
     $today_appointments = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
     $stmt->close();
 
-    $sql_pending_appointments = "SELECT COUNT(*) AS total FROM appointments WHERE doctor_id = ? AND status = 'PENDING'";
+    $sql_pending_appointments = "SELECT COUNT(*) AS total FROM appointments a LEFT JOIN sessions s ON a.session_id = s.session_id WHERE a.doctor_id = ? AND a.status = 'PENDING'";
     $stmt = $conn->prepare($sql_pending_appointments);
     $stmt->bind_param("i", $doctor_id);
     $stmt->execute();
@@ -36,11 +36,12 @@ if ($doctor_id > 0) {
     $stmt->close();
 
     // Fetch upcoming appointments
-    $sql_upcoming = "SELECT a.appointment_number, a.appointment_date, a.appointment_time, a.status, p.first_name, p.last_name
+    $sql_upcoming = "SELECT a.appointment_number, s.session_day, s.start_time, a.status, p.first_name, p.last_name
                      FROM appointments a
-                     JOIN patients p ON a.patient_id = p.patient_id
-                     WHERE a.doctor_id = ? AND a.appointment_date >= CURDATE()
-                     ORDER BY a.appointment_date ASC, a.appointment_time ASC
+                     LEFT JOIN sessions s ON a.session_id = s.session_id
+                     LEFT JOIN patients p ON a.patient_id = p.patient_id
+                     WHERE a.doctor_id = ? AND s.session_day >= CURDATE()
+                     ORDER BY s.session_day ASC, s.start_time ASC
                      LIMIT 5";
     $stmt = $conn->prepare($sql_upcoming);
     $stmt->bind_param("i", $doctor_id);
@@ -80,7 +81,7 @@ $conn->close();
         <div class="sidebar">
             <ul>
                 <li><a href="#" class="active"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fa-solid fa-calendar"></i> My Appointments</a></li>
+                <li><a href="#"><i class="fa-solid fa-calendar"></i> My se</a></li>
                 <li><a href="#"><i class="fa-solid fa-users"></i> My Patients</a></li>
                 <li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
@@ -101,6 +102,24 @@ $conn->close();
             </div>
 
             <div class="section">
+                <h2 class="section-title"><i class="fa-solid fa-calendar"></i> Upcomming Sessions</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Max Patients</th>
+                                <th>Current Patients</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
                 <h2 class="section-title"><i class="fa-solid fa-calendar-days"></i> Upcoming Appointments</h2>
                 <div class="table-responsive">
                     <table>
@@ -113,6 +132,9 @@ $conn->close();
                                 <th>Action</th>
                             </tr>
                         </thead>
+                        <tbody id="upcomingSessionsTavleBody">
+                            
+                        </tbody>
                         <tbody>
                             <?php if (!empty($upcoming_appointments)): ?>
                                 <?php foreach ($upcoming_appointments as $apt): ?>

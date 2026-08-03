@@ -27,7 +27,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
     $sql_result = $conn->query($sql);
     $total_patients = $sql_result->fetch_assoc()['total_patients'];
     
-    $sql = "SELECT COUNT(*) AS today_appointments FROM appointments WHERE DATE(appointment_date) = CURDATE()";
+    $sql = "SELECT COUNT(*) AS today_appointments FROM appointments a JOIN sessions s ON a.session_id = s.session_id WHERE DATE(s.session_day) = CURDATE()";
     $sql_result = $conn->query($sql);
     $today_appointments = $sql_result->fetch_assoc()['today_appointments'];
 
@@ -39,14 +39,15 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
     $sql_result = $conn->query($sql);
     $pending_appointments = $sql_result->fetch_assoc()['pending_appointments'];
 
-    $sql = "SELECT a.appointment_id, a.appointment_number, a.appointment_date, a.appointment_time, a.status,
+    $sql = "SELECT a.appointment_id, a.appointment_number, s.session_day, s.start_time, a.status,
                    CONCAT(p.first_name, ' ', p.last_name) AS patient_name, d.doctor_name, dep.department_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
+            LEFT JOIN sessions s ON a.session_id = s.session_id
             LEFT JOIN departments dep ON a.department_id = dep.department_id
-            WHERE a.appointment_date >= CURDATE()
-            ORDER BY a.appointment_date ASC, a.appointment_time ASC
+            WHERE s.session_day >= CURDATE()
+            ORDER BY s.session_day ASC, s.start_time ASC
             LIMIT 5";
     $upcoming_appointments = [];
     $result = $conn->query($sql);
