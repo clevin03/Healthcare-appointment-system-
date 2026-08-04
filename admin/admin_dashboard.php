@@ -40,12 +40,12 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
     $pending_appointments = $sql_result->fetch_assoc()['pending_appointments'];
 
     $sql = "SELECT a.appointment_id, a.appointment_number, s.session_day, s.start_time, a.status,
-                   CONCAT(p.first_name, ' ', p.last_name) AS patient_name, d.doctor_name, dep.department_name
+                   CONCAT(p.first_name, ' ', p.last_name) AS patient_name, d.doctor_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
             LEFT JOIN sessions s ON a.session_id = s.session_id
-            LEFT JOIN departments dep ON a.department_id = dep.department_id
+            
             WHERE s.session_day >= CURDATE()
             ORDER BY s.session_day ASC, s.start_time ASC
             LIMIT 5";

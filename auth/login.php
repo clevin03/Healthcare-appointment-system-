@@ -179,13 +179,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <button type="submit" class="submit-btn">Login</button>
             </form>
-
-            <div class="demo-credentials">
-                <h4><i class="fas fa-info-circle"></i> Demo Credentials</h4>
-                <p><strong>Patient:</strong> <code>patient@healthcare.com</code> / <code>patient123</code></p>
-                <p><strong>Doctor:</strong> <code>doctor@healthcare.com</code> / <code>doctor123</code></p>
-                <p><strong>Admin:</strong> <code>admin@healthcare.com</code> / <code>admin123</code></p>
-            </div>
         </div>
     </div>
     <script src="../static/cursor_effect.js"></script>

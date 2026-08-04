@@ -22,13 +22,12 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
     $sql = "SELECT a.appointment_id, a.appointment_number, s.session_day, s.start_time, a.status,
                    CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
                    p.phone,
-                   d.doctor_name,
-                   dept.department_name
+                   d.doctor_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
             LEFT JOIN sessions s ON a.session_id = s.session_id
-            LEFT JOIN departments dept ON a.department_id = dept.department_id
+            
             ORDER BY s.session_day DESC, s.start_time DESC";
     
     $result = $conn->query($sql);

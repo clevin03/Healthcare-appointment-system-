@@ -12,6 +12,8 @@ switch ($action){
     case 'cancelBooking':
         cancelBooking($conn);
         break;
+    case 'bookAppointment':
+        bookAppointment($conn);
     default:
         echo json_encode(['success' => false, 'message' => 'Invalid action']);
         break;
@@ -46,4 +48,8 @@ function getBookings($conn) {
 
 function cancelBooking($conn) {
 
+}
+
+function bookAppointment($conn){
+    
 }

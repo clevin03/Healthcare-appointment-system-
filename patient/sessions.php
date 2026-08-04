@@ -11,8 +11,8 @@ $patient_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : (isset(
 $patient_email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : 'patient@edoc.com';
 $patient_id = $_SESSION['patient_id'] ?? $_SESSION['user_id'];
 
-$sql = "SELECT s.doctor_id, d.doctor_name, s.session_day, s.start_time, s.end_time, s.max_patients, s.status, s.current_count 
-        FROM sessions s JOIN doctors d ON s.doctor_id = d.doctor_id WHERE s.session_day >= CURDATE()";
+$sql = "SELECT s.session_id, s.doctor_id, d.doctor_name, s.session_day, s.start_time, s.end_time, s.max_patients, s.status, s.current_count 
+        FROM sessions s JOIN doctors d ON s.doctor_id = d.doctor_id WHERE s.session_day >= CURDATE() AND s.status = 'active'";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
@@ -39,6 +39,7 @@ $stmt->close();
     <title>Scheduled Sessions</title>
 </head>
 <body>
+    <script src="static/sessions.js"></script>
     <div class="top-header" style="background-color: #007bff; color: white;">
         <div class="header-content">
             <div class="user-profile">
@@ -118,7 +119,14 @@ $stmt->close();
                                     <p><strong>Appointments:</strong> <?php echo htmlspecialchars($session['current_count']); ?> / <?php echo htmlspecialchars($session['max_patients']); ?></p>
                                 </div>
                                 <div class="session-actions">
-                                    <a href="book_appointment.php?doctor_id=<?php echo $session['doctor_id']; ?>" class="book-btn">Book Now</a>
+                                    <?php if ($session['current_count'] >= $session['max_patients']): ?>
+                                        <button class="book-btn disabled" disabled>Session Full</button>
+                                    <?php else: ?>
+                                        <form class="session-book-form">
+                                            <input type="hidden" name="session_id" value="<?php echo $session['session_id']; ?>">
+                                            <button type="submit" class="book-btn">Book Now</button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -126,6 +134,18 @@ $stmt->close();
                 <?php else: ?>
                     <div class="no-sessions"><p>No scheduled sessions found.</p></div>
                 <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="model" id="sessionModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Your Appointment</h2>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Session details will be loaded here via JavaScript -->
+                </div>
             </div>
         </div>
     </div>

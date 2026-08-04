@@ -48,11 +48,11 @@ $stmt->close();
 
 // Get upcoming bookings by joining with sessions
 $upcoming_bookings = [];
-$sql_upcoming = "SELECT a.appointment_number, dep.department_name, d.doctor_name, s.session_day, s.start_time
+$sql_upcoming = "SELECT a.appointment_number, d.doctor_name, s.session_day, s.start_time
                  FROM appointments a 
                  JOIN sessions s ON a.session_id = s.session_id
                  LEFT JOIN doctors d ON s.doctor_id = d.doctor_id 
-                 LEFT JOIN departments dep ON a.department_id = dep.department_id 
+                  
                  WHERE a.patient_id = ? AND s.session_day >= CURDATE() AND a.status != 'CANCELLED' 
                  ORDER BY s.session_day ASC, s.start_time ASC 
                  LIMIT 5";
