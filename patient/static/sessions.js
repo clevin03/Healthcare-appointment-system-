@@ -61,12 +61,17 @@ function displaySessionDetails(details) {
         alert(`Session Details:\n\nDoctor: ${details.doctor_name}\nDate: ${details.session_day}\nTime: ${details.start_time} - ${details.end_time}\nPatients: ${details.current_count} / ${details.max_patients}`);
         return;
     }
+    
+    const currentCount = Number(details.current_count) || 0;
+    const nextAppointmentNumber = currentCount + 1;
+
     displayContainer.innerHTML = `
         <h2>Session Details</h2>
         <p><strong>Doctor:</strong> ${details.doctor_name}</p>
         <p><strong>Date:</strong> ${details.session_day}</p>
         <p><strong>Time:</strong> ${details.start_time} - ${details.end_time}</p>
-        <p><strong>Current Bookings:</strong> ${details.current_count} / ${details.max_patients}</p>
+        <p><strong>Current Bookings:</strong> ${currentCount} / ${details.max_patients}</p>
+        <p><strong>Your Appointment Number:</strong> ${nextAppointmentNumber}</p>
         <button onclick="closeModal()">Close</button>
         <button onclick="bookAppointment(${details.session_id})">Book Appointment</button>
     `;
