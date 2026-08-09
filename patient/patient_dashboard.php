@@ -66,7 +66,7 @@ if ($result_upcoming && $result_upcoming->num_rows > 0) {
             'appt_number' => $row['appointment_number'],
             'session_title' => ($row['department_name'] ?? 'General') . ' Consultation',
             'doctor' => $row['doctor_name'],
-            'scheduled_date_time' => date('Y-m-d H:i', strtotime($row['session_day'] . ' ' . $row['appointment_time']))
+            'scheduled_date_time' => date('Y-m-d H:i', strtotime($row['session_day'] . ' ' . $row['start_time']))
         ];
     }
 }

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
+if (!isset($_SESSION['user_id']) && $_SESSION['user_type'] != 'patient') {
     header("Location: ../auth/login.php");
     exit();
 }
@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
 require_once '../config/db_connection.php';
 $patient_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : (isset($_SESSION['patient_name']) ? $_SESSION['patient_name'] : 'Test Patient');
 $patient_email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : 'patient@edoc.com';
-$patient_id = $_SESSION['patient_id'] ?? $_SESSION['user_id'];
+$patient_id = $_SESSION['patient_id']; //?? $_SESSION['user_id'];
 
 $sql = "SELECT s.session_id, s.doctor_id, d.doctor_name, s.session_day, s.start_time, s.end_time, s.max_patients, s.status, s.current_count 
         FROM sessions s JOIN doctors d ON s.doctor_id = d.doctor_id WHERE s.session_day >= CURDATE() AND s.status = 'active'";
@@ -113,6 +113,7 @@ $stmt->close();
                             <div class="session-card">
                                 <div class="session-info">
                                     <h3><?php echo htmlspecialchars($session['doctor_name']); ?></h3>
+                                    <p><strong>doctor ID:</strong> <?php echo htmlspecialchars($session['doctor_id']); ?></p> //for debugging
                                     <p><strong>Date:</strong> <?php echo htmlspecialchars($session['session_day']); ?></p>
                                     <p><strong>Time:</strong> <?php echo htmlspecialchars(date('h:i A', strtotime($session['start_time']))); ?> - <?php echo htmlspecialchars(date('h:i A', strtotime($session['end_time']))); ?></p>
                                     <p><strong>Status:</strong> <span class="status-<?php echo strtolower(htmlspecialchars($session['status'])); ?>"><?php echo htmlspecialchars($session['status']); ?></span></p>
@@ -123,6 +124,7 @@ $stmt->close();
                                         <button class="book-btn disabled" disabled>Session Full</button>
                                     <?php else: ?>
                                         <form class="session-book-form">
+                                            <input type="hidden" name="doctor_id" value="<?php echo $session['doctor_id']; ?>">
                                             <input type="hidden" name="session_id" value="<?php echo $session['session_id']; ?>">
                                             <button type="submit" class="book-btn">Book Now</button>
                                         </form>

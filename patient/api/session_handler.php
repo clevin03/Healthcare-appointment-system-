@@ -13,7 +13,7 @@ if(!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
 if($action === 'sessionDetails'){
     $sessionId = isset($_POST['session_id']) ? $_POST['session_id'] : (isset($_GET['session_id']) ? $_GET['session_id'] : '');
 
-    $sql = "SELECT s.session_id, d.doctor_name, s.session_day, s.start_time, s.end_time, s.current_count, s.max_patients
+    $sql = "SELECT s.session_id, s.doctor_id, d.doctor_name, s.session_day, s.start_time, s.end_time, s.current_count, s.max_patients
             FROM sessions s
             JOIN doctors d ON s.doctor_id = d.doctor_id
             WHERE s.session_id = ?";

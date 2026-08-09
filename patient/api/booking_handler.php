@@ -14,6 +14,7 @@ switch ($action){
         break;
     case 'bookAppointment':
         bookAppointment($conn);
+        break;
     default:
         echo json_encode(['success' => false, 'message' => 'Invalid action']);
         break;
@@ -51,5 +52,27 @@ function cancelBooking($conn) {
 }
 
 function bookAppointment($conn){
+    $sessionId = isset($_POST['session_id']) ? $_POST['session_id'] : '';
+    $userId = $_SESSION['user_id'];
+    $patientId = $_SESSION['patient_id'];
+    $appointmentNumber = isset($_POST['appointment_number']) ? $_POST['appointment_number'] : '';
+    $doctorId = isset($_POST['doctor_id']) ? $_POST['doctor_id'] : '';
+
+    $sql = "INSERT INTO appointments (
+        patient_id, session_id, doctor_id, appointment_number, status
+        ) VALUES (?, ?, ?, ?, 'CONFIRMED')";
     
+    $stmt = $conn->prepare($sql);
+    if(!$stmt){
+        echo json_encode(['success'=>false, 'message'=>'Database query preparation failed']);
+        return;
+    }
+
+    $stmt->bind_param("iiii", $patientId, $sessionId, $doctorId, $appointmentNumber);
+    if($stmt->execute()){
+        echo json_encode(['success'=>true, 'message'=>'Appointment booked successfully']);
+    } else {
+        echo json_encode(['success'=>false, 'message'=>'Failed to book appointment']);
+    }
+    $stmt->close();
 }
