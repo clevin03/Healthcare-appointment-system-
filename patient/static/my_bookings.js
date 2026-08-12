@@ -34,12 +34,12 @@ function renderBookings(bookings) {
         item.className = 'booking-card';
         item.innerHTML = `
             <h3>Doctor: ${booking.doctor_name}</h3>
-            <p>Appointment id/: ${booking.appointment_id}</p>
-            <p>Appointment number: ${booking.appointment_number}</p>
-            <p>Date: ${booking.session_day}</p>
-            <p>Start Time: ${booking.start_time}</p>
-            <p>End Time: ${booking.end_time}</p>
-            <p>Status: ${booking.status}</p>
+            
+            <p><strong>Appointment Number:</strong> ${booking.appointment_number}</p>
+            <p><strong>Date:</strong> ${booking.session_day}</p>
+            <p><strong>Start Time:</strong> ${booking.start_time}</p>
+            <p><strong>End Time:</strong> ${booking.end_time}</p>
+            <p><strong>Status:</strong> ${booking.status}</p>
         `;
         grid.appendChild(item);
     })
