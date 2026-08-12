@@ -20,6 +20,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             try {
+                // Check for existing booking first
+                const hasBooking = await checkBooking(sessionId);
+                if (hasBooking) {
+                    alert('You have already booked an appointment for this session.');
+                    return;
+                }
+
+                // If no booking, proceed to fetch session details
                 const formData = new FormData();
                 formData.append('action', 'sessionDetails');
                 formData.append('session_id', sessionId);
@@ -35,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const result = await response.json();
                 if (result.success) {
-                    console.log('Session Details:', result.data); //for debugging
-                    console.log('Doctor ID:', doctorId); //for debugging
+                    /*console.log('Session Details:', result.data); 
+                    console.log('Doctor ID:', doctorId);*/
                     displaySessionDetails(result.data);
                 } else {
                     alert(`Error: ${result.message}`);
@@ -134,5 +142,39 @@ async function bookAppointment(event) {
     }
 }
 
-//Shoul add a function to update current appointment count after booking an appointment, so that the user can see the updated count without refreshing the page.
+//Shoul add a function to update current appointment count after booking an appointment, 
+// so that the user can see the updated count without refreshing the page.
 
+async function checkBooking(sessionId){
+    if(!sessionId){
+        console.error('Session ID is missing. Cannot check booking.');
+        return true; // Prevent booking if session ID is missing
+    }
+    try{
+        const formData = new FormData();
+        formData.append('action', 'checkBooking');
+        formData.append('session_id', sessionId);
+ 
+        const response = await fetch('api/booking_handler.php', {
+            method: 'POST',
+            body: formData
+        });
+ 
+        if(!response.ok){
+            throw new Error(`Network response was not ok, status: ${response.status}`);
+        }
+        const result = await response.json();
+        if(result.success){
+            return result.has_booking;
+        } else {
+            // If the API call fails on the backend but returns success:false
+            console.error('API Error when checking booking:', result.message);
+            alert('Could not verify your booking status. Please try again.');
+            return true; // Prevent booking on error
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        alert('An error occurred while checking your booking status.');
+        return true; // Prevent booking on error
+    }
+}

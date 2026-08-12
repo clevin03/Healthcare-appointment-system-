@@ -148,7 +148,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                                 <th>Patient Name</th>
                                 <th>Doctor Name</th>
                                 <th>Date & Time</th>
-                                <th>Department</th>
+                                <!-- <th>Department</th> -->
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -162,8 +162,8 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                                     <td><?php echo htmlspecialchars($apt['appointment_number']); ?></td>
                                     <td><?php echo htmlspecialchars($apt['patient_name'] ?? $apt['first_name']); ?></td>
                                     <td><?php echo htmlspecialchars($apt['doctor_name']); ?></td>
-                                    <td><?php echo date('M d, Y - h:i A', strtotime($apt['appointment_date'] . ' ' . $apt['appointment_time'])); ?></td>
-                                    <td><?php echo htmlspecialchars($apt['department_name']); ?></td>
+                                    <td><?php echo date('M d, Y - h:i A', strtotime($apt['session_day'] . ' ' . $apt['start_time'])); ?></td>
+                                    <!-- <td><?php echo htmlspecialchars($apt['department_name']); ?></td> -->
                                     <td><span class="badge badge-<?php echo strtolower($apt['status']); ?>"><?php echo htmlspecialchars($apt['status']); ?></span></td>
                                     <td>
                                         <div class="btn-group">

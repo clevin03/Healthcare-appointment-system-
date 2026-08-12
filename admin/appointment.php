@@ -96,7 +96,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                                 <span><?php echo htmlspecialchars($appointment['phone']); ?></span>
                             </div>
                         </div>
-                        
+                        <!--
                         <div class="info-row">
                             <i class="fas fa-building"></i>
                             <div class="info-content">
@@ -104,6 +104,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                                 <span><?php echo htmlspecialchars($appointment['department_name']); ?></span>
                             </div>
                         </div>
+-->
                         
                         <div class="info-row">
                             <i class="fas fa-calendar"></i>
@@ -111,9 +112,9 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                                 <label>Date & Time</label>
                                 <span>
                                     <?php 
-                                    echo date('M d, Y', strtotime($appointment['appointment_date']));
+                                    echo date('M d, Y', strtotime($appointment['session_day']));
                                     echo ' at ';
-                                    echo date('h:i A', strtotime($appointment['appointment_time']));
+                                    echo date('h:i A', strtotime($appointment['start_time']));
                                     ?>
                                 </span>
                             </div>

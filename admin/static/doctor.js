@@ -86,11 +86,17 @@ function populateDoctorTable(doctors) {
 }
 
 function openAddModal() {
+    const doctorModal = document.getElementById('doctorModal');
+    if (!doctorModal) {
+        console.error('Doctor modal element not found');
+        return;
+    }
+
     document.getElementById('modalTitle').textContent = 'Add New Doctor';
     document.getElementById('doctorForm').reset();
     document.getElementById('doctorId').value = '';
-    document.getElementById('').style.display = 'block';
-}doctorModal
+    doctorModal.style.display = 'block';
+}
 
 function editDoctor(doctorId) {
     fetch(`api/doctor_handler.php?action=get&id=${doctorId}`)

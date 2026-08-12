@@ -113,7 +113,7 @@ $stmt->close();
                             <div class="session-card">
                                 <div class="session-info">
                                     <h3><?php echo htmlspecialchars($session['doctor_name']); ?></h3>
-                                    <p><strong>doctor ID:</strong> <?php echo htmlspecialchars($session['doctor_id']); ?></p> //for debugging
+                                    <!--<p><strong>doctor ID:</strong> <?php echo htmlspecialchars($session['doctor_id']); ?></p> -->
                                     <p><strong>Date:</strong> <?php echo htmlspecialchars($session['session_day']); ?></p>
                                     <p><strong>Time:</strong> <?php echo htmlspecialchars(date('h:i A', strtotime($session['start_time']))); ?> - <?php echo htmlspecialchars(date('h:i A', strtotime($session['end_time']))); ?></p>
                                     <p><strong>Status:</strong> <span class="status-<?php echo strtolower(htmlspecialchars($session['status'])); ?>"><?php echo htmlspecialchars($session['status']); ?></span></p>
