@@ -143,7 +143,7 @@ $conn->close();
                                 <tr>
                                     <td><?php echo htmlspecialchars($apt['appointment_number']); ?></td>
                                     <td><?php echo htmlspecialchars($apt['first_name'] . ' ' . $apt['last_name']); ?></td>
-                                    <td><?php echo date('M d, Y - h:i A', strtotime($apt['appointment_date'] . ' ' . $apt['appointment_time'])); ?></td>
+                                    <td><?php echo date('M d, Y - h:i A', strtotime($apt['session_day'] . ' ' . $apt['start_time'])); ?></td>
                                     <td><span class="badge badge-<?php echo strtolower(htmlspecialchars($apt['status'])); ?>"><?php echo htmlspecialchars($apt['status']); ?></span></td>
                                     <td><div class="btn-group"><button class="btn btn-secondary">View</button></div></td>
                                 </tr>

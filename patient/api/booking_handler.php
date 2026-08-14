@@ -30,7 +30,7 @@ function getBookings($conn) {
             JOIN sessions s ON a.session_id = s.session_id
             JOIN doctors d ON a.doctor_id = d.doctor_id
             WHERE a.patient_id = ? AND a.status != 'cancelled'
-            ORDER BY s.session_day DESC";
+            ORDER BY s.session_day ASC";
 
     $stmt = $conn->prepare($sql);
     if(!$stmt){
