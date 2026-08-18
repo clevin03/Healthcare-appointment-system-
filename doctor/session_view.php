@@ -58,70 +58,13 @@ $conn->close();
     <link rel="stylesheet" href="static/session_view.css"> <!-- Assuming this has basic styles -->
     <style>
         /* Basic Modal Styles */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 0;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-            animation-name: animatetop;
-            animation-duration: 0.4s
-        }
-        @keyframes animatetop {
-            from {top: -300px; opacity: 0}
-            to {top: 0; opacity: 1}
-        }
-        .modal-header {
-            padding: 16px;
-            background-color: #007bff;
-            color: white;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-header h2 {
-            margin: 0;
-        }
-        .modal-body {
-            padding: 16px;
-        }
-        .modal-footer {
-            padding: 16px;
-            background-color: #f1f1f1;
-            text-align: right;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-        }
-        .close-btn {
-            color: white;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close-btn:hover, .close-btn:focus {
-            color: #ddd;
-        }
+        
     </style>
 </head>
 <body>
+    <script src="static/session_view.js"></script>
     <div class="main-content" style="padding: 20px; max-width: 1200px; margin: auto;">
+        <input type="hidden" id="sessionDoctorId" value="<?php echo htmlspecialchars($doctorId); ?>">
         <div class="section">
             <div class="session-header">
                 <h2 class="section-title" style="margin-bottom: 0;">
@@ -189,7 +132,9 @@ $conn->close();
                     <h2>Create Medical Record</h2>
                     <span class="close-btn">&times;</span>
                 </div>
+                
                 <form id="medicalReportForm" action="save_medical_report.php" method="POST">
+                    <!--
                     <div class="modal-body">
                         <input type="hidden" name="appointment_id" id="modalAppointmentId">
                         <input type="hidden" name="session_id" value="<?php echo $session_id; ?>">
@@ -209,42 +154,12 @@ $conn->close();
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary close-btn">Cancel</button>
                         <button type="submit" class="btn btn-primary">Save Record</button>
-                    </div>
+                    </div>-->
                 </form>
             </div>
         </div>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('medicalReportModal');
-        const openModalButtons = document.querySelectorAll('.open-report-modal');
-        const closeModalButtons = document.querySelectorAll('.close-btn');
-        const modalAppointmentIdInput = document.getElementById('modalAppointmentId');
-
-        openModalButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const appointmentId = this.getAttribute('data-appointment-id');
-                if (modalAppointmentIdInput) {
-                    modalAppointmentIdInput.value = appointmentId;
-                }
-                modal.style.display = 'block';
-            });
-        });
-
-        closeModalButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                modal.style.display = 'none';
-            });
-        });
-
-        window.addEventListener('click', function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        });
-    });
-    </script>
 </body>
 </html>
 

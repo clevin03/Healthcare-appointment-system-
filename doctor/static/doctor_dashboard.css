@@ -166,6 +166,10 @@ body {
     border-radius: 10px;
 }
 
+h1{
+    margin-bottom: 10px;
+}
+
 .btn {
     padding: 12px 25px;
     border: none;

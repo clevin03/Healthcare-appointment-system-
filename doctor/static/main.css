@@ -10,6 +10,10 @@ body {
     color: #333;
 }
 
+h1{
+    margin-bottom: 15px;
+}
+
 .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -108,7 +112,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     transition: all 0.3s ease;
     text-decoration: none;
