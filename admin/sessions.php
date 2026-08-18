@@ -33,59 +33,59 @@ require_once '../config/db_connection.php';
     }
     ?>
     <section class="session-section">
-    <div class="container">
-        <header class="page-header stat-title">
-            <h1><i class="fas fa-clock"></i> Session Management</h1>
-            <button class="btn-add" id="addSessionBtn">
-                <i class="fas fa-plus"></i> Add New Session
-            </button>
-        </header>
+        <div class="container">
+            <header class="page-header stat-title">
+                <h1><i class="fas fa-clock"></i> Session Management</h1>
+                <button class="btn-add" id="addSessionBtn">
+                    <i class="fas fa-plus"></i> Add New Session
+                </button>
+            </header>
 
-        <div class="content stat-content">
-            <div class="sessions-table" id="sessionsTable">
-                <?php
-                if (count($sessions)>0){
-                    ?>
-                    <table class="session-table">
-                            <thead>
-                                <tr>
-                                    <th>Session ID</th>
-                                    <th>Doctor Name</th>
-                                    <th>Session Date</th>
-                                    <th>Start Time</th>
-                                    <th>End Time</th>
-                                    <th>Max Patients</th>
-                                </tr>
-                                <tbody id="sessionTable">
-                                    
-                                </tbody>
-                            </thead>
-                        
-                        <?php
-                        foreach($sessions as $session){
+            <div class="content stat-content">
+                <div class="sessions-table" id="sessionsTable">
+                    <?php
+                    if (count($sessions)>0){
                         ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($session['session_id']); ?></td>
-                            <td><?php echo htmlspecialchars($session['doctor_name']); ?></td>
-                            <td><?php echo htmlspecialchars($session['session_day']); ?></td>
-                            <td><?php echo htmlspecialchars($session['start_time']); ?></td>
-                            <td><?php echo htmlspecialchars($session['end_time']); ?></td>
-                            <td><?php echo htmlspecialchars($session['max_patients']); ?></td>
-                        </tr>
-                        <?php
-                        }
-                        ?>
-                    </table>  
-                <?php }else{ ?>
-                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 15px;">
-                        <i class="fas fa-calendar-times" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
-                        <h3 style="color: #666;">No sessions found</h3>
-                        <p style="color: #999;">Click "Add New Session" to create your first session.</p>
-                    </div>
-                <?php } ?>
+                        <table class="session-table">
+                                <thead>
+                                    <tr>
+                                        <th>Session ID</th>
+                                        <th>Doctor Name</th>
+                                        <th>Session Date</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Max Patients</th>
+                                    </tr>
+                                    <tbody id="sessionTable">
+                                        
+                                    </tbody>
+                                </thead>
+                            
+                            <?php
+                            foreach($sessions as $session){
+                            ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($session['session_id']); ?></td>
+                                <td><?php echo htmlspecialchars($session['doctor_name']); ?></td>
+                                <td><?php echo htmlspecialchars($session['session_day']); ?></td>
+                                <td><?php echo htmlspecialchars($session['start_time']); ?></td>
+                                <td><?php echo htmlspecialchars($session['end_time']); ?></td>
+                                <td><?php echo htmlspecialchars($session['max_patients']); ?></td>
+                            </tr>
+                            <?php
+                            }
+                            ?>
+                        </table>  
+                    <?php }else{ ?>
+                        <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 15px;">
+                            <i class="fas fa-calendar-times" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
+                            <h3 style="color: #666;">No sessions found</h3>
+                            <p style="color: #999;">Click "Add New Session" to create your first session.</p>
+                        </div>
+                    <?php } ?>
+                </div>
             </div>
         </div>
-    </div>
     </section>
     
 

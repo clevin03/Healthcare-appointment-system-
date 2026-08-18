@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'doctor')
 
 require_once '../config/db_connection.php';
 
-$doctor_id = $_SESSION['doctor_id'] ?? 0;
+$doctor_id = $_SESSION['doctor_id'] ;
 $doctor_name = $_SESSION['user_name'] ?? 'Doctor';
 
 $today_appointments = 0;
@@ -63,7 +63,9 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-    <link rel="stylesheet" href="../admin/static/dashboard.css">
+    <!--<link rel="stylesheet" href="static/doctor_dashboard.css">-->
+    <!--<link rel="stylesheet" href="../admin/static/dashboard.css">-->
+    <link rel="stylesheet" href="static/main.css">
 </head>
 <body>
     <script src="static/doctor_dashboard.js"></script>
@@ -114,6 +116,7 @@ $conn->close();
                                 <th>Max Patients</th>
                                 <th>Current Patients</th>
                                 <th>Status</th>
+                                <th>Start Sesiion</th>
                             </tr>
                         </thead>
                         <tbody id="upcomingSessionsTableBody">

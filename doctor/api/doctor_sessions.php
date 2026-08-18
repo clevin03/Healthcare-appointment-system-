@@ -16,7 +16,7 @@ if($action === 'getAll'){
 function getAllSessions($conn){
     $doctor_id = $_SESSION['doctor_id'];
 
-    $sql = "SELECT session_day, start_time, end_time, max_patients, current_count, status 
+    $sql = "SELECT session_id, session_day, start_time, end_time, max_patients, current_count, status 
             FROM sessions WHERE session_day >= CURDATE() AND doctor_id = ? ORDER BY session_day ASC, start_time ASC";
     $stmt = $conn->prepare($sql);
     if(!$stmt){

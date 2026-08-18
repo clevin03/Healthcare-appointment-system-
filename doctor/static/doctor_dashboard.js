@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchSessions();
 });
 
+
 async function fetchSessions(){
     try{
         const response = await fetch('api/doctor_sessions.php?action=getAll');
@@ -26,10 +27,10 @@ function renderSessions(sessions) {
     const tableBody = document.getElementById('upcomingSessionsTableBody');
     tableBody.innerHTML = '';
 
-    if(!sessions){
+    if(!sessions || sessions.length === 0){
         const row = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.colSpan = 6;
+        cell.colSpan = 7;
         cell.textContent = 'No sessions found';
         cell.style.textAlign = 'center';
         row.appendChild(cell);
@@ -47,8 +48,14 @@ function renderSessions(sessions) {
             <td>${session.max_patients}</td>
             <td>${session.current_count}</td>
             <td>${session.status}</td>
-            <!-- <td><button class="delete-session-btn" data-session-id="${session.session_id}">Delete</button></td> -->
+            <td>
+            <form action="session_view.php" method="GET">
+                <input type="hidden" name="session_id" value="${session.session_id}">
+                <button type="submit" class="btn btn-primary">Start</button>
+            </form>
+            </td>
         `;
+        console.log(session.session_id);
         tableBody.appendChild(row);
     })
 }
