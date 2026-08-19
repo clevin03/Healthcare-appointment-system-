@@ -1,6 +1,7 @@
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+session_start();
 
 require __DIR__ . '/../phpmailer/src/Exception.php';
 require __DIR__ . '/../phpmailer/src/PHPMailer.php';
@@ -10,6 +11,14 @@ header('Content-Type: application/json');
 ob_start();
 
 $response = array('success' => false, 'message' => '');
+
+// Assuming this is for admins to send emails. If it's a public contact form, this check should be removed.
+if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') {
+    http_response_code(401);
+    $response['message'] = 'Unauthorized Access';
+    echo json_encode($response);
+    exit();
+}
 
 function writeMailLog($status, $toEmail, $subject, $detail = '') {
     $logDir = __DIR__ . '/../logs';

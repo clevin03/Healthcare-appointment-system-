@@ -5,6 +5,13 @@ require_once '../../config/db_connection.php';
 
 $action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
 
+// All actions in this handler are for admins only.
+if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized Access']);
+    exit();
+}
+
 
 function getAllSessions($conn) {
     $sql = "SELECT * FROM sessions ORDER BY session_id DESC";
@@ -120,15 +127,9 @@ function getDoctors($conn){
 }
 
 function createSession($conn) {
-    $created_by = null;
-    if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] !== '') {
-        $created_by = intval($_SESSION['admin_id']);
-    } elseif (isset($_POST['created_by']) && $_POST['created_by'] !== '') {
-        $created_by = intval($_POST['created_by']);
-    }
-
-    if ($created_by === null) {
-        echo json_encode(['success' => false, 'message' => 'Admin session not found']);
+    // Admin ID is now checked at the top of the script
+    if (!isset($_SESSION['user_id'])) {
+        echo json_encode(['success' => false, 'message' => 'Admin user ID not found in session.']);
         return;
     }
 
@@ -138,6 +139,7 @@ function createSession($conn) {
         return;
     }
 
+    $created_by = intval($_SESSION['user_id']);
     $doctor_id = intval($_POST['doctor_id']);
     $session_date = $_POST['session_date'];
     $start_time = $_POST['start_time'];
@@ -161,26 +163,26 @@ function createSession($conn) {
     }
 }
 
-if ($action === 'getAllSessions') {
-    getAllSessions($conn);
-}
-
-if ($action === 'getDoctors') {
-    getDoctors($conn);
-}
-
-if ($action === 'getSession') {
-    getSession($conn);
-}
-
-if ($action === 'createSession') {
-    createSession($conn);
-}
-
-if ($action === 'editSession') {
-    editSession($conn);
-}
-
-if ($action === 'deleteSession') {
-    deleteSession($conn);
+switch ($action) {
+    case 'getAllSessions':
+        getAllSessions($conn);
+        break;
+    case 'getDoctors':
+        getDoctors($conn);
+        break;
+    case 'getSession':
+        getSession($conn);
+        break;
+    case 'createSession':
+        createSession($conn);
+        break;
+    case 'editSession':
+        editSession($conn);
+        break;
+    case 'deleteSession':
+        deleteSession($conn);
+        break;
+    default:
+        echo json_encode(['success' => false, 'message' => 'Invalid action specified for session handler.']);
+        break;
 }

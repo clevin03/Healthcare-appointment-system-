@@ -133,7 +133,7 @@ $conn->close();
                     <span class="close-btn">&times;</span>
                 </div>
                 
-                <form id="medicalReportForm" action="save_medical_report.php" method="POST">
+                <form id="medicalReportForm" >
                     <!--
                     <div class="modal-body">
                         <input type="hidden" name="appointment_id" id="modalAppointmentId">

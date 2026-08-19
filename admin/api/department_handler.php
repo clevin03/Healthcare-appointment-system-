@@ -1,6 +1,14 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 require_once '../../config/db_connection.php';
+
+// All actions in this handler are for admins only.
+if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized Access']);
+    exit();
+}
 
 $action = $_GET['action'] ?? '';
 
