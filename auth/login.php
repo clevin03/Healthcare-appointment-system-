@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 if ($doctor_data = $doctor_stmt->get_result()->fetch_assoc()) {
                                     $_SESSION['doctor_id'] = $doctor_data['doctor_id'];
                                     $_SESSION['user_name'] = $doctor_data['doctor_name'];
+                                    $_SESSION['doctor_email'] = $email;
                                 }
                                 $doctor_stmt->close();
                             }

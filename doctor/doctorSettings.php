@@ -1,67 +1,51 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') != 'patient') {
+if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') != 'doctor') {
     header("Location: ../auth/login.php");
     exit();
 }
 
 require_once '../config/db_connection.php';
+$doctorId = $_SESSION['doctor_id'];
+$userId = $_SESSION['user_id'];
+$doctorName = $_SESSION['user_name'];
+$doctorEmail = $_SESSION['doctor_email'];
 
-$patient_id = $_SESSION['patient_id'] ?? 0;
-$user_id = $_SESSION['user_id'] ?? 0;
-
-// Fetch current patient data
-$stmt = $conn->prepare("SELECT p.first_name, p.last_name, u.email, p.phone FROM patients p JOIN users u ON p.user_id = u.user_id WHERE p.patient_id = ?");
-$stmt->bind_param("i", $patient_id);
+$stmt = $conn->prepare("SELECT phone FROM doctors WHERE doctor_id = ?");
+$stmt->bind_param("i", $doctorId);
 $stmt->execute();
 $result = $stmt->get_result();
-$patient = $result->fetch_assoc();
+$doctor = $result->fetch_assoc();
 $stmt->close();
 
-// Use session data as fallback
-//$patient_name = $patient['patient_name'] ?? $_SESSION['user_name'] ?? 'Patient';
-$first_name = $patient['first_name'] ?? '';
-$last_name = $patient['last_name'] ?? '';
-$patient_email = $patient['email'] ?? $_SESSION['user_email'] ?? '';
-$patient_phone = $patient['phone'] ?? '';
+$phoneNumber = $doctor['phone'];
 
-$patient_name = trim($first_name . ' ' . $last_name);
-if (empty($patient_name)) {
-    $patient_name = $_SESSION['user_name'] ?? 'Patient';
-}
-
-$update_success = '';
-$update_error = '';
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['update_profile'])) {
-        $newFirstName = trim($_POST['first_name'] ?? '');
-        $newLastName = trim($_POST['last_name'] ?? '');
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    if(isset($_POST['update_profile'])){
+        $newName = trim($_POST['name'] ?? '');
         $newEmail = trim($_POST['email'] ?? '');
         $newPhone = trim($_POST['phone'] ?? '');
 
-        if (!empty($newFirstName) && !empty($newEmail)&& !empty($newLastName)) {
+        if(!empty($newName) && !empty($newEmail)){
             $conn->begin_transaction();
             $profile_updated = false;
 
-            // Update the users table (assuming it holds the primary email and name for login)
             $updateUserStmt = $conn->prepare("UPDATE users SET email = ? WHERE user_id = ?");
-            $updateUserStmt->bind_param("si", $newEmail, $user_id);
+            $updateUserStmt->bind_param("si", $newEmail, $userId);
 
             if ($updateUserStmt->execute()) {
-                // Also update the patients table to keep it in sync
-                $updatePatientStmt = $conn->prepare("UPDATE patients SET first_name = ?,last_name = ?, phone = ? WHERE patient_id = ?");
-                $updatePatientStmt->bind_param("sssi", $newFirstName, $newLastName, $newPhone, $patient_id);
-                if ($updatePatientStmt->execute()) {
+                // Also update the doctors table to keep it in sync
+                $updateDoctorStmt = $conn->prepare("UPDATE doctors SET doctor_name = ?, phone = ? WHERE doctor_id = ?");
+                $updateDoctorStmt->bind_param("sssi", $newName, $newPhone, $doctorId);
+                if ($updateDoctorStmt->execute()) {
                     $conn->commit();
                     $profile_updated = true;
                 } else {
                     $conn->rollback();
-                    $update_error = "Error updating patient details: " . $updatePatientStmt->error;
+                    $update_error = "Error updating patient details: " . $updateDoctorStmt->error;
                 }
-                $updatePatientStmt->close();
+                $updateDoctorStmt->close();
             } else {
                 $conn->rollback();
                 $update_error = "Error updating user account: " . $updateUserStmt->error;
@@ -69,18 +53,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $updateUserStmt->close();
 
             if ($profile_updated) {
-                $_SESSION['user_name'] = $newFirstName . ' ' . $newLastName;
-                $_SESSION['patient_name'] = $newFirstName . ' ' . $newLastName;
+                $_SESSION['doctor_name'] = $newName;
                 $_SESSION['user_email'] = $newEmail;
                 $update_success = "Profile updated successfully!";
-                $patient_name = $newFirstName.' '.$newLastName;
-                $patient_email = $newEmail;
-                $patient_phone = $newPhone;
+                $doctorName = $newName;
+                $doctorEmail = $newEmail;
+                $phoneNumber = $newPhone;
             }
-        } else {
+        }else{
             $update_error = "Name and Email cannot be empty.";
         }
-    } elseif (isset($_POST['change_password'])) {
+    }elseif (isset($_POST['change_password'])) {
         $current_password = $_POST['current_password'] ?? '';
         $new_password = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
@@ -92,10 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Fetch user to verify current password
             // Corrected: Use $user_id for operations on the 'users' table.
-            if ($user_id > 0) { // Ensure user_id is valid before proceeding
-                $userStmt = $conn->prepare("SELECT password FROM users WHERE user_id = ? AND user_type = 'patient'");
+            if ($userId > 0) { // Ensure user_id is valid before proceeding
+                $userStmt = $conn->prepare("SELECT password FROM users WHERE user_id = ? AND user_type = 'doctor'");
                 if ($userStmt) { // Check if prepare was successful
-                    $userStmt->bind_param("i", $user_id); // Corrected: Bind $user_id
+                    $userStmt->bind_param("i", $userId); // Corrected: Bind $user_id
                     $userStmt->execute();
                     $userResult = $userStmt->get_result();
                     if ($userRow = $userResult->fetch_assoc()) {
@@ -103,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $newPasswordHash = password_hash($new_password, PASSWORD_DEFAULT);
                             $passUpdateStmt = $conn->prepare("UPDATE users SET password = ? WHERE user_id = ?");
                             if ($passUpdateStmt) { // Check if prepare was successful
-                                $passUpdateStmt->bind_param("si", $newPasswordHash, $user_id); // Corrected: Bind $user_id
+                                $passUpdateStmt->bind_param("si", $newPasswordHash, $userId); // Corrected: Bind $user_id
                                 if ($passUpdateStmt->execute()) {
                                     $update_success = "Password changed successfully!";
                                 } else {
@@ -129,95 +112,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-$conn->close();
+
 ?>
 
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Settings</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-    <link rel="stylesheet" href="static/patient_dashboard.css">
-    <link rel="stylesheet" href="static/patientSettings.css">
+    <link rel="stylesheet" href="static/main.css">
+    <link rel="stylesheet" href="static/doctorSettings.css">
+    <title>Settings</title>
 </head>
 <body>
-
-    <div class="top-header" style="background-color: #007bff; color: white;">
+    <div class="header">
         <div class="header-content">
-            <div class="user-profile">
-                <div class="user-avatar">
-                    <span class="avatar-icon"><i class="fas fa-user"></i></span>
-                </div>
-                <div class="user-info">
-                    <h3 class="user-name"><?php echo htmlspecialchars($patient_name); ?></h3>
-                    <p class="user-email"><?php echo htmlspecialchars($patient_email); ?></p>
-                </div>
+            <div class="logo"><i class="fa-solid fa-user-doctor"></i> Doctor's Portal</div>
+            <div class="user-info">
+                <span>Welcome, <?php echo htmlspecialchars($doctorName); ?></span>
+                <form method="post" action="../auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" style="display:inline; margin:0;">
+                    <button type="submit">Logout</button>
+                </form>
             </div>
-            <form method="post" action="../auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" class="logout-form">
-                <button type="submit" class="logout-btn">Logout</button>
-            </form>
         </div>
     </div>
-
     <div class="container">
         <div class="sidebar">
-            <nav class="sidebar-menu">
-                <ul>
-                    <li>
-                        <a href="#home" class="menu-item">
-                            <span class="menu-icon"><i class="fas fa-home"></i></span>
-                            <span class="menu-text">Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#chatbot" class="menu-item">
-                            <span class="menu-icon"><i class="fas fa-robot"></i></span>
-                            <span class="menu-text">Health Assistant</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#doctors" class="menu-item">
-                            <span class="menu-icon"><i class="fas fa-user-md"></i></span>
-                            <span class="menu-text">All Doctors</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#sessions" class="menu-item">
-                            <span class="menu-icon"><i class="fas fa-calendar"></i></span>
-                            <span class="menu-text">Scheduled Sessions</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#bookings" class="menu-item">
-                            <span class="menu-icon"><i class="fas fa-clipboard-list"></i></span>
-                            <span class="menu-text">My Bookings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="patientSettings.php" class="menu-item active">
-                            <span class="menu-icon"><i class="fas fa-cog"></i></span>
-                            <span class="menu-text">Settings</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <ul>
+                <li><a href="doctor_dashboard.php" ><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fa-solid fa-calendar"></i> My se</a></li>
+                <li><a href="#"><i class="fa-solid fa-users"></i> My Patients</a></li>
+                <li><a href="doctorSettingd.php" class="active"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
         </div>
-
         <div class="main-content">
-            <h1>Settings</h1>
-
-            <?php if (!empty($update_success)): ?>
-                <div class="alert alert-success"><?php echo $update_success; ?></div>
-            <?php endif; ?>
-            <?php if (!empty($update_error)): ?>
-                <div class="alert alert-error"><?php echo $update_error; ?></div>
-            <?php endif; ?>
+            <h1 class="page-title">Settings</h1>
 
             <div class="settings-container">
-                <div class="setting-card" id="viewProfileCard" style="cursor: pointer;">
+                <div class="setting-card" id="viewProfileCard" style="cursor: pointer">
                     <div class="icon">
                         <i class="fas fa-user"></i>
                     </div>
@@ -226,7 +160,6 @@ $conn->close();
                         <p>View personal information about your account.</p>
                     </div>
                 </div>
-                
                 <a href="">
                     <div class="setting-card">
                         <div class="icon">
@@ -238,22 +171,21 @@ $conn->close();
                         </div>
                     </div>
                 </a>
-                
                 <a href="">
                     <div class="setting-card">
-                    <div class="icon">
-                        <i class="fas fa-lock"></i>
+                        <div class="icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="settings-text">
+                            <h3>Change Password</h3>
+                            <p>Update your account password.</p>
+                        </div>
                     </div>
-                    <div class="settings-text">
-                        <h3>Change Password</h3>
-                        <p>Update your account password.</p>
-                    </div>
-                </div>
                 </a>
-            
+            </div>
         </div>
     </div>
-    
+
     <!-- Profile Information Modal -->
     <div id="profileModal" class="modal">
         <div class="modal-content">
@@ -264,15 +196,15 @@ $conn->close();
             <div class="modal-body">
                 <div class="profile-info-item">
                     <strong>Name:</strong>
-                    <p><?php echo htmlspecialchars($patient_name); ?></p>
+                    <p><?php echo htmlspecialchars($doctorName); ?></p>
                 </div>
                 <div class="profile-info-item">
                     <strong>Email:</strong>
-                    <p><?php echo htmlspecialchars($patient_email); ?></p>
+                    <p><?php echo htmlspecialchars($doctorEmail); ?></p>
                 </div>
                 <div class="profile-info-item">
                     <strong>Phone:</strong>
-                    <p><?php echo htmlspecialchars($patient_phone ?: 'Not provided'); ?></p>
+                    <p><?php echo htmlspecialchars($phoneNumber ?: 'Not provided'); ?></p>
                 </div>
             </div>
         </div>
@@ -286,23 +218,19 @@ $conn->close();
                 <span class="close-btn">&times;</span>
             </div>
             <div class="modal-body">
-                <form method="post" action="patientSettings.php" id="editProfileForm">
+                <form method="post" action="doctorSettings.php" id="editProfileForm">
                     <input type="hidden" name="update_profile" value="1">
                     <div class="form-group">
-                        <label for="edit_first_name">First Name</label>
-                        <input type="text" id="edit_first_name" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit_last_name">Last Name</label>
-                        <input type="text" id="edit_last_name" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>" required>
+                        <label for="edit_first_name">Name</label>
+                        <input type="text" id="edit_first_name" name="name" value="<?php echo htmlspecialchars($doctorName); ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="edit_email">Email</label>
-                        <input type="email" id="edit_email" name="email" value="<?php echo htmlspecialchars($patient_email); ?>" required>
+                        <input type="email" id="edit_email" name="email" value="<?php echo htmlspecialchars($doctorEmail); ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="edit_phone">Phone</label>
-                        <input type="text" id="edit_phone" name="phone" value="<?php echo htmlspecialchars($patient_phone); ?>">
+                        <input type="text" id="edit_phone" name="phone" value="<?php echo htmlspecialchars($phoneNumber); ?>">
                     </div>
                     <button type="submit" class="btn-primary">Save Changes</button>
                 </form>
@@ -318,7 +246,7 @@ $conn->close();
                 <span class="close-btn">&times;</span>
             </div>
             <div class="modal-body">
-                <form method="post" action="patientSettings.php" id="changePasswordForm">
+                <form method="post" action="doctorSettings.php" id="changePasswordForm">
                     <input type="hidden" name="change_password" value="1">
                     <div class="form-group">
                         <label for="current_password">Current Password</label>
@@ -338,8 +266,6 @@ $conn->close();
         </div>
     </div>
 
-
-    <script src="static/patient_dashboard.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get the modal

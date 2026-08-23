@@ -86,7 +86,7 @@ $conn->close();
                 <li><a href="#" class="active"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
                 <li><a href="#"><i class="fa-solid fa-calendar"></i> My se</a></li>
                 <li><a href="#"><i class="fa-solid fa-users"></i> My Patients</a></li>
-                <li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li><a href="doctorSettings.php"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
         </div>
 
