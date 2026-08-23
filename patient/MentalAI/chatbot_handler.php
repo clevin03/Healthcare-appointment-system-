@@ -16,6 +16,7 @@ try {
 
     require_once __DIR__ . '/bootstrap.php';
     require_once __DIR__ . '/../../config/OpenAIHandler.php';
+    require_once __DIR__ . '/../../config/db_connection.php';
 
     if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'patient') {
         respondJson([
@@ -46,16 +47,6 @@ try {
     $conversationHistory = is_array($input['history'] ?? null) ? $input['history'] : [];
     $conversationId = is_string($input['conversation_id'] ?? null) ? trim((string) $input['conversation_id']) : (string) ($_SESSION['dify_conversation_id'] ?? DIFY_CONVERSATION_ID);
     $imageData = is_string($input['image'] ?? null) ? trim((string) $input['image']) : null;
-
-    mysqli_report(MYSQLI_REPORT_OFF);
-    $conn = @new mysqli('localhost', 'root', '', 'edoctor');
-    if ($conn->connect_error) {
-        respondJson([
-            'success' => false,
-            'error' => 'Database connection failed. Please try again in a moment.'
-        ], 503);
-    }
-    $conn->set_charset('utf8mb4');
 
     $difyUser = 'patient-' . $patientId;
 
