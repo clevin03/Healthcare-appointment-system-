@@ -1,22 +1,33 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm-alpine
 
-# 1. Install required MySQL extensions
-RUN docker-php-ext-install mysqli pdo_mysql \
+# Install Nginx and required PHP extensions
+RUN apk add --no-cache nginx \
+    && docker-php-ext-install mysqli pdo pdo_mysql \
     && docker-php-ext-enable mysqli pdo_mysql
 
-# 2. Hard-clean all existing MPM modules to avoid duplicates, then enable ONLY mpm_prefork & rewrite
-RUN rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
-    && a2enmod mpm_prefork rewrite
+# Create necessary directories for Nginx and PHP
+RUN mkdir -p /run/nginx /var/www/html
 
-# 3. Configure Apache port binding for Railway's dynamic $PORT
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
-
-# 4. Copy project files
+# Copy application files
 COPY . /var/www/html/
-
-# 5. Set proper web permissions
 RUN chown -R www-data:www-data /var/www/html
 
-EXPOSE 80
+# Create lightweight Nginx configuration that dynamically binds to Railway's $PORT
+RUN echo 'server { \
+    listen 80 default_server; \
+    listen [::]:80 default_server; \
+    root /var/www/html; \
+    index index.php index.html; \
+    location / { \
+        try_files $uri $uri/ /index.php?$query_string; \
+    } \
+    location ~ \.php$ { \
+        fastcgi_pass 127.0.0.1:9000; \
+        fastcgi_index index.php; \
+        include fastcgi_params; \
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \
+    } \
+}' > /etc/nginx/http.d/default.conf
 
-CMD ["apache2-foreground"]
+# Startup script to replace the port dynamically and start both PHP-FPM and Nginx
+CMD sh -c "sed -i 's/80/'\"\$PORT\"'/g' /etc/nginx/http.d/default.conf && php-fpm -D && nginx -g 'daemon off;'"
