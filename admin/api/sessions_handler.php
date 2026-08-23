@@ -128,7 +128,7 @@ function getDoctors($conn){
 
 function createSession($conn) {
     // Admin ID is now checked at the top of the script
-    if (!isset($_SESSION['user_id'])) {
+    if (!isset($_SESSION['admin_id'])) {
         echo json_encode(['success' => false, 'message' => 'Admin user ID not found in session.']);
         return;
     }
@@ -139,7 +139,7 @@ function createSession($conn) {
         return;
     }
 
-    $created_by = intval($_SESSION['user_id']);
+    $created_by = intval($_SESSION['admin_id']);
     $doctor_id = intval($_POST['doctor_id']);
     $session_date = $_POST['session_date'];
     $start_time = $_POST['start_time'];

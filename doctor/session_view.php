@@ -55,11 +55,8 @@ $conn->close();
     <title>Session Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="static/main.css">
-    <link rel="stylesheet" href="static/session_view.css"> <!-- Assuming this has basic styles -->
-    <style>
-        /* Basic Modal Styles */
-        
-    </style>
+    <link rel="stylesheet" href="static/session_view.css"> 
+    
 </head>
 <body>
     <script src="static/session_view.js"></script>
@@ -102,6 +99,11 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($appointment['status']); ?></td>
                                     <td>
                                         <div class="btn-group">
+                                            <form action="medical_history.php" class="medical-history" method="POST">
+                                                <input type="hidden" name="patient_name" value="<?php echo $appointment['patient_name'] ?>">
+                                                <input type="hidden" name="patient_id" value="<?php echo $appointment['patient_id']; ?>">
+                                                <button type="submit" class="btn" >Medical History</button>
+                                            </form>
                                             <form action="" class="medical-report-form">
                                                 <input type="hidden" name="appointment_id" value="<?php echo $appointment['appointment_id']; ?>">
                                                 <input type="hidden" name="appointment_number" value="<?php echo $appointment['appointment_number']; ?>">
@@ -162,10 +164,3 @@ $conn->close();
 
 </body>
 </html>
-
-<!-- 
-A quick note: The "Mark as Completed" button sends a status of "COMPLETED". 
-Based on your `edoctor.sql` file, the `status` column in the `appointments` table is an enum('PENDING','CONFIRMED','CANCELLED').
-You may need to alter this table to add 'COMPLETED' as a possible value.
-You will also need to create the `update_appointment_status.php` and `save_medical_report.php` files to handle these actions.
--->
