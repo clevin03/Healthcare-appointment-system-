@@ -155,7 +155,7 @@ $current_date = date('Y-m-d');
                                     <p><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($doctor['email']); ?></p>
                                     <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($doctor['phone']); ?></p>
                                 </div>
-                                <a href="book_appointment.php?doctor_id=<?php echo $doctor['doctor_id']; ?>" class="book-btn">Book Appointment</a>
+                                <button type="button" class="book-btn book-appointment-btn" data-doctor-id="<?php echo (int) $doctor['doctor_id']; ?>" data-doctor-name="<?php echo htmlspecialchars($doctor['doctor_name'], ENT_QUOTES, 'UTF-8'); ?>">Book Appointment</button>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -170,6 +170,18 @@ $current_date = date('Y-m-d');
                     <p><?php echo !empty($search_term) ? 'No doctors found matching "' . htmlspecialchars($search_term) . '".' : 'No doctors found at the moment.'; ?></p>
                 </div>
             <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="model" id="sessionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Available sessions</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Session details will be loaded here via JavaScript -->
+            </div>
         </div>
     </div>
 </div>
