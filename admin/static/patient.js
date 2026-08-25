@@ -36,6 +36,9 @@ function populatePatientTable(patients) {
                 <button class="btn-icon btn-view" onclick="viewPatient(${patient.patient_id})">
                     <i class="fa-solid fa-eye"></i>
                 </button>
+                <button class="btn-icon btn-edit" onclick="editPatient(${patient.patient_id})" title="Edit patient">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
             </td>
         `;
         tbody.appendChild(row);
@@ -91,10 +94,10 @@ function displayPatientDetails(patient) {
             <strong><i class="fa-solid fa-location-dot"></i> Address</strong>
             <span>${patient.address || 'N/A'}</span>
         </div>
-        <div class="detail-item">
+        <!--<div class="detail-item">
             <strong><i class="fa-solid fa-notes-medical"></i> Medical History</strong>
             <span>${patient.medical_history || 'No medical history recorded'}</span>
-        </div>
+        </div>-->
         <div class="detail-item">
             <strong><i class="fa-solid fa-clock"></i> Registration Date</strong>
             <span>${patient.created_at || 'N/A'}</span>
@@ -109,13 +112,72 @@ function closePatientModal() {
     modal.style.display = 'none';
 }
 
+function editPatient(patientId) {
+    fetch(`api/patient_handler.php?action=get&id=${patientId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+
+            const patient = data.data;
+            document.getElementById('editPatientId').value = patient.patient_id;
+            document.getElementById('editFirstName').value = patient.first_name || '';
+            document.getElementById('editLastName').value = patient.last_name || '';
+            document.getElementById('editPhone').value = patient.phone || '';
+            document.getElementById('editGender').value = patient.gender || '';
+            document.getElementById('editDateOfBirth').value = patient.date_of_birth || '';
+            document.getElementById('editAddress').value = patient.address || '';
+            document.getElementById('patientEditModal').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error fetching patient for editing:', error);
+            alert(error.message || 'Failed to load patient data');
+        });
+}
+
+function closePatientEditModal() {
+    document.getElementById('patientEditModal').style.display = 'none';
+}
+
 window.onclick = function(event) {
     const modal = document.getElementById('patientDetailsModal');
     if (event.target === modal) {
         closePatientModal();
     }
+
+    const editModal = document.getElementById('patientEditModal');
+    if (event.target === editModal) {
+        closePatientEditModal();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     loadPatients();
+
+    document.getElementById('patientEditForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        formData.append('action', 'edit');
+
+        fetch('api/patient_handler.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+
+                closePatientEditModal();
+                loadPatients();
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error updating patient:', error);
+                alert(error.message || 'Failed to update patient');
+            });
+    });
 });

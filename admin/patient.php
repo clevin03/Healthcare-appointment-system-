@@ -54,6 +54,59 @@
         </div>
     </div>
 
+    <div id="patientEditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-user-pen"></i> Edit Patient</h2>
+                <span class="close" onclick="closePatientEditModal()">&times;</span>
+            </div>
+            <form id="patientEditForm">
+                <input type="hidden" name="patient_id" id="editPatientId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editFirstName">First Name</label>
+                        <input type="text" name="first_name" id="editFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editLastName">Last Name</label>
+                        <input type="text" name="last_name" id="editLastName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editPhone">Phone</label>
+                    <input type="tel" name="phone" id="editPhone">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editGender">Gender</label>
+                        <select name="gender" id="editGender">
+                            <option value="">Select gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDateOfBirth">Birth Date</label>
+                        <input type="date" name="date_of_birth" id="editDateOfBirth">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editAddress">Address</label>
+                    <textarea name="address" id="editAddress" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closePatientEditModal()">
+                        <i class="fa-solid fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="static/patient.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

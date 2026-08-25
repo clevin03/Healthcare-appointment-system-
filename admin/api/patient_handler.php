@@ -78,4 +78,49 @@ function getPatient($conn) {
     
     $stmt->close();
 }
+
+function editPatient($conn) {
+    $patientId = (int) ($_POST['patient_id'] ?? 0);
+    $firstName = trim($_POST['first_name'] ?? '');
+    $lastName = trim($_POST['last_name'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $gender = trim($_POST['gender'] ?? '');
+    $dateOfBirth = trim($_POST['date_of_birth'] ?? '');
+    $address = trim($_POST['address'] ?? '');
+
+    if ($patientId <= 0 || $firstName === '' || $lastName === '') {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Patient ID, first name, and last name are required.']);
+        return;
+    }
+
+    if ($gender !== '' && !in_array($gender, ['Male', 'Female', 'Other'], true)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid gender selected.']);
+        return;
+    }
+
+    $sql = "UPDATE patients
+            SET first_name = ?, last_name = ?, phone = ?, gender = NULLIF(?, ''),
+                date_of_birth = NULLIF(?, ''), address = ?
+            WHERE patient_id = ?";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Prepare failed: ' . $conn->error]);
+        return;
+    }
+
+    $stmt->bind_param('ssssssi', $firstName, $lastName, $phone, $gender, $dateOfBirth, $address, $patientId);
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true, 'message' => 'Patient updated successfully.']);
+    } else {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Failed to update patient: ' . $stmt->error]);
+    }
+
+    $stmt->close();
+}
 ?>
