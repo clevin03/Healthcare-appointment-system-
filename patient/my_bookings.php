@@ -95,7 +95,7 @@ $sql = "";
 
         <div class="main-content">
             <div class="header">
-                <h2>My Bookings</h2>
+                <h1>My Bookings</h1>
             </div>
             <div class="booking-section">
                 <div class="booking-grid" id="bookingGrid">

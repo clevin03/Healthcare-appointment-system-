@@ -197,7 +197,7 @@ $conn->close();
                         </a>
                     </li>
                     <li>
-                        <a href="myRecords.php" class="menu-item">
+                        <a href="#records" class="menu-item">
                             <span class="menu-icon"><i class="fas fa-clipboard-list"></i></span>
                             <span class="menu-text">My Records</span>
                         </a>
