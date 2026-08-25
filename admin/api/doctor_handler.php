@@ -64,9 +64,10 @@ function getDoctor($conn) {
     }
     
     $doctor_id = intval($_GET['id']);
-    $sql = "SELECT d.*, dep.department_name 
+    $sql = "SELECT d.*, dep.department_name, u.email
             FROM doctors d 
             LEFT JOIN departments dep ON d.department_id = dep.department_id 
+            LEFT JOIN users u ON d.user_id = u.user_id
             WHERE d.doctor_id = ?";
     $stmt = $conn->prepare($sql);
     
@@ -179,14 +180,14 @@ function addDoctor($conn) {
 }
 
 function editDoctor($conn) {
-    $doctor_id = $_POST['doctor_id'] ?? null;
-    $doctor_name = $_POST['doctor_name'] ?? '';
-    $email = $_POST['email'] ?? null;
-    $phone = $_POST['phone'] ?? null;
-    $department_id = $_POST['department_id'] ?? null;
+    $doctor_id = (int) ($_POST['doctor_id'] ?? 0);
+    $doctor_name = trim($_POST['doctor_name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $department_id = (int) ($_POST['department_id'] ?? 0);
     $status = $_POST['status'] ?? 'ACTIVE';
-    
-    if (empty($doctor_id)) {
+
+    if ($doctor_id <= 0) {
         echo json_encode(['success' => false, 'message' => 'Doctor ID is required']);
         return;
     }
@@ -196,45 +197,69 @@ function editDoctor($conn) {
         return;
     }
     
-    if (empty($department_id)) {
+    if ($department_id <= 0) {
         echo json_encode(['success' => false, 'message' => 'Department is required']);
         return;
     }
-    
-    if (!empty($email)) {
-        $check_sql = "SELECT doctor_id FROM doctors WHERE email = ? AND doctor_id != ?";
-        $check_stmt = $conn->prepare($check_sql);
-        $check_stmt->bind_param("si", $email, $doctor_id);
+
+    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid email format.']);
+        return;
+    }
+
+    $lookup_stmt = $conn->prepare("SELECT user_id FROM doctors WHERE doctor_id = ?");
+    $lookup_stmt->bind_param("i", $doctor_id);
+    $lookup_stmt->execute();
+    $doctor = $lookup_stmt->get_result()->fetch_assoc();
+    $lookup_stmt->close();
+
+    if (!$doctor) {
+        echo json_encode(['success' => false, 'message' => 'Doctor not found']);
+        return;
+    }
+
+    $user_id = (int) $doctor['user_id'];
+
+    if ($email !== '') {
+        $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ? AND user_id <> ?");
+        $check_stmt->bind_param("si", $email, $user_id);
         $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
-        
-        if ($check_result->num_rows > 0) {
-            echo json_encode(['success' => false, 'message' => 'Email already exists for another doctor']);
+        if ($check_stmt->get_result()->num_rows > 0) {
             $check_stmt->close();
+            echo json_encode(['success' => false, 'message' => 'Email already exists for another user']);
             return;
         }
         $check_stmt->close();
     }
-    
-    $sql = "UPDATE doctors 
-            SET doctor_name = ?, email = ?, phone = ?, department_id = ?, status = ? 
-            WHERE doctor_id = ?";
-    $stmt = $conn->prepare($sql);
-    
-    if (!$stmt) {
-        echo json_encode(['success' => false, 'message' => 'Prepare failed: ' . $conn->error]);
-        return;
-    }
-    
-    $stmt->bind_param("sssisi", $doctor_name, $email, $phone, $department_id, $status, $doctor_id);
-    
-    if ($stmt->execute()) {
+
+    $conn->begin_transaction();
+    try {
+        $stmt = $conn->prepare(
+            "UPDATE doctors
+             SET doctor_name = ?, phone = ?, department_id = ?, status = ?
+             WHERE doctor_id = ?"
+        );
+        $stmt->bind_param("ssisi", $doctor_name, $phone, $department_id, $status, $doctor_id);
+        if (!$stmt->execute()) {
+            throw new Exception('Failed to update doctor: ' . $stmt->error);
+        }
+        $stmt->close();
+
+        if ($email !== '') {
+            $user_stmt = $conn->prepare("UPDATE users SET email = ? WHERE user_id = ?");
+            $user_stmt->bind_param("si", $email, $user_id);
+            if (!$user_stmt->execute()) {
+                throw new Exception('Failed to update doctor email: ' . $user_stmt->error);
+            }
+            $user_stmt->close();
+        }
+
+        $conn->commit();
         echo json_encode(['success' => true, 'message' => 'Doctor updated successfully']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update doctor: ' . $stmt->error]);
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
-    
-    $stmt->close();
 }
 
 function deleteDoctor($conn) {

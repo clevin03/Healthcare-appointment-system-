@@ -176,11 +176,14 @@ function deleteAppointment($conn) {
 function getAppointment($conn) {
     $id = $_GET['id'];
     
-    $sql = "SELECT a.*, p.patient_name, p.phone, d.doctor_name, dept.department_name
+        $sql = "SELECT a.*, s.session_day, s.start_time AS appointment_time,
+                       CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+                       p.phone, d.doctor_name, dept.department_name
             FROM appointments a
             LEFT JOIN patients p ON a.patient_id = p.patient_id
             LEFT JOIN doctors d ON a.doctor_id = d.doctor_id
-            LEFT JOIN departments dept ON a.department_id = dept.department_id
+            LEFT JOIN departments dept ON d.department_id = dept.department_id
+            LEFT JOIN sessions s ON a.session_id = s.session_id
             WHERE a.appointment_id = ?";
     
     $stmt = $conn->prepare($sql);
