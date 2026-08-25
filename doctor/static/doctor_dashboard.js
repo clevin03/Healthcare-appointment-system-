@@ -26,6 +26,8 @@ async function fetchSessions(){
 function renderSessions(sessions) {
     const tableBody = document.getElementById('upcomingSessionsTableBody');
     tableBody.innerHTML = '';
+    const today = new Date();
+    const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     if(!sessions || sessions.length === 0){
         const row = document.createElement('tr');
@@ -41,6 +43,7 @@ function renderSessions(sessions) {
 
     sessions.forEach(session=>{
         const row = document.createElement('tr');
+        const isToday = session.session_day === todayString;
         row.innerHTML = `
             <td>${session.session_day}</td>
             <td>${session.start_time}</td>
@@ -51,7 +54,7 @@ function renderSessions(sessions) {
             <td>
             <form action="session_view.php" method="GET">
                 <input type="hidden" name="session_id" value="${session.session_id}">
-                <button type="submit" class="btn btn-primary">Start</button>
+                <button type="submit" class="btn btn-primary"${isToday ? '' : ' disabled aria-disabled="true"'}>Start</button>
             </form>
             </td>
         `;
