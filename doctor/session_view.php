@@ -30,14 +30,22 @@ if (!$session) {
 
 // Fetch appointments for this session
 $appointments = [];
-$sql = "SELECT a.appointment_id, a.appointment_number, a.status, a.patient_id, CONCAT(p.first_name, ' ', p.last_name) AS patient_name, u.email AS patient_email
+$sql = "SELECT a.appointment_id, a.appointment_number, a.status, a.patient_id,
+           EXISTS (
+           SELECT 1 FROM medical_records mr
+           WHERE mr.appointment_id = a.appointment_id
+             AND mr.doctor_id = ?
+             AND TRIM(COALESCE(mr.diagnosis, '')) <> ''
+             AND TRIM(COALESCE(mr.prescription, '')) <> ''
+           ) AS has_medical_report,
+           CONCAT(p.first_name, ' ', p.last_name) AS patient_name, u.email AS patient_email
         FROM appointments a 
         JOIN patients p ON a.patient_id = p.patient_id 
         JOIN users u ON p.user_id = u.user_id
-        WHERE a.session_id = ? 
+        WHERE a.session_id = ? AND a.status <> 'COMPLETED'
         ORDER BY a.appointment_number ASC";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $session_id);
+$stmt->bind_param("ii", $doctorId, $session_id);
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
@@ -92,7 +100,7 @@ $conn->close();
                             </tr>
                         <?php else: ?>
                             <?php foreach ($appointments as $appointment): ?>
-                                <tr>
+                                <tr data-appointment-id="<?php echo (int) $appointment['appointment_id']; ?>" data-medical-report-saved="<?php echo (int) $appointment['has_medical_report']; ?>">
                                     <td><?php echo htmlspecialchars($appointment['appointment_number']); ?></td>
                                     <td><?php echo htmlspecialchars($appointment['patient_name']); ?></td>
                                     <td><?php echo htmlspecialchars($appointment['patient_email']); ?></td>
@@ -111,7 +119,7 @@ $conn->close();
                                                 <button type="submit" class="btn btn-info open-report-modal" >Medical Report</button>
                                             </form>
                                             
-                                            <form action="update_appointment_status.php" method="POST">
+                                            <form class="completion-form">
                                                 <input type="hidden" name="appointment_id" value="<?php echo $appointment['appointment_id']; ?>">
                                                 <input type="hidden" name="session_id" value="<?php echo $session_id; ?>">
                                                 <input type="hidden" name="new_status" value="COMPLETED">

@@ -115,7 +115,7 @@ foreach ($aiProviders as $key => $provider) {
             <div class="logo"><i class="fa-solid fa-hospital"></i> HealthCare Admin</div>
             <div class="user-info">
                 <span><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin User'); ?></span>
-                <form method="post" action="/Healthcare-appointment-system-/auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" style="display:inline; margin:0;">
+                <form method="post" action="../auth/logout.php" onsubmit="return confirm('Are you sure you want to logout?');" style="display:inline; margin:0;">
                     <button type="submit">Logout</button>
                 </form>
             </div>
