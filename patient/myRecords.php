@@ -1,18 +1,4 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'patient') {
-    header("Location: ../auth/login.php");
-    exit();
-}
-
-require_once '../config/db_connection.php';
-$patient_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : (isset($_SESSION['patient_name']) ? $_SESSION['patient_name'] : 'Test Patient');
-$patient_email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : 'patient@edoc.com';
-$patient_id = $_SESSION['patient_id'] ?? $_SESSION['user_id'];
-
-$sql = "";
-
 ?>
 
 <!DOCTYPE html>
@@ -20,13 +6,11 @@ $sql = "";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Records</title>
     <link rel="stylesheet" href="static/main.css">
-    <link rel="stylesheet" href="static/my_bookings.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-    <title>My Bookings</title>
 </head>
 <body>
-    <script src="static/my_bookings.js"></script>
     <div class="top-header" style="background-color: #007bff; color: white;">
         <div class="header-content">
             <div class="user-profile">
@@ -44,7 +28,7 @@ $sql = "";
         </div>
     </div>
     <div class="container">
-        <div class="sidebar">
+       <div class="sidebar">
             <nav class="sidebar-menu">
                 <ul>
                     <li>
@@ -91,19 +75,7 @@ $sql = "";
                     </li>
                 </ul>
             </nav>
-        </div>
-
-        <div class="main-content">
-            <div class="header">
-                <h2>My Bookings</h2>
-            </div>
-            <div class="booking-section">
-                <div class="booking-grid" id="bookingGrid">
-                    <!-- Bookings will be dynamically loaded here -->
-
-                </div>
-            </div>
-        </div>
+        </div> 
     </div>
 </body>
 </html>

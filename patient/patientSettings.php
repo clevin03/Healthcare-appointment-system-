@@ -197,6 +197,12 @@ $conn->close();
                         </a>
                     </li>
                     <li>
+                        <a href="myRecords.php" class="menu-item">
+                            <span class="menu-icon"><i class="fas fa-clipboard-list"></i></span>
+                            <span class="menu-text">My Records</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="patientSettings.php" class="menu-item active">
                             <span class="menu-icon"><i class="fas fa-cog"></i></span>
                             <span class="menu-text">Settings</span>

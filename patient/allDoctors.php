@@ -110,6 +110,12 @@ $current_date = date('Y-m-d');
                     </a>
                 </li>
                 <li>
+                        <a href="#records" class="menu-item">
+                            <span class="menu-icon"><i class="fas fa-clipboard-list"></i></span>
+                            <span class="menu-text">My Records</span>
+                        </a>
+                </li>
+                <li>
                     <a href="#settings" class="menu-item">
                         <span class="menu-icon"><i class="fas fa-cog"></i></span>
                         <span class="menu-text">Settings</span>

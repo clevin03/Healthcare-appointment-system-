@@ -39,6 +39,9 @@ function handleNavigation(page) {
         case '#bookings':
             window.location.href = 'my_bookings.php';
             break;
+        case '#records':
+            window.location.href = 'myRecords.php';
+            break;
         case '#settings':
             window.location.href = 'patientSettings.php';
             break;
