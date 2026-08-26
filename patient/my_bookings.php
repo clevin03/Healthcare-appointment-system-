@@ -22,11 +22,14 @@ $sql = "";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/main.css">
     <link rel="stylesheet" href="static/my_bookings.css">
+    <link rel="stylesheet" href="static/sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <title>My Bookings</title>
 </head>
 <body>
     <script src="static/my_bookings.js"></script>
+    <script src="static/sidebar.js"></script>
+
     <div class="top-header" style="background-color: #007bff; color: white;">
         <div class="header-content">
             <div class="user-profile">
@@ -45,7 +48,8 @@ $sql = "";
     </div>
     <div class="container">
         <div class="sidebar">
-            <nav class="sidebar-menu">
+            <a href="#home" class="active mobile-menu">Menu</a>
+            <nav class="sidebar-menu" id="patientSidebarMenu">
                 <ul>
                     <li>
                         <a href="patient_dashboard.php" class="menu-item">
@@ -91,6 +95,9 @@ $sql = "";
                     </li>
                 </ul>
             </nav>
+            <a href="javascript:void(0);" class="icon mobile-menu" onclick="toggle()">
+                <i class="fa fa-bars"></i>
+            </a>
         </div>
 
         <div class="main-content">

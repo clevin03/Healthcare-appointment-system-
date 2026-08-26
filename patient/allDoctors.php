@@ -56,6 +56,7 @@ $current_date = date('Y-m-d');
     <link rel="stylesheet" href="static/patient_dashboard.css">
     <!--<link rel="stylesheet" href="static/main.css">-->
     <link rel="stylesheet" href="static/allDoctors.css">
+    <link rel="stylesheet" href="static/sidebar.css">
 </head>
 <body>
 <div class="top-header" style="background-color: #007bff; color: white;">
@@ -77,7 +78,8 @@ $current_date = date('Y-m-d');
 
 <div class="container">
     <div class="sidebar">
-        <nav class="sidebar-menu">
+        <a href="#home" class="active mobile-menu">Menu</a>
+        <nav class="sidebar-menu" id="patientSidebarMenu">
             <ul>
                 <li>
                     <a href="#home" class="menu-item">
@@ -123,6 +125,9 @@ $current_date = date('Y-m-d');
                 </li>
             </ul>
         </nav>
+        <a href="javascript:void(0);" class="icon mobile-menu" onclick="toggle()">
+            <i class="fa fa-bars"></i>
+        </a>
     </div>
 
     <div class="main-content">
@@ -191,7 +196,7 @@ $current_date = date('Y-m-d');
         </div>
     </div>
 </div>
-
+<script src="static/sidebar.js"></script>
 <script src="static/allDoctors.js"></script>
 <script src="static/patient_dashboard.js"></script>
 </body>

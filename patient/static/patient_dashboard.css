@@ -105,46 +105,6 @@ body {
     background-color: #99c7ff;
 }
 
-.sidebar-menu ul {
-    list-style: none;
-}
-
-.sidebar-menu li {
-    margin-bottom: 0;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 20px;
-    color: white;
-    text-decoration: none;
-    border-left: 4px solid transparent;
-    transition: all 0.3s ease;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.menu-item:hover {
-    background-color: #e8f0ff;
-    color: #0066cc;
-}
-
-.menu-item.active {
-    background-color: #667eea;
-    color: white;
-    border-left-color: #0066cc;
-}
-
-.menu-icon {
-    font-size: 20px;
-}
-
-.menu-text {
-    flex: 1;
-}
-
 .main-content {
     flex: 1;
     padding: 40px;
@@ -644,18 +604,7 @@ tbody tr:hover {
         flex-direction: column;
     }
 
-    .sidebar {
-        width: 100%;
-        padding: 15px;
-        flex-direction: row;
-        align-items: center;
-        border-bottom: 1px solid #e0e0e0;
-        border-right: none;
-    }
-
-    .sidebar-menu {
-        display: none;
-    }
+    
 
     .main-content {
         padding: 20px;

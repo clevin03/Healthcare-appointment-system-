@@ -71,6 +71,7 @@ $current_date = date('Y-m-d');
     <title>Patient Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <link rel="stylesheet" href="static/patient_dashboard.css">
+    <link rel="stylesheet" href="static/sidebar.css">
 </head>
 <body>
 
@@ -93,8 +94,9 @@ $current_date = date('Y-m-d');
     </div>
     <div class="container">
         <div class="sidebar">
+            <a href="#home" class="active mobile-menu">Menu</a>
 
-            <nav class="sidebar-menu">
+            <nav class="sidebar-menu" id="patientSidebarMenu">
                 <ul>
                     <li>
                         <a href="#home" class="menu-item active">
@@ -140,6 +142,9 @@ $current_date = date('Y-m-d');
                     </li>
                 </ul>
             </nav>
+            <a href="javascript:void(0);" class="icon mobile-menu" onclick="toggle()">
+                <i class="fa fa-bars"></i>
+            </a>
         </div>
 
         <div class="main-content">
@@ -257,5 +262,6 @@ $current_date = date('Y-m-d');
     </div>
 
     <script src="static/patient_dashboard.js"></script>
+    <script src="static/sidebar.js"></script>
 </body>
 </html>

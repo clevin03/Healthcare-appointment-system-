@@ -3,7 +3,7 @@ h1{
     margin-bottom: 30px;
     padding-left: 20px;
 }
-a{
+.settings-container a{
     text-decoration: none;
     color: inherit;
 }
@@ -22,7 +22,7 @@ a{
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
-.icon {
+.setting-card .icon {
     font-size: 24px;
     margin-right: 10px;
 }
