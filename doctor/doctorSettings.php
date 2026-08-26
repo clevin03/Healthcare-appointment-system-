@@ -142,7 +142,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         <div class="sidebar">
             <ul>
                 <li><a href="doctor_dashboard.php" ><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fa-solid fa-calendar"></i> My Sessions</a></li>
+                <!--<li><a href="#"><i class="fa-solid fa-calendar"></i> My Sessions</a></li>-->
                 <li><a href="patient_search.php"><i class="fa-solid fa-users"></i> Find Patient</a></li>
                 <li><a href="doctorSettingd.php" class="active"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
