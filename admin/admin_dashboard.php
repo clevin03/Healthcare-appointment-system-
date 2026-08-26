@@ -276,9 +276,9 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
             <div class="section">
                 <h2 class="section-title"><i class="fa-solid fa-bolt"></i> Quick Actions</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
-                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-chart-bar"></i> Generate Report</button> <!-- New Generate Report button -->
+                    <!--<button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-chart-bar"></i> Generate Report</button>--> <!-- New Generate Report button -->
                     <a href="message.php" class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-envelope"></i> Send Message</a> <!--  Add New Send Message button -->
-                    <button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-clipboard"></i> View Logs</button> <!-- New View Logs button -->
+                    <!--<button class="btn btn-secondary" style="width: 100%; padding: 15px;"><i class="fa-solid fa-clipboard"></i> View Logs</button>--> <!-- New View Logs button -->
                 </div>
             </div>
 
