@@ -10,6 +10,17 @@ require_once __DIR__ . '/../config/db_connection.php';
 
 $success_message = '';
 $error_message = '';
+$adminUserId = (int) $_SESSION['user_id'];
+$adminName = '';
+$adminEmail = '';
+
+$adminStmt = $conn->prepare("SELECT a.admin_name, u.email FROM admin a INNER JOIN users u ON a.user_id = u.user_id WHERE a.user_id = ? AND u.user_type = 'admin'");
+$adminStmt->bind_param('i', $adminUserId);
+$adminStmt->execute();
+$adminAccount = $adminStmt->get_result()->fetch_assoc() ?? [];
+$adminName = $adminAccount['admin_name'] ?? '';
+$adminEmail = $adminAccount['email'] ?? '';
+$adminStmt->close();
 
 if (isset($_GET['success'])) {
     $success_message = htmlspecialchars(urldecode($_GET['success']));
@@ -54,13 +65,66 @@ if ($countResult) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action']) && $_POST['action'] == 'update_profile') {
+        $new_name = trim($_POST['admin_name'] ?? '');
         $new_email = isset($_POST['admin_email']) ? trim($_POST['admin_email']) : '';
+        $current_password = $_POST['current_password'] ?? '';
         $new_password = isset($_POST['admin_password']) ? trim($_POST['admin_password']) : '';
 
-        if (!empty($new_email)) {
-            $success_message = "Admin profile updated successfully.";
+        $adminName = $new_name;
+        $adminEmail = $new_email;
+
+        $passwordStmt = $conn->prepare("SELECT password FROM users WHERE user_id = ? AND user_type = 'admin'");
+        $passwordStmt->bind_param('i', $adminUserId);
+        $passwordStmt->execute();
+        $adminPasswordHash = $passwordStmt->get_result()->fetch_assoc()['password'] ?? '';
+        $passwordStmt->close();
+
+        if ($new_name === '') {
+            $error_message = "Admin name cannot be empty.";
+        } elseif ($current_password === '' || !password_verify($current_password, $adminPasswordHash)) {
+            $error_message = "Current password is incorrect.";
+        } elseif ($new_password === '') {
+            $error_message = "New password cannot be empty.";
+        } elseif (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+            $error_message = "Please enter a valid email address.";
         } else {
-            $error_message = "Email field cannot be empty.";
+            $emailCheckStmt = $conn->prepare("SELECT user_id FROM users WHERE email = ? AND user_id <> ?");
+            $emailCheckStmt->bind_param('si', $new_email, $adminUserId);
+            $emailCheckStmt->execute();
+            $emailExists = $emailCheckStmt->get_result()->num_rows > 0;
+            $emailCheckStmt->close();
+
+            if ($emailExists) {
+                $error_message = "That email address is already in use.";
+            } else {
+                $conn->begin_transaction();
+                try {
+                    $passwordHash = password_hash($new_password, PASSWORD_DEFAULT);
+                    $profileStmt = $conn->prepare("UPDATE users SET email = ?, password = ? WHERE user_id = ? AND user_type = 'admin'");
+                    $profileStmt->bind_param('ssi', $new_email, $passwordHash, $adminUserId);
+
+                    if (!$profileStmt->execute()) {
+                        throw new Exception('Failed to update admin profile: ' . $profileStmt->error);
+                    }
+                    $profileStmt->close();
+
+                    $adminStmt = $conn->prepare("UPDATE admin SET admin_name = ? WHERE user_id = ?");
+                    $adminStmt->bind_param('si', $new_name, $adminUserId);
+                    if (!$adminStmt->execute()) {
+                        throw new Exception('Failed to update admin name: ' . $adminStmt->error);
+                    }
+                    $adminStmt->close();
+                    $conn->commit();
+
+                    $_SESSION['user_name'] = $new_name;
+                    $_SESSION['user_email'] = $new_email;
+                    $adminEmail = $new_email;
+                    $success_message = "Admin profile updated successfully.";
+                } catch (Exception $e) {
+                    $conn->rollback();
+                    $error_message = $e->getMessage();
+                }
+            }
         }
     } elseif (isset($_POST['action']) && $_POST['action'] == 'update_ai_providers') {
         $providerKeys = ['ollama', 'gpt-4o-mini', 'openai-compatible', 'dify'];
@@ -152,12 +216,20 @@ foreach ($aiProviders as $key => $provider) {
                     <form method="POST" action="">
                         <input type="hidden" name="action" value="update_profile">
                         <div class="form-group">
-                            <label for="admin_email">Admin Email (Login ID)</label>
-                            <input type="email" id="admin_email" name="admin_email" value="admin@healthcare.com" required>
+                            <label for="admin_name">Admin Name</label>
+                            <input type="text" id="admin_name" name="admin_name" value="<?php echo htmlspecialchars($adminName); ?>" required>
                         </div>
                         <div class="form-group">
-                            <label for="admin_password">New Password (Leave blank to keep current)</label>
-                            <input type="password" id="admin_password" name="admin_password" placeholder="Enter new password">
+                            <label for="admin_email">Admin Email (Login ID)</label>
+                            <input type="email" id="admin_email" name="admin_email" value="<?php echo htmlspecialchars($adminEmail); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin_password">New Password</label>
+                            <input type="password" id="admin_password" name="admin_password" placeholder="Enter new password" required>
                         </div>
                         <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Update Profile</button>
                     </form>

@@ -40,7 +40,7 @@ if ($doctor_id > 0) {
                      FROM appointments a
                      LEFT JOIN sessions s ON a.session_id = s.session_id
                      LEFT JOIN patients p ON a.patient_id = p.patient_id
-                     WHERE a.doctor_id = ? AND s.session_day >= CURDATE()
+                     WHERE a.doctor_id = ? AND a.status = 'CONFIRMED' AND s.session_day >= CURDATE()
                      ORDER BY s.session_day ASC, s.start_time ASC
                      LIMIT 5";
     $stmt = $conn->prepare($sql_upcoming);
@@ -84,8 +84,8 @@ $conn->close();
         <div class="sidebar">
             <ul>
                 <li><a href="#" class="active"><i class="fa-solid fa-chart-column"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fa-solid fa-calendar"></i> My se</a></li>
-                <li><a href="#"><i class="fa-solid fa-users"></i> My Patients</a></li>
+                <li><a href="#"><i class="fa-solid fa-calendar"></i> My Sessions</a></li>
+                <li><a href="patient_search.php"><i class="fa-solid fa-users"></i> Find Patient</a></li>
                 <li><a href="doctorSettings.php"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
         </div>
