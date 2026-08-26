@@ -52,9 +52,9 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
     <div class="container">
         <header>
             <h1><i class="fas fa-calendar-check"></i> Appointment Management</h1>
-            <button class="btn-add" onclick="openAddModal()">
+            <!--<button class="btn-add" onclick="openAddModal()">
                 <i class="fas fa-plus"></i> Add New Appointment
-            </button>
+            </button>-->
         </header>
 
         <div class="appointments-grid" id="appointmentsGrid">
@@ -96,15 +96,6 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                                 <span><?php echo htmlspecialchars($appointment['phone']); ?></span>
                             </div>
                         </div>
-                        <!--
-                        <div class="info-row">
-                            <i class="fas fa-building"></i>
-                            <div class="info-content">
-                                <label>Department</label>
-                                <span><?php echo htmlspecialchars($appointment['department_name']); ?></span>
-                            </div>
-                        </div>
--->
                         
                         <div class="info-row">
                             <i class="fas fa-calendar"></i>

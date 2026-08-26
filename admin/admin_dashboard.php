@@ -100,7 +100,6 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'admin') 
                 <li><a href="patient.php"><i class="fa-solid fa-users"></i> Patients</a></li>
                 <li><a href="doctor.php"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
                 <li><a href="department.php"><i class="fa-solid fa-building"></i> Departments</a></li> <!-- New Departments link -->
-                <li><a href="#reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li> <!-- New Reports link -->
                 <li><a href="settings.php"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
         </div>

@@ -195,7 +195,6 @@ foreach ($aiProviders as $key => $provider) {
                 <li><a href="patient.php"><i class="fa-solid fa-users"></i> Patients</a></li>
                 <li><a href="doctor.php"><i class="fa-solid fa-user-doctor"></i> Doctors</a></li>
                 <li><a href="department.php"><i class="fa-solid fa-building"></i> Departments</a></li>
-                <li><a href="#reports"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
                 <li><a href="settings.php" class="active"><i class="fa-solid fa-gear"></i> Settings</a></li>
             </ul>
         </div>
@@ -325,14 +324,14 @@ foreach ($aiProviders as $key => $provider) {
                 </form>
             </div>
 
-            <div class="section" style="margin-top: 20px;">
+            <!--<div class="section" style="margin-top: 20px;">
                  <h2 class="section-title"><i class="fa-solid fa-screwdriver-wrench"></i> System Maintenance</h2>
                  <p style="color: #666; margin-bottom: 15px;">Advanced system configuration and maintenance tools.</p>
                  <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                      <button class="btn btn-secondary" onclick="alert('Backup feature would generate an SQL dump.')"><i class="fa-solid fa-database"></i> Backup Database</button>
                      <button class="btn btn-secondary" onclick="alert('Maintenance mode would be toggled.')"><i class="fa-solid fa-power-off"></i> Toggle Maintenance Mode</button>
                  </div>
-            </div>
+            </div>-->
 
             <div class="footer">
                 <p>&copy; 2026 BCI Healthcare Center. All rights reserved.</p>
