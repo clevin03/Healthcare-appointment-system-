@@ -292,7 +292,7 @@ function handleMentalHealthActions(actions) {
 }
 
 function openBookingPage() {
-    window.location.href = 'book_appointment.php';
+    window.location.href = 'sessions.php';
 }
 
 function handleActionClick(action) {
