@@ -21,19 +21,6 @@ $sql_doctors = "SELECT COUNT(*) AS total FROM doctors WHERE status = 'ACTIVE'";
 $result_doctors = $conn->query($sql_doctors);
 $all_doctors = $result_doctors->fetch_assoc()['total'] ?? 0;
 
-// Get all patients count
-$sql_patients = "SELECT COUNT(*) AS total FROM patients";
-$result_patients = $conn->query($sql_patients);
-$all_patients = $result_patients->fetch_assoc()['total'] ?? 0;
-
-// Get new pending bookings count for this patient
-$sql_new_bookings = "SELECT COUNT(*) AS total FROM appointments WHERE patient_id = ? AND status = 'PENDING'";
-$stmt = $conn->prepare($sql_new_bookings);
-$stmt->bind_param("i", $patient_id);
-$stmt->execute();
-$new_bookings = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
-$stmt->close();
-
 // Get today's sessions count for this patient
 /* To get the date from the `sessions` table, we must join it.
    This requires a `session_id` column in the `appointments` table. */
@@ -189,26 +176,14 @@ $current_date = date('Y-m-d');
                 <h3>Status</h3>
                 <div class="status-grid blue">
                     <div class="status-card line">
-                        <div class="status-number"><?php echo $all_doctors; ?></div>
                         <div class="status-label">All Doctors</div>
+                        <div class="status-number"><?php echo $all_doctors; ?></div>
                         <!--<div class="status-icon"><i class="fas fa-user-md"></i></div>-->
                     </div>
 
-                    <div class="status-card green">
-                        <div class="status-number"><?php echo $all_patients; ?></div>
-                        <div class="status-label">All Patients</div>
-                        <!--<div class="status-icon"><i class="fas fa-users"></i></div>-->
-                    </div>
-
-                    <div class="status-card orange">
-                        <div class="status-number"><?php echo $new_bookings; ?></div>
-                        <div class="status-label">NewBooking</div>
-                        <!--<div class="status-icon"><i class="fas fa-file-medical"></i></div>-->
-                    </div>
-
                     <div class="status-card red">
-                        <div class="status-number"><?php echo $today_sessions; ?></div>
                         <div class="status-label">Today Sessions</div>
+                        <div class="status-number"><?php echo $today_sessions; ?></div>
                         <!--<div class="status-icon"><i class="fas fa-tv"></i></div>-->
                     </div>
                 </div>

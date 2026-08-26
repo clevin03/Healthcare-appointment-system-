@@ -28,7 +28,7 @@ if ($doctor_id > 0) {
     $today_appointments = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
     $stmt->close();
 
-    $sql_pending_appointments = "SELECT COUNT(*) AS total FROM appointments a LEFT JOIN sessions s ON a.session_id = s.session_id WHERE a.doctor_id = ? AND a.status = 'PENDING'";
+    $sql_pending_appointments = "SELECT COUNT(*) AS total FROM appointments a LEFT JOIN sessions s ON a.session_id = s.session_id WHERE a.doctor_id = ? AND a.status = 'CONFIRMED'";
     $stmt = $conn->prepare($sql_pending_appointments);
     $stmt->bind_param("i", $doctor_id);
     $stmt->execute();
