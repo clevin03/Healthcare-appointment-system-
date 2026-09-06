@@ -5,7 +5,7 @@
 define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
 define('DB_USER', getenv('MYSQLUSER') ?: 'root');
 define('DB_PASS', getenv('MYSQLPASSWORD') !== false ? getenv('MYSQLPASSWORD') : '');
-define('DB_NAME', getenv('MYSQLDATABASE') ?: 'edoctor');
+define('DB_NAME', getenv('MYSQLDATABASE') ?: 'railway');
 define('DB_PORT', (int)(getenv('MYSQLPORT') ?: 3306));
 
 // Enable error reporting to catch issues clearly
