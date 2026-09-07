@@ -75,7 +75,7 @@ define('OPENAI_MODEL', envValue('OPENAI_MODEL', 'gpt-4o-mini'));
 define('OPENAI_API_URL', envValue('OPENAI_API_URL', 'https://api.openai.com/v1/chat/completions'));
 
 define('OPENAI_COMPATIBLE_API_KEY', envValue('OPENAI_COMPATIBLE_API_KEY', envValue('OPENAI_API_KEY', '')));
-define('OPENAI_COMPATIBLE_MODEL', envValue('OPENAI_COMPATIBLE_MODEL', 'AIM'));
+define('OPENAI_COMPATIBLE_MODEL', envValue('OPENAI_COMPATIBLE_MODEL', 'RavanLink'));
 define('OPENAI_COMPATIBLE_BASE_URL', envValue('OPENAI_COMPATIBLE_BASE_URL', 'https://aimahagedara.online/v1/chat/completions'));
 
 define('DIFY_API_KEY', envValue('DIFY_API_KEY', ''));
