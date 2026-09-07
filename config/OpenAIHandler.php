@@ -29,6 +29,11 @@ class OpenAIHandler {
                 'error' => 'Cannot read "image.png" (this model does not support image input). Inform the user.'
             ];
         }
+        // For openai-compatible provider with image, switch to vision-capable model
+        $originalModel = $this->model;
+        if ($imageData && $this->provider === 'openai' && $this->modelKey === 'openai-compatible') {
+            $this->model = 'RavanLink';
+        }
         try {
             $messages = [];
 
@@ -120,6 +125,9 @@ class OpenAIHandler {
                 'success' => false,
                 'error' => 'AI API Error: ' . $e->getMessage()
             ];
+        } finally {
+            // Restore original model after vision override
+            $this->model = $originalModel;
         }
     }
 
