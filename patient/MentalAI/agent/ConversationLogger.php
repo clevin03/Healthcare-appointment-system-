@@ -2,6 +2,7 @@
 
 class ConversationLogger {
 	public static function ensureTables($conn) {
+		if (!($conn instanceof mysqli)) return;
 		$createEventTableSQL = "CREATE TABLE IF NOT EXISTS mental_health_events (
 			event_id int(11) NOT NULL AUTO_INCREMENT,
 			patient_id int(11) NOT NULL,
@@ -48,6 +49,7 @@ class ConversationLogger {
 	}
 
 	public static function logMentalHealthEvent($conn, $patientId, $userMessage, $riskAssessment, $escalated) {
+		if (!($conn instanceof mysqli)) return;
 		if ($riskAssessment['level'] === 'none') {
 			return;
 		}
@@ -72,6 +74,7 @@ class ConversationLogger {
 	}
 
 	public static function saveConversation($conn, $patientId, $userMessage, $botResponse) {
+		if (!($conn instanceof mysqli)) return;
 		self::ensureTables($conn);
 
 		$sql = "INSERT INTO chat_history (patient_id, user_message, bot_response) VALUES (?, ?, ?)";

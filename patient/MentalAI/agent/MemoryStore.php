@@ -2,6 +2,7 @@
 
 class MemoryStore {
 	public static function remember($conn, $patientId, $memoryType, $memoryValue, $consentGiven = 0, $sensitivityLevel = 'low', $expiresAt = null) {
+		if (!($conn instanceof mysqli)) return false;
 		ConversationLogger::ensureTables($conn);
 
 		$sql = "INSERT INTO patient_memory (patient_id, memory_type, memory_value, consent_given, sensitivity_level, expires_at)
@@ -19,6 +20,7 @@ class MemoryStore {
 	}
 
 	public static function recallRecent($conn, $patientId, $limit = 5) {
+		if (!($conn instanceof mysqli)) return [];
 		ConversationLogger::ensureTables($conn);
 
 		$sql = "SELECT memory_type, memory_value, sensitivity_level, created_at

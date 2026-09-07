@@ -16,7 +16,7 @@ try {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
     $conn->set_charset("utf8mb4");
 } catch (mysqli_sql_exception $e) {
-    die("Connection failed: " . $e->getMessage());
+    throw new RuntimeException("Connection failed: " . $e->getMessage());
 }
 
 function closeConnection($conn) {

@@ -16,7 +16,13 @@ try {
 
     require_once __DIR__ . '/bootstrap.php';
     require_once __DIR__ . '/../../config/OpenAIHandler.php';
-    require_once __DIR__ . '/../../config/db_connection.php';
+
+    try {
+        require_once __DIR__ . '/../../config/db_connection.php';
+    } catch (Throwable $dbEx) {
+        error_log('[MentalAI] DB connection failed: ' . $dbEx->getMessage());
+        $conn = null;
+    }
 
     if (!isset($_SESSION['user_id']) || ($_SESSION['user_type'] ?? '') !== 'patient') {
         respondJson([
@@ -51,27 +57,31 @@ try {
     $difyUser = 'patient-' . $patientId;
 
     // Auto-create ai_provider_config table if it doesn't exist
-    $conn->query("
-        CREATE TABLE IF NOT EXISTS `ai_provider_config` (
-            `id` int(11) NOT NULL AUTO_INCREMENT,
-            `provider_key` varchar(50) NOT NULL COMMENT 'ollama, gpt-4o-mini, openai-compatible, dify',
-            `label` varchar(100) NOT NULL,
-            `api_url` varchar(500) DEFAULT '',
-            `api_key` varchar(500) DEFAULT '',
-            `model` varchar(100) DEFAULT '',
-            `is_active` tinyint(1) DEFAULT 0,
-            `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-            PRIMARY KEY (`id`),
-            UNIQUE KEY `provider_key` (`provider_key`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-    ");
+    if ($conn instanceof mysqli) {
+        $conn->query("
+            CREATE TABLE IF NOT EXISTS `ai_provider_config` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `provider_key` varchar(50) NOT NULL COMMENT 'ollama, gpt-4o-mini, openai-compatible, dify',
+                `label` varchar(100) NOT NULL,
+                `api_url` varchar(500) DEFAULT '',
+                `api_key` varchar(500) DEFAULT '',
+                `model` varchar(100) DEFAULT '',
+                `is_active` tinyint(1) DEFAULT 0,
+                `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                PRIMARY KEY (`id`),
+                UNIQUE KEY `provider_key` (`provider_key`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+        ");
+    }
 
     // Load AI provider config from DB; fall back to .env constants
     $dbProviders = [];
-    $result = $conn->query("SELECT * FROM ai_provider_config WHERE provider_key IN ('ollama', 'gpt-4o-mini', 'openai-compatible', 'dify')");
-    if ($result && $result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $dbProviders[$row['provider_key']] = $row;
+    if ($conn instanceof mysqli) {
+        $result = $conn->query("SELECT * FROM ai_provider_config WHERE provider_key IN ('ollama', 'gpt-4o-mini', 'openai-compatible', 'dify')");
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $dbProviders[$row['provider_key']] = $row;
+            }
         }
     }
 

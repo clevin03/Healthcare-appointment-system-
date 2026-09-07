@@ -4,6 +4,10 @@ class DoctorDirectory {
 	public static function buildDatabaseContext($conn, $patientId) {
 		$context = "\n\n[AVAILABLE DATA IN SYSTEM]\n";
 
+		if (!($conn instanceof mysqli)) {
+			return $context;
+		}
+
 		$doctors = self::getAllDoctors($conn);
 		if (!empty($doctors)) {
 			$context .= "Available Doctors:\n";
@@ -26,6 +30,7 @@ class DoctorDirectory {
 	}
 
 	public static function getAllDoctors($conn) {
+		if (!($conn instanceof mysqli)) return [];
 		$sql = "SELECT d.*, dep.department_name 
 				FROM doctors d 
 				LEFT JOIN departments dep ON d.department_id = dep.department_id 
@@ -46,6 +51,7 @@ class DoctorDirectory {
 	}
 
 	public static function getDoctorsBySpecialty($conn, $specialty) {
+		if (!($conn instanceof mysqli)) return [];
 		$specialty = '%' . $specialty . '%';
 
 		$sql = "SELECT d.*, dep.department_name 
@@ -75,6 +81,7 @@ class DoctorDirectory {
 	}
 
 	public static function getPatientAppointments($conn, $patientId) {
+		if (!($conn instanceof mysqli)) return [];
 		$sql = "SELECT a.*, d.doctor_name, dep.department_name 
 				FROM appointments a 
 				LEFT JOIN doctors d ON a.doctor_id = d.doctor_id 
