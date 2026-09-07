@@ -3,6 +3,7 @@
 class ConversationLogger {
 	public static function ensureTables($conn) {
 		if (!($conn instanceof mysqli)) return;
+		try {
 		$createEventTableSQL = "CREATE TABLE IF NOT EXISTS mental_health_events (
 			event_id int(11) NOT NULL AUTO_INCREMENT,
 			patient_id int(11) NOT NULL,
@@ -46,6 +47,9 @@ class ConversationLogger {
 			CONSTRAINT patient_memory_ibfk_1 FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 		$conn->query($createMemoryTableSQL);
+		} catch (Throwable $e) {
+			error_log('[MentalAI] Conversation tables unavailable: ' . $e->getMessage());
+		}
 	}
 
 	public static function logMentalHealthEvent($conn, $patientId, $userMessage, $riskAssessment, $escalated) {
@@ -54,7 +58,8 @@ class ConversationLogger {
 			return;
 		}
 
-		self::ensureTables($conn);
+		try {
+			self::ensureTables($conn);
 
 		$sql = "INSERT INTO mental_health_events (patient_id, risk_level, category, matched_keyword, user_message, escalated)
 				VALUES (?, ?, ?, ?, ?, ?)";
@@ -71,11 +76,15 @@ class ConversationLogger {
 		$stmt->bind_param('issssi', $patientId, $riskLevel, $category, $matchedKeyword, $userMessage, $escalatedInt);
 		$stmt->execute();
 		$stmt->close();
+		} catch (Throwable $e) {
+			error_log('[MentalAI] Mental health event logging unavailable: ' . $e->getMessage());
+		}
 	}
 
 	public static function saveConversation($conn, $patientId, $userMessage, $botResponse) {
 		if (!($conn instanceof mysqli)) return;
-		self::ensureTables($conn);
+		try {
+			self::ensureTables($conn);
 
 		$sql = "INSERT INTO chat_history (patient_id, user_message, bot_response) VALUES (?, ?, ?)";
 		$stmt = $conn->prepare($sql);
@@ -83,6 +92,9 @@ class ConversationLogger {
 			$stmt->bind_param("iss", $patientId, $userMessage, $botResponse);
 			$stmt->execute();
 			$stmt->close();
+		}
+		} catch (Throwable $e) {
+			error_log('[MentalAI] Conversation history unavailable: ' . $e->getMessage());
 		}
 	}
 }

@@ -58,30 +58,38 @@ try {
 
     // Auto-create ai_provider_config table if it doesn't exist
     if ($conn instanceof mysqli) {
-        $conn->query("
-            CREATE TABLE IF NOT EXISTS `ai_provider_config` (
-                `id` int(11) NOT NULL AUTO_INCREMENT,
-                `provider_key` varchar(50) NOT NULL COMMENT 'ollama, gpt-4o-mini, openai-compatible, dify',
-                `label` varchar(100) NOT NULL,
-                `api_url` varchar(500) DEFAULT '',
-                `api_key` varchar(500) DEFAULT '',
-                `model` varchar(100) DEFAULT '',
-                `is_active` tinyint(1) DEFAULT 0,
-                `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-                PRIMARY KEY (`id`),
-                UNIQUE KEY `provider_key` (`provider_key`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-        ");
+        try {
+            $conn->query("
+                CREATE TABLE IF NOT EXISTS `ai_provider_config` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `provider_key` varchar(50) NOT NULL COMMENT 'ollama, gpt-4o-mini, openai-compatible, dify',
+                    `label` varchar(100) NOT NULL,
+                    `api_url` varchar(500) DEFAULT '',
+                    `api_key` varchar(500) DEFAULT '',
+                    `model` varchar(100) DEFAULT '',
+                    `is_active` tinyint(1) DEFAULT 0,
+                    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                    PRIMARY KEY (`id`),
+                    UNIQUE KEY `provider_key` (`provider_key`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+            ");
+        } catch (Throwable $e) {
+            error_log('[MentalAI] Provider config table unavailable: ' . $e->getMessage());
+        }
     }
 
     // Load AI provider config from DB; fall back to .env constants
     $dbProviders = [];
     if ($conn instanceof mysqli) {
-        $result = $conn->query("SELECT * FROM ai_provider_config WHERE provider_key IN ('ollama', 'gpt-4o-mini', 'openai-compatible', 'dify')");
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $dbProviders[$row['provider_key']] = $row;
+        try {
+            $result = $conn->query("SELECT * FROM ai_provider_config WHERE provider_key IN ('ollama', 'gpt-4o-mini', 'openai-compatible', 'dify')");
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $dbProviders[$row['provider_key']] = $row;
+                }
             }
+        } catch (Throwable $e) {
+            error_log('[MentalAI] Provider config lookup unavailable: ' . $e->getMessage());
         }
     }
 

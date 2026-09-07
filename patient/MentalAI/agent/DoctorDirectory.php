@@ -8,7 +8,13 @@ class DoctorDirectory {
 			return $context;
 		}
 
-		$doctors = self::getAllDoctors($conn);
+		try {
+			$doctors = self::getAllDoctors($conn);
+			$appointments = self::getPatientAppointments($conn, $patientId);
+		} catch (Throwable $e) {
+			error_log('[MentalAI] Database context unavailable: ' . $e->getMessage());
+			return $context;
+		}
 		if (!empty($doctors)) {
 			$context .= "Available Doctors:\n";
 			foreach ($doctors as $doc) {
@@ -16,7 +22,6 @@ class DoctorDirectory {
 			}
 		}
 
-		$appointments = self::getPatientAppointments($conn, $patientId);
 		if (!empty($appointments)) {
 			$context .= "\nPatient's Upcoming Appointments:\n";
 			foreach ($appointments as $apt) {
@@ -38,7 +43,12 @@ class DoctorDirectory {
 				ORDER BY d.doctor_id DESC
 				LIMIT 20";
 
-		$result = $conn->query($sql);
+		try {
+			$result = $conn->query($sql);
+		} catch (Throwable $e) {
+			error_log('[MentalAI] Doctor lookup unavailable: ' . $e->getMessage());
+			return [];
+		}
 		$doctors = [];
 
 		if ($result) {
@@ -62,14 +72,18 @@ class DoctorDirectory {
 				ORDER BY d.doctor_id DESC
 				LIMIT 10";
 
-		$stmt = $conn->prepare($sql);
-		if (!$stmt) {
+		try {
+			$stmt = $conn->prepare($sql);
+			if (!$stmt) {
+				return [];
+			}
+			$stmt->bind_param("ss", $specialty, $specialty);
+			$stmt->execute();
+			$result = $stmt->get_result();
+		} catch (Throwable $e) {
+			error_log('[MentalAI] Specialty lookup unavailable: ' . $e->getMessage());
 			return [];
 		}
-
-		$stmt->bind_param("ss", $specialty, $specialty);
-		$stmt->execute();
-		$result = $stmt->get_result();
 
 		$doctors = [];
 		while ($row = $result->fetch_assoc()) {
@@ -91,14 +105,18 @@ class DoctorDirectory {
 				ORDER BY a.appointment_date DESC
 				LIMIT 10";
 
-		$stmt = $conn->prepare($sql);
-		if (!$stmt) {
+		try {
+			$stmt = $conn->prepare($sql);
+			if (!$stmt) {
+				return [];
+			}
+			$stmt->bind_param("i", $patientId);
+			$stmt->execute();
+			$result = $stmt->get_result();
+		} catch (Throwable $e) {
+			error_log('[MentalAI] Appointment lookup unavailable: ' . $e->getMessage());
 			return [];
 		}
-
-		$stmt->bind_param("i", $patientId);
-		$stmt->execute();
-		$result = $stmt->get_result();
 
 		$appointments = [];
 		while ($row = $result->fetch_assoc()) {
