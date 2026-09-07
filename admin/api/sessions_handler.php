@@ -147,14 +147,15 @@ function createSession($conn) {
     $max_patients = isset($_POST['max_patients']) ? intval($_POST['max_patients']) : null;
     $status = isset($_POST['status']) ? $_POST['status'] : 'pending';
 
-    $sql = "INSERT INTO sessions (doctor_id, session_day, start_time, end_time, max_patients, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO sessions (doctor_id, session_day, start_time, end_time, max_patients, status, created_by, current_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         echo json_encode(['success' => false, 'message' => 'Prepare failed: ' . $conn->error]);
         return;
     }
 
-    $stmt->bind_param("isssisi", $doctor_id, $session_date, $start_time, $end_time, $max_patients, $status, $created_by);
+    $current_count = 0;
+    $stmt->bind_param("isssisii", $doctor_id, $session_date, $start_time, $end_time, $max_patients, $status, $created_by, $current_count);
 
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Session created successfully', 'session_id' => $stmt->insert_id]);
