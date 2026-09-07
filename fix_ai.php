@@ -6,8 +6,8 @@ if ($secret !== 'fix-aim-2026') {
     die('Forbidden');
 }
 
-require_once __DIR__ . '/../config/db_connection.php';
-require_once __DIR__ . '/../config/openai_config.php';
+require_once __DIR__ . '/config/db_connection.php';
+require_once __DIR__ . '/config/openai_config.php';
 
 $results = [];
 
