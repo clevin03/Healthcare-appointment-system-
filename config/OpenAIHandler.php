@@ -129,7 +129,8 @@ class OpenAIHandler {
             'messages' => $messages,
             'temperature' => 0.7,
             'max_tokens' => 1500,
-            'top_p' => 0.9
+            'top_p' => 0.9,
+            'stream' => false
         ];
 
         $ch = curl_init();
@@ -169,6 +170,26 @@ class OpenAIHandler {
 
         $responseData = json_decode($response, true);
         if (!isset($responseData['choices'][0]['message']['content'])) {
+            // Try parsing as streaming response (SSE format)
+            $streamedContent = '';
+            $lines = preg_split('/\r\n|\r|\n/', trim((string)$response));
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (strpos($line, 'data: ') !== 0) continue;
+                $payload = substr($line, 6);
+                if ($payload === '[DONE]' || $payload === '') continue;
+                $chunk = json_decode($payload, true);
+                if (isset($chunk['choices'][0]['delta']['content'])) {
+                    $streamedContent .= $chunk['choices'][0]['delta']['content'];
+                }
+            }
+            if ($streamedContent !== '') {
+                return [
+                    'success' => true,
+                    'message' => $streamedContent,
+                    'tokens_used' => 0
+                ];
+            }
             return [
                 'success' => false,
                 'error' => 'Invalid response format from OpenAI'
