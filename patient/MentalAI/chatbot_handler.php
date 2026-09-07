@@ -134,11 +134,23 @@ try {
                 if (strpos($baseUrl, 'chat/completions') === false) {
                     $baseUrl = rtrim($baseUrl, '/') . '/chat/completions';
                 }
+                if (in_array(strtolower($model), ['aim', 'aim_coder', 'aim-coder', 'aim-4b47084c670b3354-4l2shf-e5f08c2e'], true)) {
+                    $model = 'RavanLink';
+                }
                 $allHandlers['openai-compatible'] = new OpenAIHandler($apiKey, $model ?: OPENAI_COMPATIBLE_MODEL, $baseUrl, 60, 'openai', '', '', 'openai-compatible');
             } elseif ($key === 'dify') {
                 $allHandlers['dify'] = new OpenAIHandler($apiKey, 'dify', $apiUrl, OPENAI_TIMEOUT, 'dify', $conversationId, $difyUser, 'dify');
             }
         }
+    }
+
+    // Keep the hosted provider available even when the database contains stale provider rows.
+    if (!isset($allHandlers['openai-compatible']) && !empty(OPENAI_COMPATIBLE_API_KEY) && OPENAI_COMPATIBLE_API_KEY !== 'sk-your-key-here') {
+        $baseUrl = OPENAI_COMPATIBLE_BASE_URL;
+        if (strpos($baseUrl, 'chat/completions') === false) {
+            $baseUrl = rtrim($baseUrl, '/') . '/chat/completions';
+        }
+        $allHandlers['openai-compatible'] = new OpenAIHandler(OPENAI_COMPATIBLE_API_KEY, OPENAI_COMPATIBLE_MODEL, $baseUrl, 60, 'openai', '', '', 'openai-compatible');
     }
 
     // Fallback to .env constants if no DB config
