@@ -136,7 +136,7 @@ $conn->close();
                                 <th>Patient Name</th>
                                 <th>Date & Time</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <!--<th>Action</th>-->
                             </tr>
                         </thead>
                         
@@ -148,7 +148,7 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($apt['first_name'] . ' ' . $apt['last_name']); ?></td>
                                     <td><?php echo date('M d, Y - h:i A', strtotime($apt['session_day'] . ' ' . $apt['start_time'])); ?></td>
                                     <td><span class="badge badge-<?php echo strtolower(htmlspecialchars($apt['status'])); ?>"><?php echo htmlspecialchars($apt['status']); ?></span></td>
-                                    <td><div class="btn-group"><button class="btn btn-secondary">View</button></div></td>
+                                    <!--<td><div class="btn-group"><button class="btn btn-secondary">View</button></div></td>-->
                                 </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
