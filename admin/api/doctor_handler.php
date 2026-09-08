@@ -135,7 +135,7 @@ function addDoctor($conn) {
 
     try {
         // Create user account for the doctor
-        $temporary_password = 'doctor123'; // A default temporary password
+        $temporary_password = preg_replace('/\s+/', '', strtolower(trim($doctor_name)));
         $password_hash = password_hash($temporary_password, PASSWORD_DEFAULT);
         $user_type = 'doctor';
 
