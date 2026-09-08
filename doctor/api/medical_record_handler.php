@@ -30,9 +30,15 @@ function saveRecord($conn){
         return;
     }
 
-    $sql = "INSERT INTO medical_records (appointment_id, patient_id, doctor_id, diagnosis, prescription, notes, date) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-
     $conn->begin_transaction();
+
+    if (medicalRecordExists($conn, $appointmentId, $doctorId)) {
+        $conn->rollback();
+        echo json_encode(['success' => false, 'message' => 'A medical record already exists for this appointment.']);
+        return;
+    }
+
+    $sql = "INSERT INTO medical_records (appointment_id, patient_id, doctor_id, diagnosis, prescription, notes, date) VALUES (?, ?, ?, ?, ?, ?, NOW())";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         echo json_encode(['success' => false, 'message' => 'Database query preparation failed.']);
@@ -69,6 +75,22 @@ function saveRecord($conn){
 
     $conn->commit();
     echo json_encode(['success' => true, 'message' => $completeAfterSave ? 'Medical report saved and appointment completed.' : 'Record added successfully!']);
+}
+
+function medicalRecordExists($conn, $appointmentId, $doctorId){
+    $stmt = $conn->prepare(
+        "SELECT record_id
+         FROM medical_records
+         WHERE appointment_id = ? AND doctor_id = ?
+         LIMIT 1
+         FOR UPDATE"
+    );
+    $stmt->bind_param('ii', $appointmentId, $doctorId);
+    $stmt->execute();
+    $exists = $stmt->get_result()->num_rows > 0;
+    $stmt->close();
+
+    return $exists;
 }
 
 function completeAppointment($conn){

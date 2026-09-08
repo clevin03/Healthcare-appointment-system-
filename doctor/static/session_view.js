@@ -142,7 +142,7 @@ async function submitReport(event){
         }
         const result = await response.json();
         if(result.success){
-            alert('Record added successfully!');
+            alert(result.message || 'Record added successfully!');
             document.getElementById('medicalReportModal').style.display = 'none';
             const row = document.querySelector(`tr[data-appointment-id="${appointmentId}"]`);
             if (completeAfterSave === '1') {
@@ -151,7 +151,7 @@ async function submitReport(event){
                 row.dataset.medicalReportSaved = '1';
             }
         } else {
-            alert('Failed to add record.');
+            alert(result.message || 'Failed to add record.');
         } 
     
     } catch(error) {
